@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:discution_app/vue/ConversationsVue.dart';
 
-
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class LoginVue extends StatefulWidget {
+  const LoginVue({super.key});
 
   final String title="Login";
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<LoginVue> createState() => _LoginVueState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginVueState extends State<LoginVue> {
   final userName_Email = TextEditingController();
   final mdp = TextEditingController();
 
@@ -57,6 +57,10 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () {
                 // Code à exécuter lorsque le bouton est pressé
                 print('le username ou email est : '+userName_Email.text+" | le mdp est : "+mdp.text);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ConversationsVue()),
+                );
               },
               child: Text('validé'),
             ),
