@@ -1,19 +1,30 @@
-import 'package:dio/dio.dart';
+import 'dart:convert';
+
+import 'package:discution_app/Model/UserModel.dart';
+
+import '../outil/Api.dart';
 
 class Login {
-  final Dio _dio = Dio();
 
-  Future<Response?> ask(String userOrEmail, String mdp) async {
-    try {
-      final response = await _dio.post(
-        'http://192.168.0.172:3000/api/user/login',
-        data: {'emailOrPseudo': userOrEmail, 'passWord': mdp},
+
+  void ask(String userOrEmail, String mdp,Function callBack) {
+      Api.postData(
+          "user/login", {'emailOrPseudo': userOrEmail, 'passWord': mdp}, null, null)
+          .then(
+            (response) {
+          Map<String, dynamic> jsonData = jsonDecode(response.data);
+          dynamic userMap = jsonData["user"];
+          String token = jsonData["token"];
+          User u = User(
+              userMap["email"], userMap["uniquePseudo"], userMap["pseudo"],
+              userMap["Avatar"]);
+
+          LoginModel lm = LoginModel(u, token);
+          callBack(lm);
+        },
+        onError: (error) {
+          callBack(null);
+        },
       );
-
-      return response;
-    } catch (e) {
-      print(e);
-    }
-    return null;
   }
 }

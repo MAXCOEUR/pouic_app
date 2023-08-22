@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/vue/CreateUserVue.dart';
 import 'package:flutter/material.dart';
@@ -89,22 +90,44 @@ class _LoginVueState extends State<LoginVue> {
     );
   }
   void loginUser() {
-
-
-    loginController.ask('nouveauPseudo', 'nouveauMotDePasse').then((response) {
-      if (response != null) {
-        print('Réponse : ${response.data.toString()}');
-        Map<String, dynamic> jsonData = jsonDecode(response.data);
-        print('Réponse : ${jsonData["token"]}');
-
-        dynamic userMap=jsonData["user"];
-
-        User u = User(userMap["email"], userMap["uniquePseudo"], userMap["pseudo"], userMap["Avatar"]);
-        print(u.toJsonString());
-      } else {
-        print('Échec de la requête');
-      }
-    });
+    loginController.ask('nouveauPseudo', 'nouveauMotDePasse',reponseLoginUser);
+  }
+  void reponseLoginUser(LoginModel? lm){
+    if(lm!=null){
+      print(lm.toJsonString());
+    }
+    else{
+      showAlertDialog(context,"Erreur","erreur lors de la requette a l'api");
+    }
   }
 
+
+  showAlertDialog(BuildContext context,String titre,String erreur) {
+    // set up the button
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(titre),
+      content: Text(erreur),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 }
+
+

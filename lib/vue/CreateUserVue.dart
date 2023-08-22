@@ -1,12 +1,17 @@
-import 'dart:typed_data';
+import 'dart:io';
 
+import 'package:discution_app/Controller/UserController.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image/image.dart' as img;
+
+import '../Model/UserModel.dart';
 
 class CreateUserVue extends StatefulWidget {
   const CreateUserVue({super.key});
 
   final String title="CreateUser Vue";
+
 
   @override
   State<CreateUserVue> createState() => _CreateUserVueState();
@@ -18,31 +23,53 @@ class _CreateUserVueState extends State<CreateUserVue> {
   final email = TextEditingController();
   final mdp = TextEditingController();
 
-  String avatar="";
-  Uint8List? _imageBytes;
+  final _formKey = GlobalKey<FormState>();
+  UserController userController = UserController();
+
+
+
+
+  img.Image? avatar;
 
   get http => null;
 
-  Future<void> _fetchImage() async {
-    final response = await http.get(Uri.parse(avatar));
-    if (response.statusCode == 200) {
-      setState(() {
-        _imageBytes = response.bodyBytes;
-      });
-    }
-  }
-
   Future<void> _pickImage() async {
+    File? _pickedImage;
     final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedImage != null) {
       setState(() {
-        avatar = pickedImage.path;
+        _pickedImage = File(pickedImage.path);
       });
+    }
+
+    if (_pickedImage != null) {
+      // Charger l'image
+      final originalImage = img.decodeImage(_pickedImage!.readAsBytesSync());
+
+      // Redimensionner l'image en gardant le ratio
+      final resizedImage = img.copyResize(originalImage!, height: 150);
+
+      avatar=resizedImage;
+
     }
   }
 
-  
+  void createUser(){
+    if (_formKey.currentState!.validate()) {
+      User user = User(email.text, userNameUnique.text, userName.text, (avatar!=null)?img.encodeJpg(avatar!):null);
+      userController.create(user, mdp.text, reponseCreateUser);
+    }
+  }
+  void reponseCreateUser(User? u){
+    if(u!=null){
+      print(u.toJsonString());
+      Navigator.pop(context);
+    }
+    else{
+      showAlertDialog(context,"Erreur","erreur lors de la requette a l'api");
+    }
+  }
 
   @override
   void dispose() {
@@ -61,40 +88,57 @@ class _CreateUserVueState extends State<CreateUserVue> {
         title: Text(widget.title),
       ),
       body: Form(
+    key: _formKey,
+    child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               child: TextFormField(
-                obscureText: true,
                 controller: userNameUnique,
                 decoration: const InputDecoration(
                   border: UnderlineInputBorder(),
                   labelText: 'Entrée votre userNameUnique',
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Ce champ est requis';
+                  }
+                  return null; // Valide
+                },
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               child: TextFormField(
-                obscureText: true,
                 controller: userName,
                 decoration: const InputDecoration(
                   border: UnderlineInputBorder(),
                   labelText: 'Entrée votre userName',
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Ce champ est requis';
+                  }
+                  return null; // Valide
+                },
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               child: TextFormField(
-                obscureText: true,
                 controller: email,
                 decoration: const InputDecoration(
                   border: UnderlineInputBorder(),
                   labelText: 'Entrée votre email',
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Ce champ est requis';
+                  }
+                  return null; // Valide
+                },
               ),
             ),
             Padding(
@@ -106,6 +150,12 @@ class _CreateUserVueState extends State<CreateUserVue> {
                   border: UnderlineInputBorder(),
                   labelText: 'Entrée votre mdp',
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Ce champ est requis';
+                  }
+                  return null; // Valide
+                },
               ),
             ),
             InkWell(
@@ -117,28 +167,53 @@ class _CreateUserVueState extends State<CreateUserVue> {
                   shape: BoxShape.circle,
                   color: Colors.grey[300],
                 ),
-                child: avatar.isEmpty
-                    ? Icon(Icons.add_a_photo, size: 50)
-                    : ClipOval(
-                  child: Image.memory(
-                    _imageBytes!,
-                    width: 150,
-                    height: 150,
+                child: ClipOval(
+                  child: avatar != null
+                      ? Image.memory(
+                    img.encodeJpg(avatar!),
                     fit: BoxFit.cover,
-                  ),
+                  )
+                      : Icon(Icons.add_a_photo, size: 50),
                 ),
               ),
             ),
             SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                // Implement your form submission logic here
-              },
-              child: Text('Submit'),
+                createUser();
+                },
+              child: Text('Créer sont compte'),
             ),
           ],
         ),
       ),
+    ),
+    );
+  }
+  showAlertDialog(BuildContext context,String titre,String erreur) {
+    // set up the button
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(titre),
+      content: Text(erreur),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }
