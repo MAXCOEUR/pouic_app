@@ -10,6 +10,9 @@ class UserListe{
   void addUsers(List<User> user){
     users.addAll(user);
   }
+  void reset(){
+    users.clear();
+  }
   void removeUser(User user){
     users.remove(user);
   }

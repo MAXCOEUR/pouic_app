@@ -1,27 +1,47 @@
-import 'package:dio/dio.dart';
+import 'dart:typed_data';
+
 import 'dart:convert';
+import 'package:discution_app/Model/UserListeModel.dart';
+import 'package:discution_app/outil/Constant.dart';
+
 import '../Model/UserModel.dart';
 import '../outil/Api.dart';
 
+
 class UserController {
-  final Dio _dio = Dio();
+  UserListe users;
+  UserController(this.users);
+  LoginModel loginModel = Constant.loginModel!;
 
-  void create(User user,String passWord,Function callBack) {
-    Api.postData(
-        "user", {'email': user.email, 'uniquePseudo': user.uniquePseudo,'pseudo':user.pseudo,'Avatar':user.Avatar,'passWord':passWord}, null, null)
+  void addUser_inListe(int page,String search,Function callBack){
+    String AuthorizationToken='Bearer '+loginModel.token;
+    Api.getData(
+        "user", {'search': search, 'page': page}, {'Authorization': AuthorizationToken})
         .then(
-          (response) {
-        Map<String, dynamic> jsonData = jsonDecode(response.data);
-        User u = User(
-            jsonData["email"], jsonData["uniquePseudo"], jsonData["pseudo"],
-            jsonData["Avatar"]);
+            (response) {
 
-        callBack(u);
-      },
-      onError: (error) {
-            print("create user :"+error.toString());
-        callBack(null);
-      },
+          List<dynamic> jsonData = jsonDecode(response.data);
+          
+          for(Map<String, dynamic> user in jsonData){
+            Uint8List? avatarData;
+            if (user['Avatar'] != null) {
+              List<dynamic> avatarBytes = user['Avatar']['data'];
+              avatarData = Uint8List.fromList(avatarBytes.cast<int>());
+            }
+            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"], avatarData));
+          }
+
+          callBack();
+        },
+        onError: (error) {
+      print("create user :"+error.toString());
+      callBack(null);
+    }
     );
   }
+  void removeAllUser_inListe(){
+    users.reset();
+  }
+
+
 }

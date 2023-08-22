@@ -2,10 +2,12 @@ import 'package:dio/dio.dart';
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/vue/CreateUserVue.dart';
 import 'package:flutter/material.dart';
-import 'package:discution_app/vue/ConversationsVue.dart';
+import 'package:discution_app/vue/HomeView.dart';
 
 import '../Controller/LoginController.dart';
 import 'dart:convert';
+
+import '../outil/Constant.dart';
 
 
 
@@ -35,7 +37,7 @@ class _LoginVueState extends State<LoginVue> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        //backgroundColor: Theme.of(context).colorScheme.background,
         title: Text(widget.title),
       ),
       body: Center(
@@ -90,11 +92,15 @@ class _LoginVueState extends State<LoginVue> {
     );
   }
   void loginUser() {
-    loginController.ask('nouveauPseudo', 'nouveauMotDePasse',reponseLoginUser);
+    loginController.ask(userName_Email.text, mdp.text,reponseLoginUser);
   }
   void reponseLoginUser(LoginModel? lm){
+    Constant.loginModel=lm;
     if(lm!=null){
-      print(lm.toJsonString());
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomeView()),
+      );
     }
     else{
       showAlertDialog(context,"Erreur","erreur lors de la requette a l'api");

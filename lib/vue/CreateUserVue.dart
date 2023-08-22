@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:discution_app/Controller/UserController.dart';
+import 'package:discution_app/Controller/UserCreate.dart';
+import 'package:discution_app/Model/UserListeModel.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
@@ -24,10 +26,9 @@ class _CreateUserVueState extends State<CreateUserVue> {
   final mdp = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
-  UserController userController = UserController();
 
-
-
+  UserListe users=UserListe();
+  UserCreate userCreate = UserCreate();
 
   img.Image? avatar;
 
@@ -52,14 +53,23 @@ class _CreateUserVueState extends State<CreateUserVue> {
 
       avatar=resizedImage;
 
+      print("taille de limage en bytes : " +avatar!.lengthInBytes.toString());
+
     }
   }
 
   void createUser(){
     if (_formKey.currentState!.validate()) {
-      User user = User(email.text, userNameUnique.text, userName.text, (avatar!=null)?img.encodeJpg(avatar!):null);
-      userController.create(user, mdp.text, reponseCreateUser);
+      User user;
+      if(avatar!=null){
+        user = User(email.text, userNameUnique.text, userName.text, img.encodeJpg(avatar!));
+      }
+      else{
+        user = User(email.text, userNameUnique.text, userName.text);
+      }
+      userCreate.create(user, mdp.text, reponseCreateUser);
     }
+
   }
   void reponseCreateUser(User? u){
     if(u!=null){
@@ -84,7 +94,6 @@ class _CreateUserVueState extends State<CreateUserVue> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
       body: Form(

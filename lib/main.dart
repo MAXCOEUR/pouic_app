@@ -3,36 +3,48 @@ import 'package:flutter/material.dart';
 import 'vue/LoginVue.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
 
-  // This widget is the root of your application.
+
+  ColorScheme lightColorScheme = const ColorScheme(
+    primary: Color(0xFF3498DB),  // Darker shade of primary color (if needed)
+    secondary: Color(0xFFE74C3C),// Darker shade of secondary color (if needed)
+    surface: Color(0xFFF5F5F5),         // Background color
+    background: Color(0xFFF5F5F5),      // Background color
+    error: Color(0xFFB00020),           // Error color
+    onPrimary: Color(0xFF333333),       // Text color on primary color
+    onSecondary: Color(0xFFFFFFFF),     // Text color on secondary color
+    onSurface: Color(0xFF333333),       // Text color on background color
+    onBackground: Color(0xFF333333),    // Text color on background color
+    onError: Color(0xFFFFFFFF),         // Text color on error color
+    brightness: Brightness.light,       // Light mode
+  );
+
+  ColorScheme darkColorScheme = const ColorScheme(
+    primary: Color(0xFF9B59B6),  // Darker shade of primary color (if needed)
+    secondary: Color(0xFF2ECC71),// Darker shade of secondary color (if needed)
+    surface: Color(0xFF1A1A1A),         // Background color
+    background: Color(0xFF1A1A1A),      // Background color
+    error: Color(0xFFCF6679),           // Error color
+    onPrimary: Color(0xFFFFFFFF),       // Text color on primary color
+    onSecondary: Color(0xFFFFFFFF),     // Text color on secondary color
+    onSurface: Color(0xFFFFFFFF),       // Text color on background color
+    onBackground: Color(0xFFFFFFFF),    // Text color on background color
+    onError: Color(0xFF333333),         // Text color on error color
+    brightness: Brightness.dark,        // Dark mode
+  );
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a blue toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      theme: ThemeData.light().copyWith(colorScheme: lightColorScheme),
+      darkTheme: ThemeData.dark().copyWith(colorScheme: darkColorScheme),
       home: const LoginVue(),
     );
   }
