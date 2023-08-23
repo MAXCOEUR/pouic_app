@@ -8,7 +8,7 @@ import '../outil/Api.dart';
 class Login {
 
 
-  void ask(String userOrEmail, String mdp,Function callBack) {
+  void ask(String userOrEmail, String mdp,Function callBack,Function callBackError) {
       Api.postData(
           "user/login", {'emailOrPseudo': userOrEmail, 'passWord': mdp}, null, null)
           .then(
@@ -29,7 +29,7 @@ class Login {
           callBack(lm);
         },
         onError: (error) {
-          callBack(null);
+          callBackError(error);
         },
       );
   }

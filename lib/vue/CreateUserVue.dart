@@ -1,13 +1,14 @@
 import 'dart:io';
 
 import 'package:discution_app/Controller/UserController.dart';
-import 'package:discution_app/Controller/UserCreate.dart';
+import 'package:discution_app/Controller/UserC.dart';
 import 'package:discution_app/Model/UserListeModel.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
 
 import '../Model/UserModel.dart';
+import '../outil/Constant.dart';
 
 class CreateUserVue extends StatefulWidget {
   const CreateUserVue({super.key});
@@ -28,7 +29,7 @@ class _CreateUserVueState extends State<CreateUserVue> {
   final _formKey = GlobalKey<FormState>();
 
   UserListe users=UserListe();
-  UserCreate userCreate = UserCreate();
+  UserC userCreate = UserC();
 
   img.Image? avatar;
 
@@ -67,18 +68,16 @@ class _CreateUserVueState extends State<CreateUserVue> {
       else{
         user = User(email.text, userNameUnique.text, userName.text,null);
       }
-      userCreate.create(user, mdp.text, reponseCreateUser);
+      userCreate.create(user, mdp.text, reponseCreateUser,reponseCreateUserError);
     }
 
   }
-  void reponseCreateUser(User? u){
-    if(u!=null){
-      print(u.toJsonString());
-      Navigator.pop(context);
-    }
-    else{
-      showAlertDialog(context,"Erreur","erreur lors de la requette a l'api");
-    }
+  void reponseCreateUser(User u){
+    print(u.toJsonString());
+    Navigator.pop(context);
+  }
+  void reponseCreateUserError(Exception ex){
+    Constant.showAlertDialog(context,"Erreur","erreur lors de la requette a l'api : "+ex.toString());
   }
 
   @override
@@ -197,32 +196,6 @@ class _CreateUserVueState extends State<CreateUserVue> {
         ),
       ),
     ),
-    );
-  }
-  showAlertDialog(BuildContext context,String titre,String erreur) {
-    // set up the button
-    Widget okButton = TextButton(
-      child: Text("OK"),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text(titre),
-      content: Text(erreur),
-      actions: [
-        okButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
     );
   }
 }

@@ -1,18 +1,19 @@
 import 'dart:typed_data';
 
 import 'package:discution_app/Model/UserModel.dart';
+import 'package:discution_app/outil/Constant.dart';
+import 'package:discution_app/vue/CustomAppBar.dart';
+import 'package:discution_app/vue/RechercheListeView.dart';
+import 'package:discution_app/vue/amis/AmisView.dart';
 import 'package:flutter/material.dart';
-
-import '../outil/Constant.dart';
-import 'CustomAppBar.dart';
-import 'UserListeView.dart';
 
 class HomeView extends StatefulWidget {
   HomeView({super.key});
   final LoginModel lm=Constant.loginModel!;
 
   final ConversationTest convTest=ConversationTest();
-  final UserListeView userTest=UserListeView();
+  final RechercheListeView rechercheView=RechercheListeView();
+  final AmisView amisView=AmisView();
 
   final String title="Conversations";
 
@@ -35,14 +36,15 @@ class _HomeViewState extends State<HomeView> {
       if (_selectedIndex == 0) {
         selectedWidget = widget.convTest;
       } else if (_selectedIndex == 1) {
-        selectedWidget = widget.convTest;
+        selectedWidget = widget.amisView;
       } else if (_selectedIndex == 2) {
-        selectedWidget = widget.userTest;
+        selectedWidget = widget.rechercheView;
       }
 
     return Scaffold(
       appBar: CustomAppBar(
-          userImageBytes: widget.lm.user.Avatar
+          userImageBytes: widget.lm.user.Avatar,
+          arrowReturn: false,
       ),
       body: selectedWidget,
       bottomNavigationBar: BottomNavigationBar(

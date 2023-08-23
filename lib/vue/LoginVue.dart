@@ -92,47 +92,17 @@ class _LoginVueState extends State<LoginVue> {
     );
   }
   void loginUser() {
-    loginController.ask(userName_Email.text, mdp.text,reponseLoginUser);
+    loginController.ask(userName_Email.text, mdp.text,reponseLoginUser,reponseLoginUserErreur);
   }
-  void reponseLoginUser(LoginModel? lm){
+  void reponseLoginUser(LoginModel lm){
     Constant.loginModel=lm;
-    if(lm!=null){
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => HomeView()),
-      );
-    }
-    else{
-      showAlertDialog(context,"Erreur","erreur lors de la requette a l'api");
-    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomeView()),
+    );
   }
-
-
-  showAlertDialog(BuildContext context,String titre,String erreur) {
-    // set up the button
-    Widget okButton = TextButton(
-      child: Text("OK"),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text(titre),
-      content: Text(erreur),
-      actions: [
-        okButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
+  void reponseLoginUserErreur(Exception ex){
+    Constant.showAlertDialog(context,"Erreur","erreur lors de la requette a l'api : "+ex.toString());
   }
 }
 
