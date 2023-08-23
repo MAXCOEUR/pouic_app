@@ -4,6 +4,7 @@ import 'package:discution_app/Model/UserModel.dart';
 import 'package:flutter/material.dart';
 
 import '../outil/Constant.dart';
+import 'CustomAppBar.dart';
 import 'UserListeView.dart';
 
 class HomeView extends StatefulWidget {
@@ -34,17 +35,14 @@ class _HomeViewState extends State<HomeView> {
       if (_selectedIndex == 0) {
         selectedWidget = widget.convTest;
       } else if (_selectedIndex == 1) {
+        selectedWidget = widget.convTest;
+      } else if (_selectedIndex == 2) {
         selectedWidget = widget.userTest;
-      } else {
-
       }
 
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(50), // Hauteur de la nouvelle barre
-        child: CustomAppBar(
+      appBar: CustomAppBar(
           userImageBytes: widget.lm.user.Avatar
-        ),
       ),
       body: selectedWidget,
       bottomNavigationBar: BottomNavigationBar(
@@ -52,10 +50,13 @@ class _HomeViewState extends State<HomeView> {
           BottomNavigationBarItem(
             icon: Icon(Icons.message),
             label: 'Conversation',
+          ),BottomNavigationBarItem(
+            icon: Icon(Icons.supervised_user_circle),
+            label: 'Amis',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.supervised_user_circle),
-            label: 'Utilisateur',
+            icon: Icon(Icons.search),
+            label: 'Recherche',
           ),
         ],
         currentIndex: _selectedIndex,
@@ -76,7 +77,7 @@ class ConversationTest extends StatelessWidget{
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(lm.user.uniquePseudo),
-          Image.memory(lm.user.Avatar!)
+          //Image.memory(lm.user.Avatar!)
         ],
       ),
     );

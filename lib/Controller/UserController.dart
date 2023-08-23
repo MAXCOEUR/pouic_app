@@ -28,7 +28,7 @@ class UserController {
               List<dynamic> avatarBytes = user['Avatar']['data'];
               avatarData = Uint8List.fromList(avatarBytes.cast<int>());
             }
-            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"], avatarData));
+            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"], avatarData,(user["sont_amis"])==0?false:true));
           }
 
           callBack();

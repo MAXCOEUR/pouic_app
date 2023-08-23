@@ -65,7 +65,7 @@ class _CreateUserVueState extends State<CreateUserVue> {
         user = User(email.text, userNameUnique.text, userName.text, img.encodeJpg(avatar!));
       }
       else{
-        user = User(email.text, userNameUnique.text, userName.text);
+        user = User(email.text, userNameUnique.text, userName.text,null);
       }
       userCreate.create(user, mdp.text, reponseCreateUser);
     }

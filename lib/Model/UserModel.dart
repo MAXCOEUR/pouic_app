@@ -5,9 +5,10 @@ class User{
   String email;
   String uniquePseudo;
   String pseudo;
+  bool? sont_amis =false;
   Uint8List? Avatar;
 
-  User(this.email, this.uniquePseudo, this.pseudo, [this.Avatar]);
+  User(this.email, this.uniquePseudo, this.pseudo, this.Avatar,[this.sont_amis]);
 
   @override
   bool operator ==(Object other) {
@@ -24,6 +25,7 @@ class User{
       'uniquePseudo': uniquePseudo,
       'pseudo': pseudo,
       'Avatar': Avatar,
+      'sont_amis':sont_amis,
     };
   }
   String toJsonString() {

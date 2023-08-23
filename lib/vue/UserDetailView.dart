@@ -4,6 +4,7 @@ import '../Controller/UserController.dart';
 import '../Model/UserListeModel.dart';
 import '../Model/UserModel.dart';
 import '../outil/Constant.dart';
+import 'CustomAppBar.dart';
 
 class UserDetailleView extends StatefulWidget{
   final LoginModel lm= Constant.loginModel!;
@@ -19,11 +20,8 @@ class _UserListeViewState extends State<UserDetailleView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(50), // Hauteur de la nouvelle barre
-          child: CustomAppBar(
-              userImageBytes: widget.lm.user.Avatar
-          ),
+        appBar: CustomAppBar(
+            userImageBytes: widget.lm.user.Avatar
         ),
         body: Column(
             children: [
