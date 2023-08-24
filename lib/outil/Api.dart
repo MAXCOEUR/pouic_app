@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 
 class Api {
   static final Dio _dio = Dio();
-  static final String baseUrl ="http://192.168.0.172:3000/api/";
+  static final String baseUrl ="http://46.227.18.31:3000/api/";
 
   static Future<Response> postData(
       String apiUrl,

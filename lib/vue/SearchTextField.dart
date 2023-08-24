@@ -42,7 +42,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
             borderSide: BorderSide(color: Theme.of(context).colorScheme.background),
           ),
           filled: true,
-          fillColor: Colors.grey[100],
+          fillColor: Theme.of(context).colorScheme.background,
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Theme.of(context).colorScheme.onPrimary),
           ),

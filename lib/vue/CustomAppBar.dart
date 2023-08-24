@@ -4,14 +4,15 @@ import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Uint8List? userImageBytes; // Les octets de l'image de l'utilisateur
+  bool arrowReturn;
 
-  CustomAppBar({required this.userImageBytes});
+  CustomAppBar({required this.userImageBytes,required this.arrowReturn});
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       elevation: 0,
-      automaticallyImplyLeading: false,
+      automaticallyImplyLeading: arrowReturn,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -43,8 +44,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 child:Image.asset('assets/logo.png',)
             ),
           ),
-
-          SizedBox(width: 40),
         ],
       ),
     );

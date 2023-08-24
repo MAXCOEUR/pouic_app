@@ -12,10 +12,10 @@ class MyApp extends StatelessWidget {
 
   ColorScheme lightColorScheme = const ColorScheme(
     primary: Color(0xFF3498DB),  // Darker shade of primary color (if needed)
-    secondary: Color(0xFFE74C3C),// Darker shade of secondary color (if needed)
+    secondary: Color(0xFF9A9A9A),// Darker shade of secondary color (if needed)
     surface: Color(0xFFF5F5F5),         // Background color
     background: Color(0xFFF5F5F5),      // Background color
-    error: Color(0xFFB00020),           // Error color
+    error: Color(0xFFDC0202),           // Error color
     onPrimary: Color(0xFF333333),       // Text color on primary color
     onSecondary: Color(0xFFFFFFFF),     // Text color on secondary color
     onSurface: Color(0xFF333333),       // Text color on background color
@@ -25,11 +25,11 @@ class MyApp extends StatelessWidget {
   );
 
   ColorScheme darkColorScheme = const ColorScheme(
-    primary: Color(0xFF9B59B6),  // Darker shade of primary color (if needed)
-    secondary: Color(0xFF2ECC71),// Darker shade of secondary color (if needed)
+    primary: Color(0xFF3498DB),  // Darker shade of primary color (if needed)
+    secondary: Color(0xFF9A9A9A),// Darker shade of secondary color (if needed)
     surface: Color(0xFF1A1A1A),         // Background color
     background: Color(0xFF1A1A1A),      // Background color
-    error: Color(0xFFCF6679),           // Error color
+    error: Color(0xFFDC0202),           // Error color
     onPrimary: Color(0xFFFFFFFF),       // Text color on primary color
     onSecondary: Color(0xFFFFFFFF),     // Text color on secondary color
     onSurface: Color(0xFFFFFFFF),       // Text color on background color
