@@ -1,5 +1,6 @@
 
 
+import 'package:discution_app/vue/SocketManager.dart';
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -9,32 +10,16 @@ class testSocket extends StatefulWidget {
 }
 
 class _testSocketState extends State<testSocket> {
-  late IO.Socket socket;
+  IO.Socket socket = SocketManager.getInstance().socket;
   String message = '';
   TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    connectToServer();
-    if(socket.disconnected){
-      socket.connect();
-    }
-    print("initState");
-  }
-
-  void connectToServer() {
-    socket = IO.io('http://46.227.18.31:3001', <String, dynamic>{
-      'transports': ['websocket'],
-    });
-
-    socket.on('connect', (_) {
-      print('Connecté au serveur');
-    });
-
     socket.on('message', (data) {
       setState(() {
-        message = data;
+        message=data;
       });
     });
   }
@@ -75,11 +60,5 @@ class _testSocketState extends State<testSocket> {
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    socket.disconnect();
-    super.dispose();
   }
 }
