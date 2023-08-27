@@ -1,26 +1,29 @@
+import 'dart:typed_data';
+
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Constant.dart';
-import 'package:discution_app/vue/amis/AmisListeView.dart';
-import 'package:discution_app/vue/amis/DemandeAmisListeView.dart';
-import 'package:discution_app/vue/amis/DemandeEnvoy%C3%A9AmisListeView.dart';
+import 'package:discution_app/vue/home/ConversationListeView.dart';
+import 'package:discution_app/vue/widget/CustomAppBar.dart';
+import 'package:discution_app/vue/home/RechercheListeView.dart';
+import 'package:discution_app/vue/home/amis/AmisView.dart';
+import 'package:discution_app/vue/widget/CustomDrawer.dart';
 import 'package:flutter/material.dart';
 
-
-class AmisView extends StatefulWidget {
-  AmisView({super.key});
+class HomeView extends StatefulWidget {
+  HomeView({super.key});
   final LoginModel lm=Constant.loginModel!;
 
-  final AmisListeView amisTest=AmisListeView();
-  final DemandeAmisListeView demandeAmisTest=DemandeAmisListeView();
-  final DemandeEnvoyeAmisListeView demandeEnvoyeAmisTest=DemandeEnvoyeAmisListeView();
+  final ConversationListeView convView=ConversationListeView();
+  final RechercheListeView rechercheView=RechercheListeView();
+  final AmisView amisView=AmisView();
 
   final String title="Conversations";
 
   @override
-  State<AmisView> createState() => _AmisViewState();
+  State<HomeView> createState() => _HomeViewState();
 }
 
-class _AmisViewState extends State<AmisView> {
+class _HomeViewState extends State<HomeView> {
   int _selectedIndex = 0; // 0 pour convTest, 1 pour mesTest
 
   void _onItemTapped(int index) {
@@ -31,29 +34,34 @@ class _AmisViewState extends State<AmisView> {
   }
   @override
   Widget build(BuildContext context) {
-    Widget selectedWidget=widget.amisTest;
-    if (_selectedIndex == 0) {
-      selectedWidget = widget.amisTest;
-    } else if (_selectedIndex == 1) {
-      selectedWidget = widget.demandeAmisTest;
-    } else if (_selectedIndex == 2) {
-      selectedWidget = widget.demandeEnvoyeAmisTest;
-    }
+      Widget selectedWidget=widget.convView;
+      if (_selectedIndex == 0) {
+        selectedWidget = widget.convView;
+      } else if (_selectedIndex == 1) {
+        selectedWidget = widget.amisView;
+      } else if (_selectedIndex == 2) {
+        selectedWidget = widget.rechercheView;
+      }
 
     return Scaffold(
+      appBar: CustomAppBar(
+          userImageBytes: widget.lm.user.Avatar,
+          arrowReturn: false,
+      ),
+      drawer: CustomDrawer(),
       body: selectedWidget,
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
+            icon: Icon(Icons.message),
+            label: 'Conversation',
+          ),BottomNavigationBarItem(
             icon: Icon(Icons.supervised_user_circle),
             label: 'Amis',
-          ),BottomNavigationBarItem(
-            icon: Icon(Icons.call_received),
-            label: 'Demande d\'amis',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.send),
-            label: 'Demande d\'amis envoyé',
+            icon: Icon(Icons.search),
+            label: 'Recherche',
           ),
         ],
         currentIndex: _selectedIndex,

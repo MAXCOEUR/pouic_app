@@ -1,22 +1,24 @@
-import 'package:discution_app/vue/SearchTextField.dart';
+import 'package:discution_app/Controller/UserC.dart';
+import 'package:discution_app/Controller/UserController.dart';
+import 'package:discution_app/Model/UserListeModel.dart';
+import 'package:discution_app/Model/UserModel.dart';
+import 'package:discution_app/outil/Constant.dart';
+import 'package:discution_app/vue/ItemListeView/UserItemListeView.dart';
+import 'package:discution_app/vue/widget/SearchTextField.dart';
+import 'package:discution_app/vue/home/UserDetailView.dart';
 import 'package:flutter/material.dart';
 
-import '../Controller/UserController.dart';
-import '../Model/UserListeModel.dart';
-import '../Model/UserModel.dart';
-import '../outil/Constant.dart';
-import 'ItemListeView/UserItemListeView.dart';
-import 'UserDetailView.dart';
 
-class RechercheListeView extends StatefulWidget{
+
+class DemandeEnvoyeAmisListeView extends StatefulWidget{
   final LoginModel lm= Constant.loginModel!;
-  RechercheListeView({super.key});
+  DemandeEnvoyeAmisListeView({super.key});
 
   @override
-  State<RechercheListeView> createState() => _RechercheListeViewState();
+  State<DemandeEnvoyeAmisListeView> createState() => _DemandeEnvoyeAmisListeViewState();
 }
-class _RechercheListeViewState extends State<RechercheListeView> {
-
+class _DemandeEnvoyeAmisListeViewState extends State<DemandeEnvoyeAmisListeView> {
+  UserC userCreate = UserC();
   UserListe users=UserListe();
   UserController? userController;
 
@@ -26,22 +28,23 @@ class _RechercheListeViewState extends State<RechercheListeView> {
   int page=0;
   bool isLoadingMore = false;
 
-  _RechercheListeViewState(){
+  _DemandeEnvoyeAmisListeViewState(){
     userController = UserController(users);
-    recherche(rechercheInput);
+
   }
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll); // Ajoute un écouteur pour le défilement
+    recherche(rechercheInput);
   }
 
   void reponseUpdate(){
     setState(() {
     });
   }
-  void reponseUpdateError(Exception ex){
+  void reponseError(Exception ex){
     Constant.showAlertDialog(context,"Erreur","erreur lors de la requette a l'api : "+ex.toString());
   }
 
@@ -52,7 +55,7 @@ class _RechercheListeViewState extends State<RechercheListeView> {
   void recherche(String recherche){
     page=0;
     userController!.removeAllUser_inListe();
-    userController!.addUser_inListe(page, recherche, reponseUpdate,reponseUpdateError);
+    userController!.addSendDemande_inListe(page, recherche, reponseUpdate,reponseError);
   }
 
   void _onScroll() {
@@ -66,7 +69,7 @@ class _RechercheListeViewState extends State<RechercheListeView> {
       });
 
       page++; // Augmenter le numéro de page pour charger la page suivante
-      userController!.addUser_inListe(page, "", reponseUpdate,reponseUpdateError);
+      userController!.addSendDemande_inListe(page, "", reponseUpdate,reponseError);
 
       // Après avoir chargé les données, définissez isLoadingMore à false
       setState(() {
@@ -85,9 +88,21 @@ class _RechercheListeViewState extends State<RechercheListeView> {
 
   Widget _buildUserListTile(User user) {
     return UserItemListeView(
-      user: user,
-      onTap: DetailUser,
+        user: user,
+        onTap: DetailUser,
+        type:2,
+      onTapButtonRight: deleteDemandeAmis,
     );
+  }
+
+  void deleteDemandeAmis(User user){
+    userCreate.deleteDemandeAmis(user, reponseDeleteDemandeAmis,reponseError);
+  }
+
+  void reponseDeleteDemandeAmis(User u){
+    setState(() {
+      userController!.deleteUser(u);
+    });
   }
 
   @override
@@ -100,14 +115,17 @@ class _RechercheListeViewState extends State<RechercheListeView> {
           children: [
             SearchTextField(
               onSearch: (value) {
-                rechercheInput=value;
+                rechercheInput = value;
                 recherche(value);
               },
             ),
             Expanded(
-              child: Center(
+              child: SingleChildScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
+                controller: _scrollController,
                 child: ListView.builder(
-                  controller: _scrollController,
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(), // Disable inner ListView's scrolling
                   itemCount: users.users.length,
                   itemBuilder: (context, index) {
                     final user = users.users[index];

@@ -32,6 +32,32 @@ class UserC {
       },
     );
   }
+  void modify(User user,String passWord,Function callBack,Function callBackError) {
+    LoginModel loginModel =Constant.loginModel!;
+    String AuthorizationToken='Bearer ${loginModel.token}';
+    Api.putData(
+        "user", {'email': user.email, 'uniquePseudo': user.uniquePseudo,'pseudo':user.pseudo,'Avatar':user.Avatar,'passWord':passWord}, null, {'Authorization': AuthorizationToken})
+        .then(
+          (response) {
+
+        Map<String, dynamic> jsonData = jsonDecode(response.data);
+
+        Uint8List? avatarData;
+        if (jsonData['Avatar'] != null) {
+          List<dynamic> avatarBytes = jsonData['Avatar']['data'];
+          avatarData = Uint8List.fromList(avatarBytes.cast<int>());
+        }
+        User u = User(
+            jsonData["email"], jsonData["uniquePseudo"], jsonData["pseudo"],
+            avatarData);
+
+        callBack(u);
+      },
+      onError: (error) {
+        callBackError(error);
+      },
+    );
+  }
 
   void deleteAmis(User user,Function callBack,Function callBackError) {
     LoginModel loginModel =Constant.loginModel!;
@@ -41,7 +67,37 @@ class UserC {
         .then(
           (response) {
 
-        callBack();
+        callBack(user);
+      },
+      onError: (error) {
+        callBackError(error);
+      },
+    );
+  }
+  void deleteDemandeAmis(User user,Function callBack,Function callBackError) {
+    LoginModel loginModel =Constant.loginModel!;
+    String AuthorizationToken='Bearer ${loginModel.token}';
+    Api.deleteData(
+        "amis/demande", null, {'uniquePseudo': user.uniquePseudo}, {'Authorization': AuthorizationToken})
+        .then(
+          (response) {
+
+        callBack(user);
+      },
+      onError: (error) {
+        callBackError(error);
+      },
+    );
+  }
+  void refuseDemandeAmis(User user,Function callBack,Function callBackError) {
+    LoginModel loginModel =Constant.loginModel!;
+    String AuthorizationToken='Bearer ${loginModel.token}';
+    Api.deleteData(
+        "amis/refuse", null, {'uniquePseudo': user.uniquePseudo}, {'Authorization': AuthorizationToken})
+        .then(
+          (response) {
+
+        callBack(user);
       },
       onError: (error) {
         callBackError(error);
@@ -57,7 +113,7 @@ class UserC {
         .then(
           (response) {
 
-        callBack();
+        callBack(user);
       },
       onError: (error) {
         callBackError(error);

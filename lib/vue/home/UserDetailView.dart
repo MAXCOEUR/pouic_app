@@ -3,7 +3,7 @@ import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Constant.dart';
 import 'package:flutter/material.dart';
 
-import 'CustomAppBar.dart';
+import '../widget/CustomAppBar.dart';
 
 class UserDetailleView extends StatefulWidget{
   final LoginModel lm= Constant.loginModel!;
@@ -115,8 +115,8 @@ class _UserListeViewState extends State<UserDetailleView> {
   void retourSuppretionAmisError(Exception ex){
     Constant.showAlertDialog(context,"Erreur","erreur lors de la requette a l'api : "+ex.toString());
   }
-  void retourAddAmis(){
-    Constant.showAlertDialog(context,"demande envoyé","la demande a été envoyé");
+  void retourAddAmis(User u){
+    Constant.showAlertDialog(context,"demande envoyé","la demande a été envoyé a "+u.uniquePseudo);
   }
   void retourAddAmisError(Exception ex){
     Constant.showAlertDialog(context,"Erreur","erreur lors de la requette a l'api : "+ex.toString());

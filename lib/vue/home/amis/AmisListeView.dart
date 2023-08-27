@@ -1,12 +1,12 @@
-import 'package:discution_app/vue/SearchTextField.dart';
+import 'package:discution_app/Controller/UserC.dart';
+import 'package:discution_app/Controller/UserController.dart';
+import 'package:discution_app/Model/UserListeModel.dart';
+import 'package:discution_app/Model/UserModel.dart';
+import 'package:discution_app/outil/Constant.dart';
+import 'package:discution_app/vue/ItemListeView/UserItemListeView.dart';
+import 'package:discution_app/vue/home/UserDetailView.dart';
+import 'package:discution_app/vue/widget/SearchTextField.dart';
 import 'package:flutter/material.dart';
-
-import '../../Controller/UserController.dart';
-import '../../Model/UserListeModel.dart';
-import '../../Model/UserModel.dart';
-import '../../outil/Constant.dart';
-import '../ItemListeView/UserItemListeView.dart';
-import '../UserDetailView.dart';
 
 class AmisListeView extends StatefulWidget{
   final LoginModel lm= Constant.loginModel!;
@@ -16,7 +16,7 @@ class AmisListeView extends StatefulWidget{
   State<AmisListeView> createState() => _AmisListeViewState();
 }
 class _AmisListeViewState extends State<AmisListeView> {
-
+  UserC userCreate = UserC();
   UserListe users=UserListe();
   UserController? userController;
 
@@ -28,20 +28,21 @@ class _AmisListeViewState extends State<AmisListeView> {
 
   _AmisListeViewState(){
     userController = UserController(users);
-    recherche(rechercheInput);
+
   }
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll); // Ajoute un écouteur pour le défilement
+    recherche(rechercheInput);
   }
 
   void reponseUpdate(){
     setState(() {
     });
   }
-  void reponseUpdateError(Exception ex){
+  void reponseError(Exception ex){
     Constant.showAlertDialog(context,"Erreur","erreur lors de la requette a l'api : "+ex.toString());
   }
 
@@ -52,7 +53,7 @@ class _AmisListeViewState extends State<AmisListeView> {
   void recherche(String recherche){
     page=0;
     userController!.removeAllUser_inListe();
-    userController!.addAmis_inListe(page, recherche, reponseUpdate,reponseUpdateError);
+    userController!.addAmis_inListe(page, recherche, reponseUpdate,reponseError);
   }
 
   void _onScroll() {
@@ -66,7 +67,7 @@ class _AmisListeViewState extends State<AmisListeView> {
       });
 
       page++; // Augmenter le numéro de page pour charger la page suivante
-      userController!.addUser_inListe(page, "", reponseUpdate,reponseUpdateError);
+      userController!.addAmis_inListe(page, "", reponseUpdate,reponseError);
 
       // Après avoir chargé les données, définissez isLoadingMore à false
       setState(() {
@@ -81,12 +82,23 @@ class _AmisListeViewState extends State<AmisListeView> {
     MaterialPageRoute(builder: (context) => UserDetailleView(user)),
     );
   }
+  void deleteAmis(User user){
+    userCreate.deleteAmis(user, reponseDeleteAmis,reponseError);
+  }
+
+  void reponseDeleteAmis(User u){
+    setState(() {
+      userController!.deleteUser(u);
+    });
+  }
 
 
   Widget _buildUserListTile(User user) {
     return UserItemListeView(
-      user: user,
-      onTap: DetailUser,
+        user: user,
+        onTap: DetailUser,
+        type:2,
+        onTapButtonRight: deleteAmis,
     );
   }
 
@@ -100,14 +112,17 @@ class _AmisListeViewState extends State<AmisListeView> {
           children: [
             SearchTextField(
               onSearch: (value) {
-                rechercheInput=value;
+                rechercheInput = value;
                 recherche(value);
               },
             ),
             Expanded(
-              child: Center(
+              child: SingleChildScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
+                controller: _scrollController,
                 child: ListView.builder(
-                  controller: _scrollController,
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(), // Disable inner ListView's scrolling
                   itemCount: users.users.length,
                   itemBuilder: (context, index) {
                     final user = users.users[index];

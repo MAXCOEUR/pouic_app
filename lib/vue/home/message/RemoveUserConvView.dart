@@ -1,25 +1,27 @@
+import 'package:discution_app/Controller/ConversationC.dart';
 import 'package:discution_app/Controller/UserController.dart';
+import 'package:discution_app/Model/ConversationModel.dart';
 import 'package:discution_app/Model/UserListeModel.dart';
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Constant.dart';
 import 'package:discution_app/vue/ItemListeView/UserItemListeView.dart';
-import 'package:discution_app/vue/SearchTextField.dart';
-import 'package:discution_app/vue/UserDetailView.dart';
+import 'package:discution_app/vue/home/UserDetailView.dart';
+import 'package:discution_app/vue/widget/SearchTextField.dart';
 import 'package:flutter/material.dart';
 
-
-
-class DemandeEnvoyeAmisListeView extends StatefulWidget{
+class RemoveUserConvView extends StatefulWidget{
   final LoginModel lm= Constant.loginModel!;
-  DemandeEnvoyeAmisListeView({super.key});
+  Conversation conversation;
+  RemoveUserConvView({required this.conversation,super.key});
 
   @override
-  State<DemandeEnvoyeAmisListeView> createState() => _DemandeEnvoyeAmisListeViewState();
+  State<RemoveUserConvView> createState() => _RemoveUserConvViewState();
 }
-class _DemandeEnvoyeAmisListeViewState extends State<DemandeEnvoyeAmisListeView> {
+class _RemoveUserConvViewState extends State<RemoveUserConvView> {
 
   UserListe users=UserListe();
   UserController? userController;
+  ConversationC conversationC = ConversationC();
 
   String rechercheInput="";
 
@@ -27,22 +29,22 @@ class _DemandeEnvoyeAmisListeViewState extends State<DemandeEnvoyeAmisListeView>
   int page=0;
   bool isLoadingMore = false;
 
-  _DemandeEnvoyeAmisListeViewState(){
+  _RemoveUserConvViewState(){
     userController = UserController(users);
-    recherche(rechercheInput);
   }
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll); // Ajoute un écouteur pour le défilement
+    recherche(rechercheInput);
   }
 
   void reponseUpdate(){
     setState(() {
     });
   }
-  void reponseUpdateError(Exception ex){
+  void reponseError(Exception ex){
     Constant.showAlertDialog(context,"Erreur","erreur lors de la requette a l'api : "+ex.toString());
   }
 
@@ -53,7 +55,7 @@ class _DemandeEnvoyeAmisListeViewState extends State<DemandeEnvoyeAmisListeView>
   void recherche(String recherche){
     page=0;
     userController!.removeAllUser_inListe();
-    userController!.addSendDemande_inListe(page, recherche, reponseUpdate,reponseUpdateError);
+    userController!.addUserConv_inListe(widget.conversation,page, recherche, reponseUpdate,reponseError);
   }
 
   void _onScroll() {
@@ -67,7 +69,7 @@ class _DemandeEnvoyeAmisListeViewState extends State<DemandeEnvoyeAmisListeView>
       });
 
       page++; // Augmenter le numéro de page pour charger la page suivante
-      userController!.addUser_inListe(page, "", reponseUpdate,reponseUpdateError);
+      userController!.addUserConv_inListe(widget.conversation,page, "", reponseUpdate,reponseError);
 
       // Après avoir chargé les données, définissez isLoadingMore à false
       setState(() {
@@ -82,18 +84,39 @@ class _DemandeEnvoyeAmisListeViewState extends State<DemandeEnvoyeAmisListeView>
     MaterialPageRoute(builder: (context) => UserDetailleView(user)),
     );
   }
+  void RemoveUserConv(User user){
+    conversationC.deleteUser(user,widget.conversation, reponseDeleteUser,reponseError);
+  }
+
+  void reponseDeleteUser(User u){
+    setState(() {
+      userController!.deleteUser(u);
+    });
+  }
 
 
   Widget _buildUserListTile(User user) {
     return UserItemListeView(
-      user: user,
-      onTap: DetailUser,
+        user: user,
+        onTap: DetailUser,
+        type:2,
+        onTapButtonRight: RemoveUserConv,
     );
   }
+  PreferredSizeWidget customAppBar() {
+    return AppBar(
+      elevation: 0,
+      title: Center(child: Text("Ajoute d'amis")),
+    );
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
+    return Scaffold(
+      appBar: customAppBar(),
+      body: RefreshIndicator(
       onRefresh: _refreshData,
       child: Container(
         color: Theme.of(context).colorScheme.primary,
@@ -101,14 +124,17 @@ class _DemandeEnvoyeAmisListeViewState extends State<DemandeEnvoyeAmisListeView>
           children: [
             SearchTextField(
               onSearch: (value) {
-                rechercheInput=value;
+                rechercheInput = value;
                 recherche(value);
               },
             ),
             Expanded(
-              child: Center(
+              child: SingleChildScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
+                controller: _scrollController,
                 child: ListView.builder(
-                  controller: _scrollController,
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(), // Disable inner ListView's scrolling
                   itemCount: users.users.length,
                   itemBuilder: (context, index) {
                     final user = users.users[index];
@@ -120,7 +146,7 @@ class _DemandeEnvoyeAmisListeViewState extends State<DemandeEnvoyeAmisListeView>
           ],
         ),
       ),
-    );
+    ),) ;
   }
 
 }

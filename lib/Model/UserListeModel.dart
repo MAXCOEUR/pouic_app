@@ -16,6 +16,18 @@ class UserListe{
   void removeUser(User user){
     users.remove(user);
   }
+  void removeUserPseudo(String s){
+    List<int> tmp =[];
+    for(int i=0;i<users.length;i++){
+      if(users[i].uniquePseudo==s){
+        tmp.add(i);
+      }
+    }
+    for(int i=0;i<tmp.length;i++){
+      users.removeAt(tmp[i]);
+    }
+
+  }
   String toJsonString() {
     List<Map<String, dynamic>> usersJson = users.map((user) => user.toJson()).toList();
     return jsonEncode(usersJson);

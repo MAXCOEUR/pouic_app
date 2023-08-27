@@ -4,14 +4,17 @@ import 'dart:convert';
 class ConversationListe{
   List<Conversation> conversations = [];
 
-  void addUser(Conversation conversation){
+  void addConv(Conversation conversation){
     conversations.add(conversation);
   }
-  void addUsers(List<Conversation> conversation){
+  void addConvs(List<Conversation> conversation){
     conversations.addAll(conversation);
   }
-  void removeUser(Conversation conversation){
+  void removeConv(Conversation conversation){
     conversations.remove(conversation);
+  }
+  void reset(){
+    conversations.clear();
   }
   String toJsonString() {
     List<Map<String, dynamic>> conversationJson = conversations.map((conversation) => conversation.toJson()).toList();

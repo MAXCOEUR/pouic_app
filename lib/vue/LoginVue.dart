@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/vue/CreateUserVue.dart';
+import 'package:discution_app/vue/testSocket.dart';
 import 'package:flutter/material.dart';
-import 'package:discution_app/vue/HomeView.dart';
+import 'package:discution_app/vue/home/HomeView.dart';
 
 import '../Controller/LoginController.dart';
 import 'dart:convert';
@@ -23,6 +24,8 @@ class LoginVue extends StatefulWidget {
 class _LoginVueState extends State<LoginVue> {
   final userName_Email = TextEditingController();
   final mdp = TextEditingController();
+
+  User user = User("", "", "", null);
 
   final Login loginController=Login();
 
@@ -79,9 +82,13 @@ class _LoginVueState extends State<LoginVue> {
               child: Text('validé'),
             ),ElevatedButton(
               onPressed: () {
+                //Navigator.push(
+                //context,
+                //MaterialPageRoute(builder: (context) => CreateUserVue(created: true,user:user)),
+                //);
                 Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const CreateUserVue()),
+                  context,
+                  MaterialPageRoute(builder: (context) => testSocket()),
                 );
               },
               child: Text('créer sont compte'),

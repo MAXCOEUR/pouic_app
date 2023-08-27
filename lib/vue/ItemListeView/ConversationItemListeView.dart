@@ -1,0 +1,74 @@
+import 'package:discution_app/Model/ConversationModel.dart';
+import 'package:discution_app/Model/UserModel.dart';
+import 'package:discution_app/outil/Constant.dart';
+import 'package:flutter/material.dart';
+
+class ConversationItemListeView extends StatelessWidget {
+  final Conversation conversation;
+  final LoginModel lm = Constant.loginModel!;
+  Function onTap;
+
+  ConversationItemListeView({super.key, required this.conversation, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+        child:GestureDetector(
+          onTap: () {
+            onTap(conversation);
+          },
+          child:Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.background,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child:Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+              child:Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: 75,
+                    height: 75,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.grey[300],
+                    ),
+                    child: ClipOval(
+                      child: conversation.image != null
+                          ? Image.memory(
+                        conversation.image!,
+                        fit: BoxFit.cover,
+                      )
+                          : Icon(Icons.comment, size: 50),
+                    ),
+                  ),
+                  Expanded(
+                      child: Center( child: Text(conversation.name))
+                  ),
+                  if (conversation.unRead > 0)
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Text(
+                          conversation.unRead.toString(),
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

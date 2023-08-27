@@ -1,12 +1,14 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 class Conversation{
   int id;
   String name;
   String uniquePseudo_admin;
-  String? image;
+  Uint8List? image;
+  int unRead;
 
-  Conversation(this.id, this.name, this.uniquePseudo_admin, this.image);
+  Conversation(this.id, this.name, this.uniquePseudo_admin, this.image,this.unRead);
 
   @override
   bool operator ==(Object other) {
@@ -23,6 +25,7 @@ class Conversation{
       'name': name,
       'uniquePseudo_admin': uniquePseudo_admin,
       'image': image,
+      "unRead":unRead,
     };
   }
   String toJsonString() {

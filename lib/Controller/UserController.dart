@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'dart:convert';
+import 'package:discution_app/Model/ConversationModel.dart';
 import 'package:discution_app/Model/UserListeModel.dart';
 import 'package:discution_app/outil/Constant.dart';
 
@@ -113,8 +114,40 @@ class UserController {
         }
     );
   }
+  void addUserConv_inListe(Conversation conversation,int page,String search,Function callBack,Function callBackError){
+    String AuthorizationToken='Bearer '+loginModel.token;
+    Api.getData(
+        "conv/user", {'id_conversation':conversation.id,'search': search, 'page': page}, {'Authorization': AuthorizationToken})
+        .then(
+            (response) {
+
+          List<dynamic> jsonData = jsonDecode(response.data);
+
+          for(Map<String, dynamic> user in jsonData){
+            Uint8List? avatarData;
+            if (user['image'] != null) {
+              List<dynamic> avatarBytes = user['image']['data'];
+              avatarData = Uint8List.fromList(avatarBytes.cast<int>());
+            }
+            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"], avatarData,(user["sont_amis"])==0?false:true));
+          }
+
+          callBack();
+        },
+        onError: (error) {
+          callBackError(error);
+        }
+    );
+  }
   void removeAllUser_inListe(){
     users.reset();
+  }
+
+  void deleteUser(User u){
+    users.removeUser(u);
+  }
+  void deleteUserPseaudo(String s){
+    users.removeUserPseudo(s);
   }
 
 

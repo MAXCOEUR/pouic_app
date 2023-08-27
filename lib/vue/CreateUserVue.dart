@@ -11,8 +11,9 @@ import '../Model/UserModel.dart';
 import '../outil/Constant.dart';
 
 class CreateUserVue extends StatefulWidget {
-  const CreateUserVue({super.key});
-
+  const CreateUserVue({super.key,required this.user,required this.created});
+  final User user;
+  final bool created;
   final String title="CreateUser Vue";
 
 
@@ -31,10 +32,6 @@ class _CreateUserVueState extends State<CreateUserVue> {
   UserListe users=UserListe();
   UserC userCreate = UserC();
 
-  img.Image? avatar;
-
-  get http => null;
-
   Future<void> _pickImage() async {
     File? _pickedImage;
     final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -52,23 +49,24 @@ class _CreateUserVueState extends State<CreateUserVue> {
       // Redimensionner l'image en gardant le ratio
       final resizedImage = img.copyResize(originalImage!, height: 150);
 
-      avatar=resizedImage;
+      widget.user.Avatar=img.encodeJpg(resizedImage);
 
-      print("taille de limage en bytes : " +avatar!.lengthInBytes.toString());
+      print("taille de limage en bytes : " +resizedImage.lengthInBytes.toString());
 
     }
   }
 
   void createUser(){
     if (_formKey.currentState!.validate()) {
-      User user;
-      if(avatar!=null){
-        user = User(email.text, userNameUnique.text, userName.text, img.encodeJpg(avatar!));
+      widget.user.email=email.text;
+      widget.user.uniquePseudo=userNameUnique.text;
+      widget.user.pseudo=userName.text;
+      if(widget.created){
+        userCreate.create(widget.user, mdp.text, reponseCreateUser,reponseCreateUserError);
       }
       else{
-        user = User(email.text, userNameUnique.text, userName.text,null);
+        userCreate.modify(widget.user, mdp.text, reponseCreateUser,reponseCreateUserError);
       }
-      userCreate.create(user, mdp.text, reponseCreateUser,reponseCreateUserError);
     }
 
   }
@@ -87,6 +85,15 @@ class _CreateUserVueState extends State<CreateUserVue> {
     email.dispose();
     mdp.dispose();
     super.dispose();
+  }
+  @override
+  void initState() {
+    super.initState();
+    if (!widget.created) {
+      userNameUnique.text = widget.user.uniquePseudo;
+      userName.text = widget.user.pseudo;
+      email.text = widget.user.email;
+    }
   }
 
   @override
@@ -176,9 +183,9 @@ class _CreateUserVueState extends State<CreateUserVue> {
                   color: Colors.grey[300],
                 ),
                 child: ClipOval(
-                  child: avatar != null
+                  child: widget.user.Avatar != null
                       ? Image.memory(
-                    img.encodeJpg(avatar!),
+                    widget.user.Avatar!,
                     fit: BoxFit.cover,
                   )
                       : Icon(Icons.add_a_photo, size: 50),
@@ -190,7 +197,7 @@ class _CreateUserVueState extends State<CreateUserVue> {
               onPressed: () {
                 createUser();
                 },
-              child: Text('Créer sont compte'),
+              child: Text((widget.created==true)?'Créer sont compte':'modifier sont compte'),
             ),
           ],
         ),
