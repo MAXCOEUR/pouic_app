@@ -38,7 +38,7 @@ class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
                         : Icon(Icons.account_circle),
                   ),
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 10),
                 Text(lm.user.uniquePseudo),
                 Text(lm.user.pseudo),
               ],
@@ -54,7 +54,14 @@ class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
               );
             },
           ),
-          // Autres éléments du panneau latéral
+          ListTile(
+            leading: Icon(Icons.logout),
+            title: Text("Deconexion"),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pop(context);
+            },
+          ),
         ],
       ),
     );

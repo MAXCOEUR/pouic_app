@@ -1,57 +1,104 @@
 import 'package:discution_app/Controller/ConversationC.dart';
+import 'package:discution_app/Controller/MessagesController.dart';
 import 'package:discution_app/Model/ConversationModel.dart';
+import 'package:discution_app/Model/MessageListeModel.dart';
+import 'package:discution_app/Model/MessageModel.dart';
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Constant.dart';
 import 'package:discution_app/vue/CreateConversationVue.dart';
+import 'package:discution_app/vue/ItemListeView/MessageItemListeView.dart';
 import 'package:discution_app/vue/home/message/AddAmisConvView.dart';
 import 'package:discution_app/vue/home/message/RemoveUserConvView.dart';
-import 'package:discution_app/vue/widget/CustomAppBar.dart';
-import 'package:discution_app/vue/widget/SearchTextField.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-
-class MessagerieView extends StatefulWidget{
-  MessagerieView({super.key,required this.conv});
+class MessagerieView extends StatefulWidget {
+  MessagerieView({super.key, required this.conv});
 
   Conversation conv;
-  final LoginModel lm=Constant.loginModel!;
+  final LoginModel lm = Constant.loginModel!;
   ConversationC conversationC = ConversationC();
 
   @override
   State<MessagerieView> createState() => _MessagerieViewState();
 }
+
 class _MessagerieViewState extends State<MessagerieView> {
+  TextEditingController _messageController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+  bool isLoadingMore = false;
 
-  void modifierConv()async{
-      await Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => CreateConversationVue(conversation: widget.conv,created: false,)),
-      );
-      // Appeler _refreshData ici pour actualiser les données
+  MessageListe messageListe = MessageListe();
+  late MessagesController messagesController;
+
+  @override
+  void initState() {
+    super.initState();
+    messagesController = MessagesController(messageListe,widget.conv,reponseUpdate);
+    messagesController.addOldMessage_inListe(widget.conv.id,0,reponseUpdate,reponseError);
+
+    _scrollController.addListener(_onScroll);
+  }
+  @override
+  void dispose() {
+    messagesController.dispose();
+    super.dispose();
+  }
+
+  void modifierConv() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => CreateConversationVue(
+                conversation: widget.conv,
+                created: false,
+              )),
+    );
+    // Appeler _refreshData ici pour actualiser les données
+    setState(() {});
+  }
+
+  void addUser() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => AddAmisConvView(
+                conversation: widget.conv,
+              )),
+    );
+    // Appeler _refreshData ici pour actualiser les données
+    setState(() {});
+  }
+
+  void removeUser() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => RemoveUserConvView(
+                conversation: widget.conv,
+              )),
+    );
+    // Appeler _refreshData ici pour actualiser les données
+    setState(() {});
+  }
+
+  void _onScroll() {
+    print(_scrollController.position);
+    if (_scrollController.position.atEdge &&
+        _scrollController.position.pixels != 0 &&
+        !isLoadingMore) {
+
+      // Lorsque l'utilisateur atteint le bas de la liste
       setState(() {
-
+        isLoadingMore = true; // Définir isLoadingMore à true pour indiquer le chargement
       });
-  }
-  void addUser()async{
-    await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => AddAmisConvView(conversation: widget.conv,)),
-    );
-    // Appeler _refreshData ici pour actualiser les données
-    setState(() {
+      int LastId = messagesController.getLastId();
+      messagesController.addOldMessage_inListe(widget.conv.id,LastId,reponseUpdate,reponseError);
 
-    });
-  }
-  void removeUser()async{
-    await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => RemoveUserConvView(conversation: widget.conv,)),
-    );
-    // Appeler _refreshData ici pour actualiser les données
-    setState(() {
-
-    });
+      // Après avoir chargé les données, définissez isLoadingMore à false
+      setState(() {
+        isLoadingMore = false;
+      });
+    }
   }
 
   PreferredSizeWidget customAppBar() {
@@ -70,9 +117,9 @@ class _MessagerieViewState extends State<MessagerieView> {
             child: ClipOval(
               child: widget.conv.image != null
                   ? Image.memory(
-                widget.conv.image!,
-                fit: BoxFit.cover,
-              )
+                      widget.conv.image!,
+                      fit: BoxFit.cover,
+                    )
                   : Icon(Icons.comment),
             ),
           ),
@@ -91,17 +138,22 @@ class _MessagerieViewState extends State<MessagerieView> {
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: Text('Supprimer la conversation'),
-                        content: Text('Êtes-vous sûr de vouloir supprimer cette conversation ?'),
+                        content: Text(
+                            'Êtes-vous sûr de vouloir supprimer cette conversation ?'),
                         actions: [
                           TextButton(
                             onPressed: () {
-                              Navigator.pop(context); // Fermer la boîte de dialogue
+                              Navigator.pop(
+                                  context); // Fermer la boîte de dialogue
                             },
                             child: Text('Annuler'),
                           ),
                           TextButton(
                             onPressed: () {
-                              widget.conversationC.deleteConv(widget.conv, reponseDeleteConversation,reponseDeleteConversationError);
+                              widget.conversationC.deleteConv(
+                                  widget.conv,
+                                  reponseDeleteConversation,
+                                  reponseError);
                               Navigator.pop(context);
                               //fermer la conversation ici
                             },
@@ -111,9 +163,9 @@ class _MessagerieViewState extends State<MessagerieView> {
                       );
                     },
                   );
-                }else if (value == 'ajouterU') {
+                } else if (value == 'ajouterU') {
                   addUser();
-                }else if (value == 'supprimerU') {
+                } else if (value == 'supprimerU') {
                   removeUser();
                 }
               },
@@ -139,25 +191,78 @@ class _MessagerieViewState extends State<MessagerieView> {
         ],
       ),
     );
-
+  }
+  Widget SendMessageBar(){
+    return Padding(
+      padding: EdgeInsets.all(16.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _messageController,
+              decoration: InputDecoration(hintText: 'Votre message'),
+            ),
+          ),
+          SizedBox(width: 10),
+          ElevatedButton(
+            onPressed: () {
+              String messageText = _messageController.text;
+              if (messageText.isNotEmpty) {
+                // Envoyer le message via le socket
+                messagesController.sendMessageToSocket(messageText);
+                _messageController.clear(); // Effacer le champ après l'envoi
+              }
+            },
+            child: Text('Envoyer'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppBar(),
-      body: Center(child: Text("messagirie : "+widget.conv.name),),
-
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              controller: _scrollController,
+              itemCount: messageListe.messages.length,
+              reverse: true,
+              itemBuilder: (context, index) {
+                final message = messageListe.messages[index];
+                return _buildMessageListTile(message);
+              },
+            ),
+          ),
+          SendMessageBar(),
+        ],
+      ),
     );
   }
 
 
-  reponseDeleteConversation(){
+  Widget _buildMessageListTile(Message message) {
+    return MessageItemListeView(
+      message: message,
+    );
+  }
+
+  reponseDeleteConversation() {
     print("la conversation a été supprimé");
     Navigator.pop(context);
   }
-  reponseDeleteConversationError(Exception ex){
-    Constant.showAlertDialog(context,"Erreur","erreur lors de la requette a l'api : "+ex.toString());
+
+  reponseError(Exception ex) {
+    Constant.showAlertDialog(context, "Erreur",
+        "erreur lors de la requette a l'api : " + ex.toString());
   }
 
+  reponseUpdate(){
+    setState(() {
+
+    });
+  }
 }

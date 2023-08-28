@@ -4,13 +4,13 @@ import 'dart:convert';
 class MessageListe{
   List<Message> messages = [];
 
-  void addUser(Message message){
-    messages.add(message);
+  void newMessage(Message message){
+    messages.insert(0,message);
   }
-  void addUsers(List<Message> message){
+  void addOldMessages(List<Message> message){
     messages.addAll(message);
   }
-  void removeUser(Message message){
+  void remove(Message message){
     messages.remove(message);
   }
   String toJsonString() {

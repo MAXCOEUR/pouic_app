@@ -1,12 +1,10 @@
-import 'package:dio/dio.dart';
+
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/vue/CreateUserVue.dart';
-import 'package:discution_app/vue/testSocket.dart';
 import 'package:flutter/material.dart';
 import 'package:discution_app/vue/home/HomeView.dart';
 
 import '../Controller/LoginController.dart';
-import 'dart:convert';
 
 import '../outil/Constant.dart';
 
@@ -82,13 +80,9 @@ class _LoginVueState extends State<LoginVue> {
               child: Text('validé'),
             ),ElevatedButton(
               onPressed: () {
-                //Navigator.push(
-                //context,
-                //MaterialPageRoute(builder: (context) => CreateUserVue(created: true,user:user)),
-                //);
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => testSocket()),
+                context,
+                MaterialPageRoute(builder: (context) => CreateUserVue(created: true,user:user)),
                 );
               },
               child: Text('créer sont compte'),

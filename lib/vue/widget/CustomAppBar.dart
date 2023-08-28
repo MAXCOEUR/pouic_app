@@ -6,7 +6,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Uint8List? userImageBytes; // Les octets de l'image de l'utilisateur
   bool arrowReturn;
 
-  CustomAppBar({required this.userImageBytes,required this.arrowReturn});
+  CustomAppBar({required this.userImageBytes, required this.arrowReturn});
 
   @override
   Widget build(BuildContext context) {
@@ -16,20 +16,25 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.grey[300],
-            ),
-            child: ClipOval(
-              child: userImageBytes != null
-                  ? Image.memory(
-                userImageBytes!,
-                fit: BoxFit.cover,
-              )
-                  : Icon(Icons.account_circle),
+          InkWell(
+            onTap: () {
+              Scaffold.of(context).openDrawer(); // Ouvre le Drawer
+            },
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.grey[300],
+              ),
+              child: ClipOval(
+                child: userImageBytes != null
+                    ? Image.memory(
+                        userImageBytes!,
+                        fit: BoxFit.cover,
+                      )
+                    : Icon(Icons.account_circle),
+              ),
             ),
           ),
           Container(
@@ -39,10 +44,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               shape: BoxShape.circle,
               color: Theme.of(context).colorScheme.background,
             ),
-            child:Padding(
+            child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-                child:Image.asset('assets/logo.png',)
-            ),
+                child: Image.asset(
+                  'assets/logo.png',
+                )),
           ),
         ],
       ),

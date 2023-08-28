@@ -1,14 +1,16 @@
 import 'dart:convert';
 
+import 'package:discution_app/Model/UserModel.dart';
+
 class Message{
   int id;
-  String uniquePseudo_sender;
+  User user;
   String? file;
   String message;
   DateTime date;
   int id_conversation;
 
-  Message(this.id, this.uniquePseudo_sender, this.file, this.message, this.date, this.id_conversation);
+  Message(this.id, this.user, this.file, this.message, this.date, this.id_conversation);
 
   @override
   bool operator ==(Object other) {
@@ -22,7 +24,7 @@ class Message{
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'uniquePseudo_sender': uniquePseudo_sender,
+      'user': user,
       'file': file,
       'message': message,
       'date':date,
