@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Constant.dart';
+import 'package:discution_app/vue/SocketSingleton.dart';
 import 'package:discution_app/vue/home/ConversationListeView.dart';
 import 'package:discution_app/vue/widget/CustomAppBar.dart';
 import 'package:discution_app/vue/home/RechercheListeView.dart';
@@ -10,7 +11,7 @@ import 'package:discution_app/vue/widget/CustomDrawer.dart';
 import 'package:flutter/material.dart';
 
 class HomeView extends StatefulWidget {
-  HomeView({super.key});
+  HomeView({super.key}){SocketSingleton.instance.reconnect();}
   final LoginModel lm=Constant.loginModel!;
 
   final ConversationListeView convView=ConversationListeView();
@@ -69,22 +70,10 @@ class _HomeViewState extends State<HomeView> {
       ),
     );
   }
-}
-
-
-class ConversationTest extends StatelessWidget{
-  ConversationTest({super.key});
-  LoginModel lm = Constant.loginModel!;
   @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(lm.user.uniquePseudo),
-          //Image.memory(lm.user.Avatar!)
-        ],
-      ),
-    );
+  void dispose(){
+    SocketSingleton.instance.disconnect();
+    super.dispose();
   }
 }
+

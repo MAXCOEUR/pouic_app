@@ -33,7 +33,7 @@ class _ConversationListeViewState extends State<ConversationListeView> {
   bool isLoadingMore = false;
 
   _ConversationListeViewState(){
-    conversationController = ConversationController(conversations);
+    conversationController = ConversationController(conversations,reponseUpdate);
     recherche(rechercheInput);
   }
 
@@ -44,8 +44,11 @@ class _ConversationListeViewState extends State<ConversationListeView> {
   }
 
   void reponseUpdate(){
-    setState(() {
-    });
+    if (mounted) {
+      setState(() {
+        // Votre code de mise à jour de l'état ici
+      });
+    }
   }
   void reponseUpdateError(Exception ex){
     Constant.showAlertDialog(context,"Erreur","erreur lors de la requette a l'api : "+ex.toString());

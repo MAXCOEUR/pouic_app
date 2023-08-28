@@ -51,8 +51,11 @@ class _AddAmisConvViewState extends State<AddAmisConvView> {
   }
 
   void reponseUpdate(){
-    setState(() {
-    });
+    if (mounted) {
+      setState(() {
+        // Votre code de mise à jour de l'état ici
+      });
+    }
     conversationC.getUserShort(widget.conversation, reponseGetUserSortConversation, reponseError);
   }
   void reponseError(Exception ex){
@@ -95,11 +98,11 @@ class _AddAmisConvViewState extends State<AddAmisConvView> {
     MaterialPageRoute(builder: (context) => UserDetailleView(user)),
     );
   }
-  void addAmisConv(User user){
+  void addAmisConv(User user,Conversation conv){
     conversationC.addUser(user,widget.conversation, reponseAddAmis,reponseError);
   }
 
-  void reponseAddAmis(User u){
+  void reponseAddAmis(User u,Conversation conv){
     setState(() {
       userController!.deleteUser(u);
     });

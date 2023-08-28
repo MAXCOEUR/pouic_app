@@ -34,34 +34,52 @@ class _CreateConversationVueState extends State<CreateConversationVue> {
   ConversationC conversationC = ConversationC();
 
   Future<void> _pickImage() async {
-    File? _pickedImage;
-    final pickedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedImage != null) {
-      setState(() {
-        _pickedImage = File(pickedImage.path);
-      });
-    }
+      final File pickedFile = File(pickedImage.path);
 
-    if (_pickedImage != null) {
       // Charger l'image
-      final originalImage = img.decodeImage(_pickedImage!.readAsBytesSync());
+      final originalImage = img.decodeImage(pickedFile.readAsBytesSync());
 
-      // Redimensionner l'image en gardant le ratio
-      final resizedImage = img.copyResize(originalImage!, height: 150);
+      // Calculer les dimensions redimensionnées tout en conservant le ratio
+      int newWidth;
+      int newHeight;
+      if (originalImage!.width > originalImage.height) {
+        newWidth = 1500; // Largeur maximale
+        newHeight = (originalImage.height * (newWidth / originalImage.width)).round();
+      } else {
+        newHeight = 1500; // Hauteur maximale
+        newWidth = (originalImage.width * (newHeight / originalImage.height)).round();
+      }
 
-      widget.conversation.image = img.encodeJpg(resizedImage);
+      // Redimensionner l'image
+      final resizedImage = img.copyResize(originalImage, width: newWidth, height: newHeight);
 
-      print("taille de limage en bytes : " +
-          resizedImage.lengthInBytes.toString());
+      // Vérifier la taille et ajuster la qualité en conséquence
+      final int maxSize = 1 * 512 * 512; // 5 Mo en octets
+      int quality = 100;
+      while (img.encodeJpg(resizedImage, quality: quality).lengthInBytes > maxSize && quality > 0) {
+        quality -= 5; // Réduire la qualité de 5% à chaque itération
+      }
+
+      // Encoder l'image avec la qualité ajustée
+      final encodedImage = img.encodeJpg(resizedImage, quality: quality);
+
+      // Utiliser l'image encodée
+      widget.conversation.image = encodedImage;
+
+      setState(() {
+
+      });
+
+      print("Taille de l'image en octets : ${encodedImage.lengthInBytes}");
     }
   }
 
   void createConversation() {
     if (_formKey.currentState!.validate()) {
       widget.conversation.name = name.text;
-      widget.conversation.uniquePseudo_admin = widget.lm.user.uniquePseudo;
       if (widget.created) {
         conversationC.create(
             widget.conversation, reponseCreateConversation, reponseError);
@@ -72,7 +90,7 @@ class _CreateConversationVueState extends State<CreateConversationVue> {
     }
   }
 
-  void reponseCreateConversation() {
+  void reponseCreateConversation(Conversation conv) {
     print("la conversation a été creer");
     Navigator.pop(context);
   }

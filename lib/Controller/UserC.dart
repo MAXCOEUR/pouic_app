@@ -64,7 +64,7 @@ class UserC {
     String AuthorizationToken='Bearer ${loginModel.token}';
     Api.deleteData(
         "amis", null, {'uniquePseudo': user.uniquePseudo}, {'Authorization': AuthorizationToken})
-        .then(
+        .then( 
           (response) {
 
         callBack(user);

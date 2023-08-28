@@ -26,6 +26,7 @@ class _MessagerieViewState extends State<MessagerieView> {
   TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool isLoadingMore = false;
+  int lastTailleListe=0;
 
   MessageListe messageListe = MessageListe();
   late MessagesController messagesController;
@@ -34,13 +35,15 @@ class _MessagerieViewState extends State<MessagerieView> {
   void initState() {
     super.initState();
     messagesController = MessagesController(messageListe,widget.conv,reponseUpdate);
-    messagesController.addOldMessage_inListe(widget.conv.id,0,reponseUpdate,reponseError);
+
+    messagesController.initListe(widget.conv.id,reponseInit,reponseError);
 
     _scrollController.addListener(_onScroll);
   }
   @override
   void dispose() {
     messagesController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -82,7 +85,6 @@ class _MessagerieViewState extends State<MessagerieView> {
   }
 
   void _onScroll() {
-    print(_scrollController.position);
     if (_scrollController.position.atEdge &&
         _scrollController.position.pixels != 0 &&
         !isLoadingMore) {
@@ -233,7 +235,8 @@ class _MessagerieViewState extends State<MessagerieView> {
               reverse: true,
               itemBuilder: (context, index) {
                 final message = messageListe.messages[index];
-                return _buildMessageListTile(message);
+                Widget listItem = _buildMessageListTile(message);
+                return listItem;
               },
             ),
           ),
@@ -244,7 +247,7 @@ class _MessagerieViewState extends State<MessagerieView> {
   }
 
 
-  Widget _buildMessageListTile(Message message) {
+  Widget _buildMessageListTile(MessageModel message) {
     return MessageItemListeView(
       message: message,
     );
@@ -261,8 +264,22 @@ class _MessagerieViewState extends State<MessagerieView> {
   }
 
   reponseUpdate(){
-    setState(() {
-
-    });
+    if (mounted) {
+      setState(() {
+        // Votre code de mise à jour de l'état ici
+      });
+    }
+  }
+  reponseInit(){
+    if(messageListe.messages.length>0 && !messageListe.messages[messageListe.messages.length-1].isread && messageListe.messages.length>lastTailleListe){
+      messagesController.addOldMessage_inListe(widget.conv.id,messageListe.messages[messageListe.messages.length-1].id,reponseInit,reponseError);
+      lastTailleListe=messageListe.messages.length;
+    }
+    else{
+      int index = messagesController.firstMessageNotOpen();
+      //_scrollController.jumpTo(40.0*index); //marche pas il faut que arrive a trouve la taille des wirget dans la listeView
+      messagesController.luAllMessage(widget.conv.id);
+    }
+    reponseUpdate();
   }
 }

@@ -2,20 +2,21 @@ import 'dart:convert';
 
 import 'package:discution_app/Model/UserModel.dart';
 
-class Message{
+class MessageModel{
   int id;
   User user;
   String? file;
   String message;
   DateTime date;
   int id_conversation;
+  bool isread;
 
-  Message(this.id, this.user, this.file, this.message, this.date, this.id_conversation);
+  MessageModel(this.id, this.user, this.file, this.message, this.date, this.id_conversation,this.isread);
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is Message && other.id == id;
+    return other is MessageModel && other.id == id;
   }
 
   @override

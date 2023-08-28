@@ -125,8 +125,8 @@ class UserController {
 
           for(Map<String, dynamic> user in jsonData){
             Uint8List? avatarData;
-            if (user['image'] != null) {
-              List<dynamic> avatarBytes = user['image']['data'];
+            if (user['Avatar'] != null) {
+              List<dynamic> avatarBytes = user['Avatar']['data'];
               avatarData = Uint8List.fromList(avatarBytes.cast<int>());
             }
             users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"], avatarData,(user["sont_amis"])==0?false:true));

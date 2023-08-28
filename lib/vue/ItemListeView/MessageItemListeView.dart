@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class MessageItemListeView extends StatelessWidget {
-  final Message message;
+  final MessageModel message;
   final LoginModel lm = Constant.loginModel!;
 
   MessageItemListeView({super.key, required this.message});
@@ -59,6 +59,16 @@ class MessageItemListeView extends StatelessWidget {
                         color: Colors.grey, // Couleur plus discrète
                       ),
                     ),
+                    SizedBox(width: 5),
+                    if(!message.isread)
+                      Container(
+                        width: 10,
+                        height: 10,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ),
                   ],
                 ),
                 Text(

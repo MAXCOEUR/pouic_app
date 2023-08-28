@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 class Constant{
   static LoginModel? loginModel;
 
+
+
   static showAlertDialog(BuildContext context,String titre,String erreur) {
     // set up the button
     Widget okButton = TextButton(

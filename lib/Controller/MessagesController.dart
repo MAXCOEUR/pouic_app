@@ -7,32 +7,33 @@ import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/Model/MessageModel.dart';
 import 'package:discution_app/outil/Api.dart';
 import 'package:discution_app/outil/Constant.dart';
-import 'package:discution_app/vue/SocketManager.dart';
+import 'package:discution_app/vue/SocketSingleton.dart';
+import 'package:socket_io_client/src/socket.dart';
 
 class MessagesController {
   MessageListe messages;
   Conversation conversation;
-  SocketManager _socketManager = SocketManager();
+  final Socket _socket = SocketSingleton.instance.socket;
   LoginModel lm = Constant.loginModel!;
   Function callBack;
 
   MessagesController(this.messages, this.conversation,this.callBack) {
-    _socketManager.socket.emit('joinConversation', {'conversationId': conversation.id});
-    _socketManager.socket.on("recevoirMessage", _handleReceivedMessage);
+    _socket.on("recevoirMessage", _handleReceivedMessage);
   }
   void dispose() {
-    _socketManager.socket.off("recevoirMessage", _handleReceivedMessage);
-    _socketManager.socket.emit('leaveConversation', {'conversationId': conversation.id});
+    _socket.off("recevoirMessage", _handleReceivedMessage);
+   // _socket.emit('leaveConversation', {'conversationId': conversation.id});
   }
   void _handleReceivedMessage(data) {
     User user = User(data["email"], data["uniquePseudo"], data["pseudo"], data["Avatar"]);
-    messages.newMessage(Message(data["id"], user, data["file"], data["Message"], DateTime.parse(data["date"]), data["id_conversation"]));
+    messages.newMessage(MessageModel(data["id"], user, data["file"], data["Message"], DateTime.parse(data["date"]), data["id_conversation"],true));
     print(data);
+    //luMessage(data["id"]);
     callBack();
   }
 
   void sendMessageToSocket(String messageText) {
-    _socketManager.socket.emit('envoyerMessage', {
+    _socket.emit('envoyerMessage', {
       'token': lm.token,
       'messageText': messageText,
       'conversationId': conversation.id,
@@ -41,7 +42,7 @@ class MessagesController {
 
   int getLastId(){
     int index= messages.messages.length-1;
-    return messages.messages[index].id;
+    return messages.messages[(index<0)?0:index].id;
   }
 
   void addOldMessage_inListe(int id_conversation,int id_lastMessage,Function callBack,Function callBackError){
@@ -53,14 +54,14 @@ class MessagesController {
 
           List<dynamic> jsonData = jsonDecode(response.data);
           
-          List<Message> messagesTmp=[];
+          List<MessageModel> messagesTmp=[];
           for(Map<String, dynamic> data in jsonData){
             Uint8List? avatarData;
             if (data['Avatar'] != null) {
               List<dynamic> avatarBytes = data['Avatar']['data'];
               avatarData = Uint8List.fromList(avatarBytes.cast<int>());
               User user= User(data['email'], data['uniquePseudo'], data['pseudo'], avatarData);
-              messagesTmp.add(Message(data["id"], user, data["file"], data["Message"], DateTime.parse(data["date"]), data["id_conversation"]));
+              messagesTmp.add(MessageModel(data["id"], user, data["file"], data["Message"], DateTime.parse(data["date"]), data["id_conversation"],(data["is_read"]==1)?true:false));
             }
           }
           messages.addOldMessages(messagesTmp);
@@ -71,5 +72,30 @@ class MessagesController {
           callBackError(error);
         }
     );
+  }
+  void initListe(int id_conversation,Function callBack,Function callBackError){
+    addOldMessage_inListe(id_conversation,0,callBack,callBackError);
+  }
+  int firstMessageNotOpen(){
+    List<int> tmpListe=[0];
+    for(int i=0;i<messages.messages.length;i++){
+      if(!messages.messages[i].isread){
+        tmpListe.add(i);
+      }
+    }
+    return tmpListe.last;
+  }
+
+  void luAllMessage(int id_conversation){
+    _socket.emit('luAllMessage', {
+      'token': lm.token,
+      'conversationId': id_conversation,
+    });
+  }
+  void luMessage(int id_message){
+    _socket.emit('luMessage', {
+      'token': lm.token,
+      'messageId': id_message,
+    });
   }
 }

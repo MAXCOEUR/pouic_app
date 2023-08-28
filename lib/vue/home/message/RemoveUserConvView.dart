@@ -41,8 +41,11 @@ class _RemoveUserConvViewState extends State<RemoveUserConvView> {
   }
 
   void reponseUpdate(){
-    setState(() {
-    });
+    if (mounted) {
+      setState(() {
+        // Votre code de mise à jour de l'état ici
+      });
+    }
   }
   void reponseError(Exception ex){
     Constant.showAlertDialog(context,"Erreur","erreur lors de la requette a l'api : "+ex.toString());

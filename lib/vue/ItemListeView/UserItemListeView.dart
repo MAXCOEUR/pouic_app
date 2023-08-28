@@ -1,3 +1,4 @@
+import 'package:discution_app/Model/ConversationModel.dart';
 import 'package:discution_app/outil/Constant.dart';
 import 'package:flutter/material.dart';
 
@@ -98,7 +99,7 @@ class UserItemListeView extends StatelessWidget {
                     IconButton(
                       icon: Icon(Icons.check),
                       onPressed: () {
-                        onTapButtonRight!(user);
+                        onTapButtonRight!(user,Conversation(0, "name", "uniquePseudo_admin", null, 0));
                       },
                     ),
                 ],

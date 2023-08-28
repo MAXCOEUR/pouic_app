@@ -18,8 +18,17 @@ class ConversationC {
         "conv", {'name': conversation.name, 'image': conversation.image}, null, {'Authorization': AuthorizationToken})
         .then(
           (response) {
+            Map<String, dynamic> user = jsonDecode(response.data);
 
-        callBack();
+            Uint8List? avatarData;
+            if (user['image'] != null) {
+              List<dynamic> avatarBytes = user['image']['data'];
+              avatarData = Uint8List.fromList(avatarBytes.cast<int>());
+            }
+            Conversation conv = Conversation(user["id"], user["name"], user["uniquePseudo_admin"], avatarData,0);
+            callBack(conv);
+
+
       },
       onError: (error) {
         callBackError(error);
@@ -98,7 +107,7 @@ class ConversationC {
         .then(
           (response) {
 
-        callBack(user);
+        callBack(user,conversation);
       },
       onError: (error) {
         callBackError(error);

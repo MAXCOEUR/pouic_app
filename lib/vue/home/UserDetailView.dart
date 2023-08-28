@@ -1,6 +1,10 @@
+import 'package:discution_app/Controller/ConversationC.dart';
 import 'package:discution_app/Controller/UserC.dart';
+import 'package:discution_app/Model/ConversationModel.dart';
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Constant.dart';
+import 'package:discution_app/vue/SocketSingleton.dart';
+import 'package:discution_app/vue/home/message/MessagerieView.dart';
 import 'package:flutter/material.dart';
 
 import '../widget/CustomAppBar.dart';
@@ -17,6 +21,7 @@ class UserDetailleView extends StatefulWidget{
 class _UserListeViewState extends State<UserDetailleView> {
 
   UserC userCreate = UserC();
+  ConversationC conversationC = ConversationC();
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +88,9 @@ class _UserListeViewState extends State<UserDetailleView> {
       children: [
         ElevatedButton(
           onPressed: () {
-            // Action à effectuer pour le bouton "Nouvelle Conversation"
+            Conversation conversation = Conversation(0, widget.lm.user.pseudo+" "+widget.user.pseudo, widget.lm.user.uniquePseudo, null, 0);
+
+            conversationC.create(conversation, reponseCreateConversation, retourCreateConversationError);
           },
           child: Text("Nouvelle Conversation"),
         ),
@@ -97,6 +104,18 @@ class _UserListeViewState extends State<UserDetailleView> {
       ],
     );
   }
+  void reponseCreateConversation(Conversation conversation) {
+    print("la conversation a été creer");
+    SocketSingleton.instance.socket.emit('joinConversation', {'idConversation': conversation.id});
+    conversationC.addUser(widget.user,conversation, reponseAddAmis,retourAddAmisError);
+  }
+  void reponseAddAmis(User user,Conversation conversation) {
+    print("la conversation a été creer");
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MessagerieView(conv:conversation)),
+    );
+  }
 
   Widget ajouterAmisButtonWidget() {
     return ElevatedButton(
@@ -107,7 +126,7 @@ class _UserListeViewState extends State<UserDetailleView> {
     );
   }
 
-  void retourSuppretionAmis(){
+  void retourSuppretionAmis(User user){
     setState(() {
       widget.user.sont_amis=false;
     });
@@ -119,6 +138,9 @@ class _UserListeViewState extends State<UserDetailleView> {
     Constant.showAlertDialog(context,"demande envoyé","la demande a été envoyé a "+u.uniquePseudo);
   }
   void retourAddAmisError(Exception ex){
+    Constant.showAlertDialog(context,"Erreur","erreur lors de la requette a l'api : "+ex.toString());
+  }
+  void retourCreateConversationError(Exception ex){
     Constant.showAlertDialog(context,"Erreur","erreur lors de la requette a l'api : "+ex.toString());
   }
 }
