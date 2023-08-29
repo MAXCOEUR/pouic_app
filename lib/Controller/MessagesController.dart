@@ -1,6 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
+import 'dart:ui';
 
+import 'package:dio/dio.dart';
+import 'package:discution_app/Model/FileModel.dart';
 import 'package:discution_app/Model/MessageListeModel.dart';
 import 'package:discution_app/Model/ConversationModel.dart';
 import 'package:discution_app/Model/UserModel.dart';
@@ -19,25 +23,79 @@ class MessagesController {
 
   MessagesController(this.messages, this.conversation,this.callBack) {
     _socket.on("recevoirMessage", _handleReceivedMessage);
+    _socket.on("EndFile", _handleEndFile);
   }
   void dispose() {
     _socket.off("recevoirMessage", _handleReceivedMessage);
-   // _socket.emit('leaveConversation', {'conversationId': conversation.id});
+    _socket.off("EndFile", _handleEndFile);
+  }
+  void _handleEndFile(data) {
+    int id_message = data["id_message"];
+    FileModel file = FileModel(data["fieldname"], data["name"]);
+    messages.addFile(id_message,file);
+    callBack();
   }
   void _handleReceivedMessage(data) {
-    User user = User(data["email"], data["uniquePseudo"], data["pseudo"], data["Avatar"]);
-    messages.newMessage(MessageModel(data["id"], user, data["file"], data["Message"], DateTime.parse(data["date"]), data["id_conversation"],true));
+    Map<String,dynamic> messageMap = data["message"];
+    User user = User(messageMap["email"], messageMap["uniquePseudo"], messageMap["pseudo"], messageMap["Avatar"]);
+    List<String> listeLinkFile= [];
+    List<String> listenameFile= [];
+    if(messageMap["linkfile"]!=null && messageMap["name"]!=null){
+      listeLinkFile=messageMap["linkfile"].split(',');
+      listenameFile=messageMap["name"].split(',');
+    }else{
+      listeLinkFile=[];
+      listenameFile=[];
+    }
+    List<FileModel> listeFile= [];
+    for(int i=0;i<listeLinkFile.length;i++){
+      listeFile.add(FileModel(listeLinkFile[i], listenameFile[i]));
+    }
+    MessageModel message =MessageModel(messageMap["id"], user, messageMap["Message"], DateTime.parse(messageMap["date"]), messageMap["id_conversation"],true,listeFile);
+    messages.newMessage(message);
     print(data);
+    List<dynamic> listeFileTmp =data["file"];
+    List<String> listeString = listeFileTmp.map((item) => item.toString()).toList();
+    if(listeString.length>0){
+      sendFile(listeString,message);
+    }
     //luMessage(data["id"]);
     callBack();
   }
 
-  void sendMessageToSocket(String messageText) {
-    _socket.emit('envoyerMessage', {
-      'token': lm.token,
-      'messageText': messageText,
-      'conversationId': conversation.id,
-    });
+  void sendMessageToSocket(String messageText,List<String> listeFile) {
+    listeFile;
+    if(listeFile.length>0 || messageText.isNotEmpty){
+      _socket.emit('envoyerMessage', {
+        'token': lm.token,
+        'messageText': messageText,
+        'conversationId': conversation.id,
+        'file':listeFile,
+      });
+    }
+  }
+
+  Future<void> sendFile(List<String> listeFile,MessageModel message) async {
+    for(String s in listeFile){
+      try {
+        File file = File(s);
+        final response = await Api.postDataMultipart(
+          'message/upload',
+          {'file': await MultipartFile.fromFile(file.path),'id_message':message.id,'name':s,'id_conversation':message.id_conversation},
+          null,
+          {'contentType':'application/json; charset=utf-8'},
+        );
+
+        if (response.statusCode == 200) {
+          callBack();
+        } else {
+          throw Exception();
+        }
+      }catch(error){
+
+      }
+    }
+    listeFile.clear();
   }
 
   int getLastId(){
@@ -52,17 +110,26 @@ class MessagesController {
         .then(
             (response) {
 
-          List<dynamic> jsonData = jsonDecode(response.data);
+          List<dynamic> jsonData = response.data;
           
           List<MessageModel> messagesTmp=[];
           for(Map<String, dynamic> data in jsonData){
-            Uint8List? avatarData;
-            if (data['Avatar'] != null) {
-              List<dynamic> avatarBytes = data['Avatar']['data'];
-              avatarData = Uint8List.fromList(avatarBytes.cast<int>());
-              User user= User(data['email'], data['uniquePseudo'], data['pseudo'], avatarData);
-              messagesTmp.add(MessageModel(data["id"], user, data["file"], data["Message"], DateTime.parse(data["date"]), data["id_conversation"],(data["is_read"]==1)?true:false));
+            List<String> listeLinkFile= [];
+            List<String> listenameFile= [];
+            if(data["linkfile"]!=null && data["name"]!=null){
+              listeLinkFile=data["linkfile"].split(',');
+              listenameFile=data["name"].split(',');
+            }else{
+              listeLinkFile=[];
+              listenameFile=[];
             }
+            List<FileModel> listeFile= [];
+            for(int i=0;i<listeLinkFile.length;i++){
+              listeFile.add(FileModel(listeLinkFile[i], listenameFile[i]));
+            }
+
+            User user= User(data['email'], data['uniquePseudo'], data['pseudo']);
+            messagesTmp.add(MessageModel(data["id"], user, data["Message"], DateTime.parse(data["date"]), data["id_conversation"],(data["is_read"]==1)?true:false,listeFile));
           }
           messages.addOldMessages(messagesTmp);
 

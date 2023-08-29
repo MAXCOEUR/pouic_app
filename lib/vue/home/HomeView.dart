@@ -11,7 +11,9 @@ import 'package:discution_app/vue/widget/CustomDrawer.dart';
 import 'package:flutter/material.dart';
 
 class HomeView extends StatefulWidget {
-  HomeView({super.key}){SocketSingleton.instance.reconnect();}
+  HomeView({super.key}){
+    SocketSingleton.instance.reconnect();
+  }
   final LoginModel lm=Constant.loginModel!;
 
   final ConversationListeView convView=ConversationListeView();
@@ -46,7 +48,6 @@ class _HomeViewState extends State<HomeView> {
 
     return Scaffold(
       appBar: CustomAppBar(
-          userImageBytes: widget.lm.user.Avatar,
           arrowReturn: false,
       ),
       drawer: CustomDrawer(),

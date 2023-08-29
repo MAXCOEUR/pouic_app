@@ -18,7 +18,7 @@ class SocketSingleton {
   static SocketSingleton get instance => _instance;
 
   void _connect() {
-    socket = IO.io('http://46.227.18.31:3001', <String, dynamic>{
+    socket = IO.io('http://46.227.18.31:3000', <String, dynamic>{
       'transports': ['websocket'],
     });
 

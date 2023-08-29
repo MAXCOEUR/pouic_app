@@ -1,3 +1,4 @@
+import 'package:discution_app/Model/FileModel.dart';
 import 'package:discution_app/Model/MessageModel.dart';
 import 'dart:convert';
 
@@ -16,5 +17,12 @@ class MessageListe{
   String toJsonString() {
     List<Map<String, dynamic>> messageJson = messages.map((message) => message.toJson()).toList();
     return jsonEncode(messageJson);
+  }
+  void addFile(int id_message,FileModel file){
+    for(MessageModel m in messages){
+      if(m.id==id_message){
+        m.addfile(file);
+      }
+    }
   }
 }

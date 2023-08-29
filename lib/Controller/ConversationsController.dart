@@ -43,13 +43,14 @@ class ConversationController{
     _socket.emit('leaveConversation', {'uniquePseudo': loginModel.user.uniquePseudo});
   }
   void _handleReceivedMessage(data) {
-    int idConv = data["id_conversation"];
+    Map<String,dynamic> messageMap = data["message"];
+    int idConv = messageMap["id_conversation"];
     for(Conversation conv in conversations.conversations){
       if(conv.id==idConv){
         conv.unRead++;
         if(flutterLocalNotificationsPlugin!=null){
-          User user = User(data["email"], data["uniquePseudo"], data["pseudo"], data["Avatar"]);
-          MessageModel message = MessageModel(data["id"], user, data["file"], data["Message"], DateTime.parse(data["date"]), data["id_conversation"],true);
+          User user = User(messageMap["email"], messageMap["uniquePseudo"], messageMap["pseudo"], messageMap["Avatar"]);
+          MessageModel message = MessageModel(messageMap["id"], user, messageMap["Message"], DateTime.parse(messageMap["date"]), messageMap["id_conversation"],true,[]);
           showCustomNotification(message,conv);
         }
         callBack();
@@ -65,15 +66,10 @@ class ConversationController{
         .then(
             (response) {
 
-          List<dynamic> jsonData = jsonDecode(response.data);
+          List<dynamic> jsonData = response.data;
 
           for(Map<String, dynamic> user in jsonData){
-            Uint8List? avatarData;
-            if (user['image'] != null) {
-              List<dynamic> avatarBytes = user['image']['data'];
-              avatarData = Uint8List.fromList(avatarBytes.cast<int>());
-            }
-            conversations.addConv(Conversation(user["id"], user["name"], user["uniquePseudo_admin"], avatarData,user["unRead"]));
+            conversations.addConv(Conversation(user["id"], user["name"], user["uniquePseudo_admin"],user["unRead"]));
           }
 
           callBack();

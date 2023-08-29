@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
+import 'package:discution_app/outil/Constant.dart';
 
 class Api {
   static final Dio _dio = Dio();
-  static final String baseUrl ="http://46.227.18.31:3000/api/";
+  static const String baseUrl =Constant.ServeurApi+"/api/";
 
   static Future<Response> postData(
       String apiUrl,
@@ -29,6 +30,33 @@ class Api {
       throw error;
     }
   }
+  static Future<Response> postDataMultipart(
+      String apiUrl,
+      dynamic data, // Changez le type de data à dynamic
+      Map<String, dynamic>? parameters,
+      Map<String, dynamic>? headers,
+      ) async {
+    final options = Options(
+      headers: headers,
+      contentType: 'multipart/form-data', // Utilisez 'multipart/form-data' pour les requêtes multipart
+    );
+
+    final String url = baseUrl + apiUrl;
+
+    try {
+      final response = await _dio.post(
+        url,
+        data: FormData.fromMap(data), // Utilisez FormData pour les requêtes multipart
+        queryParameters: parameters,
+        options: options,
+      );
+      print(response);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   static Future<Response> getData(
       String apiUrl,
       Map<String, dynamic>? parameters,

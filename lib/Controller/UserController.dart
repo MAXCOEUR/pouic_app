@@ -21,15 +21,10 @@ class UserController {
         .then(
             (response) {
 
-          List<dynamic> jsonData = jsonDecode(response.data);
+          List<dynamic> jsonData = response.data;
           
           for(Map<String, dynamic> user in jsonData){
-            Uint8List? avatarData;
-            if (user['Avatar'] != null) {
-              List<dynamic> avatarBytes = user['Avatar']['data'];
-              avatarData = Uint8List.fromList(avatarBytes.cast<int>());
-            }
-            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"], avatarData,(user["sont_amis"])==0?false:true));
+            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"],(user["sont_amis"])==0?false:true));
           }
 
           callBack();
@@ -46,15 +41,10 @@ class UserController {
         .then(
             (response) {
 
-          List<dynamic> jsonData = jsonDecode(response.data);
+          List<dynamic> jsonData = response.data;
 
           for(Map<String, dynamic> user in jsonData){
-            Uint8List? avatarData;
-            if (user['Avatar'] != null) {
-              List<dynamic> avatarBytes = user['Avatar']['data'];
-              avatarData = Uint8List.fromList(avatarBytes.cast<int>());
-            }
-            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"], avatarData,true));
+            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"],true));
           }
 
           callBack();
@@ -71,15 +61,10 @@ class UserController {
         .then(
             (response) {
 
-          List<dynamic> jsonData = jsonDecode(response.data);
+          List<dynamic> jsonData = response.data;
 
           for(Map<String, dynamic> user in jsonData){
-            Uint8List? avatarData;
-            if (user['Avatar'] != null) {
-              List<dynamic> avatarBytes = user['Avatar']['data'];
-              avatarData = Uint8List.fromList(avatarBytes.cast<int>());
-            }
-            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"], avatarData));
+            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"]));
           }
 
           callBack();
@@ -96,15 +81,10 @@ class UserController {
         .then(
             (response) {
 
-          List<dynamic> jsonData = jsonDecode(response.data);
+          List<dynamic> jsonData = response.data;
 
           for(Map<String, dynamic> user in jsonData){
-            Uint8List? avatarData;
-            if (user['Avatar'] != null) {
-              List<dynamic> avatarBytes = user['Avatar']['data'];
-              avatarData = Uint8List.fromList(avatarBytes.cast<int>());
-            }
-            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"], avatarData));
+            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"]));
           }
 
           callBack();
@@ -121,15 +101,10 @@ class UserController {
         .then(
             (response) {
 
-          List<dynamic> jsonData = jsonDecode(response.data);
+          List<dynamic> jsonData = response.data;
 
           for(Map<String, dynamic> user in jsonData){
-            Uint8List? avatarData;
-            if (user['Avatar'] != null) {
-              List<dynamic> avatarBytes = user['Avatar']['data'];
-              avatarData = Uint8List.fromList(avatarBytes.cast<int>());
-            }
-            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"], avatarData,(user["sont_amis"])==0?false:true));
+            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"],(user["sont_amis"])==0?false:true));
           }
 
           callBack();

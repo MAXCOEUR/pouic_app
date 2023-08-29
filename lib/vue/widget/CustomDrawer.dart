@@ -30,12 +30,10 @@ class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
                     color: Colors.grey[300],
                   ),
                   child: ClipOval(
-                    child: lm.user.Avatar != null
-                        ? Image.memory(
-                      lm.user.Avatar!,
-                      fit: BoxFit.cover,
-                    )
-                        : Icon(Icons.account_circle),
+                    child: Constant.buildImageOrIcon(
+                        Constant.baseUrlAvatarUser+"/"+lm.user.uniquePseudo+".png",
+                        Icon(Icons.account_circle)
+                    ),
                   ),
                 ),
                 SizedBox(height: 10),

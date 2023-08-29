@@ -13,18 +13,13 @@ class Login {
           "user/login", {'emailOrPseudo': userOrEmail, 'passWord': mdp}, null, null)
           .then(
             (response) {
-          Map<String, dynamic> jsonData = jsonDecode(response.data);
+          Map<String, dynamic> jsonData = response.data;
           Map<String, dynamic> userMap = jsonData["user"];
 
           String token = jsonData["token"];
-          Uint8List? avatarData;
-          if (userMap['Avatar'] != null) {
-            List<dynamic> avatarBytes = userMap['Avatar']['data'];
-            avatarData = Uint8List.fromList(avatarBytes.cast<int>());
-          }
+
           User u = User(
-              userMap["email"], userMap["uniquePseudo"], userMap["pseudo"],
-              avatarData);
+              userMap["email"], userMap["uniquePseudo"], userMap["pseudo"]);
           LoginModel lm = LoginModel(u, token);
           callBack(lm);
         },

@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:discution_app/Model/ConversationModel.dart';
 import 'package:discution_app/Model/UserListeModel.dart';
 import 'package:discution_app/outil/Constant.dart';
@@ -12,28 +14,44 @@ import '../outil/Api.dart';
 class ConversationC {
   LoginModel loginModel = Constant.loginModel!;
 
-  void create(Conversation conversation,Function callBack,Function callBackError) {
+  Future<void> create(Conversation conversation,File imageFile,Function callBack,Function callBackError) async {
     String AuthorizationToken='Bearer '+loginModel.token;
-    Api.postData(
-        "conv", {'name': conversation.name, 'image': conversation.image}, null, {'Authorization': AuthorizationToken})
-        .then(
-          (response) {
-            Map<String, dynamic> user = jsonDecode(response.data);
+    Conversation u;
+    try {
+      final responseCreate = await Api.postData(
+        'conv',
+        {'name': conversation.name},
+        null,
+        {'Authorization': AuthorizationToken},
+      );
+      if(responseCreate.statusCode==201){
+        Map<String, dynamic> jsonData = responseCreate.data;
+        u = Conversation(jsonData["id"], jsonData["name"], jsonData["uniquePseudo_admin"],0);
+      }else{
+        throw Exception();
+      }
 
-            Uint8List? avatarData;
-            if (user['image'] != null) {
-              List<dynamic> avatarBytes = user['image']['data'];
-              avatarData = Uint8List.fromList(avatarBytes.cast<int>());
-            }
-            Conversation conv = Conversation(user["id"], user["name"], user["uniquePseudo_admin"], avatarData,0);
-            callBack(conv);
+      if(!imageFile.existsSync()){
+        callBack(u);
+        return ;
+      }
 
+      final response = await Api.postDataMultipart(
+        'conv/upload',
+        {'avatar': await MultipartFile.fromFile(imageFile.path),'uniquePseudo':u.id},
+        null,
+        null,
+      );
 
-      },
-      onError: (error) {
-        callBackError(error);
-      },
-    );
+      if (response.statusCode == 200) {
+        callBack(u);
+      } else {
+        throw Exception();
+      }
+    } catch (error) {
+      print('Une erreur s\'est produite : $error');
+      callBackError(error);
+    }
   }
 
   void deleteConv(Conversation conversation,Function callBack,Function callBackError) {
@@ -52,11 +70,11 @@ class ConversationC {
     );
   }
 
-  void putConv(Conversation conversation,Function callBack,Function callBackError) {
-    LoginModel loginModel =Constant.loginModel!;
+  Future<void> putConv(Conversation conversation,File imageFile,Function callBack,Function callBackError) async {
+    LoginModel loginModel = Constant.loginModel!;
     String AuthorizationToken='Bearer ${loginModel.token}';
     Api.putData(
-        "conv", {'name': conversation.name,'uniquePseudo_admin': conversation.uniquePseudo_admin,'image':conversation.image}, {'id_conversation':conversation.id}, {'Authorization': AuthorizationToken})
+        "conv", {'name': conversation.name,'uniquePseudo_admin': conversation.uniquePseudo_admin}, {'id_conversation':conversation.id}, {'Authorization': AuthorizationToken})
         .then(
           (response) {
 
@@ -66,6 +84,39 @@ class ConversationC {
         callBackError(error);
       },
     );
+    try {
+      final responseCreate = await Api.putData(
+        'conv',
+        {'name': conversation.name,'uniquePseudo_admin': conversation.uniquePseudo_admin},
+        {'id_conversation':conversation.id},
+        {'Authorization': AuthorizationToken},
+      );
+      if(responseCreate.statusCode==201){
+      }else{
+        throw Exception();
+      }
+
+      if(!imageFile.existsSync()){
+        callBack();
+        return ;
+      }
+
+      final response = await Api.postDataMultipart(
+        'conv/upload',
+        {'avatar': await MultipartFile.fromFile(imageFile.path),'uniquePseudo':conversation.id},
+        null,
+        null,
+      );
+
+      if (response.statusCode == 200) {
+        callBack();
+      } else {
+        throw Exception();
+      }
+    } catch (error) {
+      print('Une erreur s\'est produite : $error');
+      callBackError(error);
+    }
   }
   void getUserShort(Conversation conversation,Function callBack,Function callBackError) {
     LoginModel loginModel =Constant.loginModel!;
@@ -75,7 +126,7 @@ class ConversationC {
         .then(
           (response) {
 
-            List<dynamic> jsonData = jsonDecode(response.data);
+            List<dynamic> jsonData = response.data;
 
         callBack(jsonData);
       },

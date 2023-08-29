@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:discution_app/Controller/ConversationC.dart';
 import 'package:discution_app/Controller/UserC.dart';
 import 'package:discution_app/Model/ConversationModel.dart';
@@ -27,7 +29,6 @@ class _UserListeViewState extends State<UserDetailleView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        userImageBytes: widget.lm.user.Avatar,
         arrowReturn: true,
       ),
       body: Center(
@@ -43,12 +44,10 @@ class _UserListeViewState extends State<UserDetailleView> {
                   color: Colors.grey[300],
                 ),
                 child: ClipOval(
-                  child: widget.user.Avatar != null
-                      ? Image.memory(
-                    widget.user.Avatar!,
-                    fit: BoxFit.cover,
-                  )
-                      : Icon(Icons.account_circle, size: 150),
+                  child: Constant.buildImageOrIcon(
+                      Constant.baseUrlAvatarUser+"/"+widget.user.uniquePseudo+".png",
+                      Icon(Icons.account_circle)
+                  ),
                 ),
               ),
               ),
@@ -88,9 +87,9 @@ class _UserListeViewState extends State<UserDetailleView> {
       children: [
         ElevatedButton(
           onPressed: () {
-            Conversation conversation = Conversation(0, widget.lm.user.pseudo+" "+widget.user.pseudo, widget.lm.user.uniquePseudo, null, 0);
+            Conversation conversation = Conversation(0, widget.lm.user.pseudo+" "+widget.user.pseudo, widget.lm.user.uniquePseudo, 0);
 
-            conversationC.create(conversation, reponseCreateConversation, retourCreateConversationError);
+            conversationC.create(conversation,File(""), reponseCreateConversation, retourCreateConversationError);
           },
           child: Text("Nouvelle Conversation"),
         ),

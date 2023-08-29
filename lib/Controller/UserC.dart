@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:discution_app/Model/UserListeModel.dart';
 import 'package:discution_app/outil/Constant.dart';
 
@@ -8,55 +10,85 @@ import '../Model/UserModel.dart';
 import '../outil/Api.dart';
 
 class UserC {
-  void create(User user,String passWord,Function callBack,Function callBackError) {
-    Api.postData(
-        "user", {'email': user.email, 'uniquePseudo': user.uniquePseudo,'pseudo':user.pseudo,'Avatar':user.Avatar,'passWord':passWord}, null, null)
-        .then(
-          (response) {
+  Future<void> create(User user,File imageFile,String passWord,Function callBack,Function callBackError) async {
+    User u;
+    try {
+      final responseCreate = await Api.postData(
+        'user',
+        {'email': user.email, 'uniquePseudo': user.uniquePseudo,'pseudo':user.pseudo,'passWord':passWord},
+        null,
+        null,
+      );
+      if(responseCreate.statusCode==201){
+        Map<String, dynamic> jsonData = responseCreate.data;
+        u = User(jsonData["email"], jsonData["uniquePseudo"], jsonData["pseudo"]);
+      }else{
+        throw Exception();
+      }
 
-        Map<String, dynamic> jsonData = jsonDecode(response.data);
-
-        Uint8List? avatarData;
-        if (jsonData['Avatar'] != null) {
-          List<dynamic> avatarBytes = jsonData['Avatar']['data'];
-          avatarData = Uint8List.fromList(avatarBytes.cast<int>());
-        }
-        User u = User(
-            jsonData["email"], jsonData["uniquePseudo"], jsonData["pseudo"],
-            avatarData);
-
+      if(!imageFile.existsSync()){
         callBack(u);
-      },
-      onError: (error) {
-        callBackError(error);
-      },
-    );
+        return ;
+      }
+
+      final response = await Api.postDataMultipart(
+        'user/upload',
+        {'avatar': await MultipartFile.fromFile(imageFile.path),'uniquePseudo':u.uniquePseudo},
+        null,
+        null,
+      );
+
+      if (response.statusCode == 200) {
+        callBack(u);
+      } else {
+        throw Exception();
+      }
+    } catch (error) {
+      print('Une erreur s\'est produite : $error');
+      callBackError(error);
+    }
   }
-  void modify(User user,String passWord,Function callBack,Function callBackError) {
+  Future<void> modify(User user,File imageFile,String passWord,Function callBack,Function callBackError) async {
     LoginModel loginModel =Constant.loginModel!;
+    User u;
     String AuthorizationToken='Bearer ${loginModel.token}';
-    Api.putData(
-        "user", {'email': user.email, 'uniquePseudo': user.uniquePseudo,'pseudo':user.pseudo,'Avatar':user.Avatar,'passWord':passWord}, null, {'Authorization': AuthorizationToken})
-        .then(
-          (response) {
+    try {
+      final responseCreate = await Api.putData(
+        'user',
+        {'email': user.email, 'uniquePseudo': user.uniquePseudo,'pseudo':user.pseudo,'passWord':passWord},
+        null,
+        {'Authorization': AuthorizationToken},
+      );
+      if(responseCreate.statusCode==201){
+        Map<String, dynamic> jsonData = responseCreate.data;
+        u = User(
+            jsonData["email"], jsonData["uniquePseudo"], jsonData["pseudo"]);
+      }else{
+        throw Exception();
+      }
 
-        Map<String, dynamic> jsonData = jsonDecode(response.data);
-
-        Uint8List? avatarData;
-        if (jsonData['Avatar'] != null) {
-          List<dynamic> avatarBytes = jsonData['Avatar']['data'];
-          avatarData = Uint8List.fromList(avatarBytes.cast<int>());
-        }
-        User u = User(
-            jsonData["email"], jsonData["uniquePseudo"], jsonData["pseudo"],
-            avatarData);
-
+      if(!imageFile.existsSync()){
         callBack(u);
-      },
-      onError: (error) {
-        callBackError(error);
-      },
-    );
+        return ;
+      }
+
+      final response = await Api.postDataMultipart(
+        'user/upload',
+        {'avatar': await MultipartFile.fromFile(imageFile.path),'uniquePseudo':user.uniquePseudo},
+        null,
+        null,
+      );
+
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        callBack(u);
+      } else {
+        throw Exception();
+      }
+    } catch (error) {
+      print('Une erreur s\'est produite : $error');
+      callBackError(error);
+    }
   }
 
   void deleteAmis(User user,Function callBack,Function callBackError) {

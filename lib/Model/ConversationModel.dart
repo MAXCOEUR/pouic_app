@@ -5,10 +5,9 @@ class Conversation{
   int id;
   String name;
   String uniquePseudo_admin;
-  Uint8List? image;
   int unRead;
 
-  Conversation(this.id, this.name, this.uniquePseudo_admin, this.image,this.unRead);
+  Conversation(this.id, this.name, this.uniquePseudo_admin,this.unRead);
 
   @override
   bool operator ==(Object other) {
@@ -24,7 +23,6 @@ class Conversation{
       'id': id,
       'name': name,
       'uniquePseudo_admin': uniquePseudo_admin,
-      'image': image,
       "unRead":unRead,
     };
   }

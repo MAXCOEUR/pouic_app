@@ -11,7 +11,7 @@ import '../Model/UserModel.dart';
 import '../outil/Constant.dart';
 
 class CreateUserVue extends StatefulWidget {
-  const CreateUserVue({super.key,required this.user,required this.created});
+  CreateUserVue({super.key,required this.user,required this.created});
   final User user;
   final bool created;
   final String title="CreateUser Vue";
@@ -26,6 +26,7 @@ class _CreateUserVueState extends State<CreateUserVue> {
   final userName = TextEditingController();
   final email = TextEditingController();
   final mdp = TextEditingController();
+  File imageFile = File('');
 
   final _formKey = GlobalKey<FormState>();
 
@@ -36,43 +37,19 @@ class _CreateUserVueState extends State<CreateUserVue> {
     final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedImage != null) {
-      final File pickedFile = File(pickedImage.path);
+      File imageTmp = File(pickedImage.path);
 
-      // Charger l'image
-      final originalImage = img.decodeImage(pickedFile.readAsBytesSync());
-
-      // Calculer les dimensions redimensionnées tout en conservant le ratio
-      int newWidth;
-      int newHeight;
-      if (originalImage!.width > originalImage.height) {
-        newWidth = 1500; // Largeur maximale
-        newHeight = (originalImage.height * (newWidth / originalImage.width)).round();
+      if (imageTmp.path.toLowerCase().endsWith('.png')) {
+        imageFile = imageTmp;
       } else {
-        newHeight = 1500; // Hauteur maximale
-        newWidth = (originalImage.width * (newHeight / originalImage.height)).round();
+        print('Veuillez sélectionner une image au format PNG.');
+        Constant.showAlertDialog(context, "erreur", "Veuillez sélectionner une image au format PNG.");
+        return;
       }
-
-      // Redimensionner l'image
-      final resizedImage = img.copyResize(originalImage, width: newWidth, height: newHeight);
-
-      // Vérifier la taille et ajuster la qualité en conséquence
-      final int maxSize = 1 * 512 * 512;
-      int quality = 100;
-      while (img.encodeJpg(resizedImage, quality: quality).lengthInBytes > maxSize && quality > 0) {
-        quality -= 5; // Réduire la qualité de 5% à chaque itération
-      }
-
-      // Encoder l'image avec la qualité ajustée
-      final encodedImage = img.encodeJpg(resizedImage, quality: quality);
-
-      // Utiliser l'image encodée
-      widget.user.Avatar = encodedImage;
 
       setState(() {
-
+        // Mettre à jour l'interface utilisateur
       });
-
-      print("Taille de l'image en octets : ${encodedImage.lengthInBytes}");
     }
   }
 
@@ -82,10 +59,10 @@ class _CreateUserVueState extends State<CreateUserVue> {
       widget.user.uniquePseudo=userNameUnique.text;
       widget.user.pseudo=userName.text;
       if(widget.created){
-        userCreate.create(widget.user, mdp.text, reponseCreateUser,reponseCreateUserError);
+        userCreate.create(widget.user,imageFile, mdp.text, reponseCreateUser,reponseCreateUserError);
       }
       else{
-        userCreate.modify(widget.user, mdp.text, reponseCreateUser,reponseCreateUserError);
+        userCreate.modify(widget.user,imageFile, mdp.text, reponseCreateUser,reponseCreateUserError);
       }
     }
 
@@ -113,6 +90,20 @@ class _CreateUserVueState extends State<CreateUserVue> {
       userNameUnique.text = widget.user.uniquePseudo;
       userName.text = widget.user.pseudo;
       email.text = widget.user.email;
+    }
+  }
+
+  Widget buildImageOrIcon() {
+    if (imageFile.existsSync()) {
+      return Image.file(
+        imageFile,
+        fit: BoxFit.cover,
+      );
+    } else {
+      return Constant.buildImageOrIcon(
+          Constant.baseUrlAvatarUser+"/"+widget.user.uniquePseudo+".png",
+          Icon(Icons.add_a_photo)
+      );
     }
   }
 
@@ -203,12 +194,7 @@ class _CreateUserVueState extends State<CreateUserVue> {
                   color: Colors.grey[300],
                 ),
                 child: ClipOval(
-                  child: widget.user.Avatar != null
-                      ? Image.memory(
-                    widget.user.Avatar!,
-                    fit: BoxFit.cover,
-                  )
-                      : Icon(Icons.add_a_photo, size: 50),
+                  child: buildImageOrIcon(),
                 ),
               ),
             ),

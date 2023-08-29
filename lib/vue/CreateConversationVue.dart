@@ -5,6 +5,8 @@ import 'package:discution_app/Controller/UserController.dart';
 import 'package:discution_app/Controller/UserC.dart';
 import 'package:discution_app/Model/ConversationModel.dart';
 import 'package:discution_app/Model/UserListeModel.dart';
+import 'package:discution_app/vue/SocketSingleton.dart';
+import 'package:discution_app/vue/home/message/MessagerieView.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
@@ -27,6 +29,7 @@ class CreateConversationVue extends StatefulWidget {
 
 class _CreateConversationVueState extends State<CreateConversationVue> {
   final name = TextEditingController();
+  File imageFile = File('');
 
   final _formKey = GlobalKey<FormState>();
   List<String> listUser = [];
@@ -37,43 +40,19 @@ class _CreateConversationVueState extends State<CreateConversationVue> {
     final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedImage != null) {
-      final File pickedFile = File(pickedImage.path);
+      File imageTmp = File(pickedImage.path);
 
-      // Charger l'image
-      final originalImage = img.decodeImage(pickedFile.readAsBytesSync());
-
-      // Calculer les dimensions redimensionnées tout en conservant le ratio
-      int newWidth;
-      int newHeight;
-      if (originalImage!.width > originalImage.height) {
-        newWidth = 1500; // Largeur maximale
-        newHeight = (originalImage.height * (newWidth / originalImage.width)).round();
+      if (imageTmp.path.toLowerCase().endsWith('.png')) {
+        imageFile = imageTmp;
       } else {
-        newHeight = 1500; // Hauteur maximale
-        newWidth = (originalImage.width * (newHeight / originalImage.height)).round();
+        print('Veuillez sélectionner une image au format PNG.');
+        Constant.showAlertDialog(context, "erreur", "Veuillez sélectionner une image au format PNG.");
+        return;
       }
-
-      // Redimensionner l'image
-      final resizedImage = img.copyResize(originalImage, width: newWidth, height: newHeight);
-
-      // Vérifier la taille et ajuster la qualité en conséquence
-      final int maxSize = 1 * 512 * 512; // 5 Mo en octets
-      int quality = 100;
-      while (img.encodeJpg(resizedImage, quality: quality).lengthInBytes > maxSize && quality > 0) {
-        quality -= 5; // Réduire la qualité de 5% à chaque itération
-      }
-
-      // Encoder l'image avec la qualité ajustée
-      final encodedImage = img.encodeJpg(resizedImage, quality: quality);
-
-      // Utiliser l'image encodée
-      widget.conversation.image = encodedImage;
 
       setState(() {
-
+        // Mettre à jour l'interface utilisateur
       });
-
-      print("Taille de l'image en octets : ${encodedImage.lengthInBytes}");
     }
   }
 
@@ -82,17 +61,22 @@ class _CreateConversationVueState extends State<CreateConversationVue> {
       widget.conversation.name = name.text;
       if (widget.created) {
         conversationC.create(
-            widget.conversation, reponseCreateConversation, reponseError);
+            widget.conversation,imageFile, reponseCreateConversation, reponseError);
       } else {
         conversationC.putConv(
-            widget.conversation, reponsePutConversation, reponseError);
+            widget.conversation,imageFile, reponsePutConversation, reponseError);
       }
     }
   }
 
-  void reponseCreateConversation(Conversation conv) {
+  void reponseCreateConversation(Conversation conversation) {
     print("la conversation a été creer");
+    SocketSingleton.instance.socket.emit('joinConversation', {'idConversation': conversation.id});
     Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MessagerieView(conv:conversation)),
+    );
   }
 
   void reponsePutConversation() {
@@ -126,6 +110,20 @@ class _CreateConversationVueState extends State<CreateConversationVue> {
       name.text = widget.conversation.name;
       conversationC.getUserShort(
           widget.conversation, reponseGetUserSortConversation, reponseError);
+    }
+  }
+
+  Widget buildImageOrIcon() {
+    if (imageFile.existsSync()) {
+      return Image.file(
+        imageFile,
+        fit: BoxFit.cover,
+      );
+    } else {
+      return Constant.buildImageOrIcon(
+          Constant.baseUrlAvatarConversation+"/"+widget.conversation.id.toString()+".png",
+          Icon(Icons.add_a_photo)
+      );
     }
   }
 
@@ -191,12 +189,7 @@ class _CreateConversationVueState extends State<CreateConversationVue> {
                     color: Colors.grey[300],
                   ),
                   child: ClipOval(
-                    child: widget.conversation.image != null
-                        ? Image.memory(
-                            widget.conversation.image!,
-                            fit: BoxFit.cover,
-                          )
-                        : Icon(Icons.add_a_photo, size: 50),
+                    child: buildImageOrIcon(),
                   ),
                 ),
               ),

@@ -1,12 +1,14 @@
 import 'dart:typed_data';
 
+import 'package:discution_app/Model/UserModel.dart';
+import 'package:discution_app/outil/Constant.dart';
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final Uint8List? userImageBytes; // Les octets de l'image de l'utilisateur
+  User u = Constant.loginModel!.user;// Les octets de l'image de l'utilisateur
   bool arrowReturn;
 
-  CustomAppBar({required this.userImageBytes, required this.arrowReturn});
+  CustomAppBar({required this.arrowReturn});
 
   @override
   Widget build(BuildContext context) {
@@ -28,12 +30,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 color: Colors.grey[300],
               ),
               child: ClipOval(
-                child: userImageBytes != null
-                    ? Image.memory(
-                        userImageBytes!,
-                        fit: BoxFit.cover,
-                      )
-                    : Icon(Icons.account_circle),
+                child: Constant.buildImageOrIcon(
+                    Constant.baseUrlAvatarUser+"/"+u.uniquePseudo+".png",
+                    Icon(Icons.account_circle)
+                ),
               ),
             ),
           ),

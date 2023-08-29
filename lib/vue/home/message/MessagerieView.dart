@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:discution_app/Controller/ConversationC.dart';
 import 'package:discution_app/Controller/MessagesController.dart';
 import 'package:discution_app/Model/ConversationModel.dart';
@@ -10,6 +12,8 @@ import 'package:discution_app/vue/ItemListeView/MessageItemListeView.dart';
 import 'package:discution_app/vue/home/message/AddAmisConvView.dart';
 import 'package:discution_app/vue/home/message/RemoveUserConvView.dart';
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:path/path.dart' as path;
 
 class MessagerieView extends StatefulWidget {
   MessagerieView({super.key, required this.conv});
@@ -24,9 +28,10 @@ class MessagerieView extends StatefulWidget {
 
 class _MessagerieViewState extends State<MessagerieView> {
   TextEditingController _messageController = TextEditingController();
+  List<String> listeFile = [];
   final ScrollController _scrollController = ScrollController();
   bool isLoadingMore = false;
-  int lastTailleListe=0;
+  int lastTailleListe = 0;
 
   MessageListe messageListe = MessageListe();
   late MessagesController messagesController;
@@ -34,12 +39,14 @@ class _MessagerieViewState extends State<MessagerieView> {
   @override
   void initState() {
     super.initState();
-    messagesController = MessagesController(messageListe,widget.conv,reponseUpdate);
+    messagesController =
+        MessagesController(messageListe, widget.conv, reponseUpdate);
 
-    messagesController.initListe(widget.conv.id,reponseInit,reponseError);
+    messagesController.initListe(widget.conv.id, reponseInit, reponseError);
 
     _scrollController.addListener(_onScroll);
   }
+
   @override
   void dispose() {
     messagesController.dispose();
@@ -88,13 +95,14 @@ class _MessagerieViewState extends State<MessagerieView> {
     if (_scrollController.position.atEdge &&
         _scrollController.position.pixels != 0 &&
         !isLoadingMore) {
-
       // Lorsque l'utilisateur atteint le bas de la liste
       setState(() {
-        isLoadingMore = true; // Définir isLoadingMore à true pour indiquer le chargement
+        isLoadingMore =
+            true; // Définir isLoadingMore à true pour indiquer le chargement
       });
       int LastId = messagesController.getLastId();
-      messagesController.addOldMessage_inListe(widget.conv.id,LastId,reponseUpdate,reponseError);
+      messagesController.addOldMessage_inListe(
+          widget.conv.id, LastId, reponseUpdate, reponseError);
 
       // Après avoir chargé les données, définissez isLoadingMore à false
       setState(() {
@@ -117,12 +125,12 @@ class _MessagerieViewState extends State<MessagerieView> {
               color: Colors.grey[300],
             ),
             child: ClipOval(
-              child: widget.conv.image != null
-                  ? Image.memory(
-                      widget.conv.image!,
-                      fit: BoxFit.cover,
-                    )
-                  : Icon(Icons.comment),
+              child: Constant.buildImageOrIcon(
+                  Constant.baseUrlAvatarConversation +
+                      "/" +
+                      widget.conv.id.toString() +
+                      ".png",
+                  Icon(Icons.comment)),
             ),
           ),
           Expanded(
@@ -152,10 +160,8 @@ class _MessagerieViewState extends State<MessagerieView> {
                           ),
                           TextButton(
                             onPressed: () {
-                              widget.conversationC.deleteConv(
-                                  widget.conv,
-                                  reponseDeleteConversation,
-                                  reponseError);
+                              widget.conversationC.deleteConv(widget.conv,
+                                  reponseDeleteConversation, reponseError);
                               Navigator.pop(context);
                               //fermer la conversation ici
                             },
@@ -194,28 +200,127 @@ class _MessagerieViewState extends State<MessagerieView> {
       ),
     );
   }
-  Widget SendMessageBar(){
-    return Padding(
-      padding: EdgeInsets.all(16.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _messageController,
-              decoration: InputDecoration(hintText: 'Votre message'),
-            ),
+
+  Widget file(int index) {
+    String fileName = listeFile[index];
+    bool isImage = fileName.endsWith('.png') ||
+        fileName.endsWith('.jpg') ||
+        fileName.endsWith('.jpeg');
+
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+      width: 120,
+      height: 120,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Theme.of(context).colorScheme.primaryContainer,
+      ),
+      child: Stack(children: [
+        Positioned(
+            // will be positioned in the top right of the container
+            top: 0,
+            right: 0,
+            height: 20,
+            width: 20,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.error, // border color
+                shape: BoxShape.circle,
+              ),
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    listeFile.removeAt(index);
+                  });
+                },
+                child: Icon(
+                  Icons.close,
+                  size: 15,
+                ),
+              ),
+            )),
+        Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 80,
+                height: 80,
+                child: isImage
+                    ? Image.file(
+                        File(fileName),
+                        fit: BoxFit.cover,
+                      )
+                    : Icon(
+                        Icons.insert_drive_file,
+                        size: 50,
+                      ),
+              ),
+              SizedBox(height: 5),
+              Text(
+                path.basename(fileName),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
           ),
-          SizedBox(width: 10),
-          ElevatedButton(
-            onPressed: () {
-              String messageText = _messageController.text;
-              if (messageText.isNotEmpty) {
-                // Envoyer le message via le socket
-                messagesController.sendMessageToSocket(messageText);
-                _messageController.clear(); // Effacer le champ après l'envoi
-              }
-            },
-            child: Text('Envoyer'),
+        )
+      ]),
+    );
+  }
+
+  Widget SendMessageBar() {
+    return Container(
+      margin: EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.background,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        children: [
+          if (listeFile.isNotEmpty)
+            Container(
+              height: 150,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                // Définir l'orientation horizontale
+                itemCount: listeFile.length,
+                itemBuilder: (context, index) {
+                  return file(index);
+                },
+              ),
+            ),
+          if (listeFile.isNotEmpty) SizedBox(height: 10),
+          Row(
+            children: [
+              IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () {
+                  // Appeler une fonction pour ajouter des fichiers à la liste listeFile
+                  pickAndAddFilesToList();
+                },
+              ),
+              SizedBox(width: 10),
+              Expanded(
+                child: TextField(
+                  controller: _messageController,
+                  decoration: InputDecoration(hintText: 'Votre message'),
+                ),
+              ),
+              SizedBox(width: 10),
+              ElevatedButton(
+                onPressed: () {
+                  String messageText = _messageController.text;
+                  messagesController.sendMessageToSocket(messageText, listeFile);
+                  setState(() {
+                    listeFile.clear();
+                  });
+                  _messageController.clear();
+                },
+                child: Text('Envoyer'),
+              ),
+            ],
           ),
         ],
       ),
@@ -246,10 +351,25 @@ class _MessagerieViewState extends State<MessagerieView> {
     );
   }
 
+  Future<void> pickAndAddFilesToList() async {
+    FilePickerResult? pickedFiles =
+        await FilePicker.platform.pickFiles(allowMultiple: true);
+
+    if (pickedFiles != null) {
+      for (var pickedFile in pickedFiles.files) {
+        setState(() {
+          if (pickedFile.path != null) {
+            listeFile.add(pickedFile.path!);
+          }
+        });
+      }
+    }
+  }
 
   Widget _buildMessageListTile(MessageModel message) {
     return MessageItemListeView(
       message: message,
+      context: context,
     );
   }
 
@@ -263,19 +383,25 @@ class _MessagerieViewState extends State<MessagerieView> {
         "erreur lors de la requette a l'api : " + ex.toString());
   }
 
-  reponseUpdate(){
+  reponseUpdate() {
     if (mounted) {
       setState(() {
         // Votre code de mise à jour de l'état ici
       });
     }
   }
-  reponseInit(){
-    if(messageListe.messages.length>0 && !messageListe.messages[messageListe.messages.length-1].isread && messageListe.messages.length>lastTailleListe){
-      messagesController.addOldMessage_inListe(widget.conv.id,messageListe.messages[messageListe.messages.length-1].id,reponseInit,reponseError);
-      lastTailleListe=messageListe.messages.length;
-    }
-    else{
+
+  reponseInit() {
+    if (messageListe.messages.length > 0 &&
+        !messageListe.messages[messageListe.messages.length - 1].isread &&
+        messageListe.messages.length > lastTailleListe) {
+      messagesController.addOldMessage_inListe(
+          widget.conv.id,
+          messageListe.messages[messageListe.messages.length - 1].id,
+          reponseInit,
+          reponseError);
+      lastTailleListe = messageListe.messages.length;
+    } else {
       int index = messagesController.firstMessageNotOpen();
       //_scrollController.jumpTo(40.0*index); //marche pas il faut que arrive a trouve la taille des wirget dans la listeView
       messagesController.luAllMessage(widget.conv.id);

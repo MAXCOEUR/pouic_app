@@ -1,17 +1,19 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:discution_app/Model/FileModel.dart';
 import 'package:discution_app/Model/UserModel.dart';
 
 class MessageModel{
   int id;
   User user;
-  String? file;
   String message;
   DateTime date;
   int id_conversation;
   bool isread;
+  List<FileModel> files;
 
-  MessageModel(this.id, this.user, this.file, this.message, this.date, this.id_conversation,this.isread);
+  MessageModel(this.id, this.user, this.message, this.date, this.id_conversation,this.isread,this.files);
 
   @override
   bool operator ==(Object other) {
@@ -26,13 +28,16 @@ class MessageModel{
     return {
       'id': id,
       'user': user,
-      'file': file,
       'message': message,
       'date':date,
-      'id_conversation':id_conversation
+      'id_conversation':id_conversation,
+      'files':files.toString()
     };
   }
   String toJsonString() {
     return jsonEncode(toJson());
+  }
+  void addfile(FileModel file){
+    files.add(file);
   }
 }

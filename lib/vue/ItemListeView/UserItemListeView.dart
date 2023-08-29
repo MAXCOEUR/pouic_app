@@ -46,12 +46,10 @@ class UserItemListeView extends StatelessWidget {
                       color: Colors.grey[300],
                     ),
                     child: ClipOval(
-                      child: user.Avatar != null
-                          ? Image.memory(
-                              user.Avatar!,
-                              fit: BoxFit.cover,
-                            )
-                          : Icon(Icons.account_circle, size: 50),
+                      child: Constant.buildImageOrIcon(
+                          Constant.baseUrlAvatarUser+"/"+user.uniquePseudo+".png",
+                          Icon(Icons.account_circle)
+                      ),
                     ),
                   ),
                   Column(
@@ -99,7 +97,7 @@ class UserItemListeView extends StatelessWidget {
                     IconButton(
                       icon: Icon(Icons.check),
                       onPressed: () {
-                        onTapButtonRight!(user,Conversation(0, "name", "uniquePseudo_admin", null, 0));
+                        onTapButtonRight!(user,Conversation(0, "name", "uniquePseudo_admin", 0));
                       },
                     ),
                 ],
