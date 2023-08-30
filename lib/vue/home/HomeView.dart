@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Constant.dart';
+import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:discution_app/outil/SocketSingleton.dart';
 import 'package:discution_app/vue/home/ConversationListeView.dart';
 import 'package:discution_app/vue/widget/CustomAppBar.dart';
@@ -11,10 +12,12 @@ import 'package:discution_app/vue/widget/CustomDrawer.dart';
 import 'package:flutter/material.dart';
 
 class HomeView extends StatefulWidget {
-  HomeView({super.key}){
+  Function updateMain;
+
+  HomeView({super.key,required this.updateMain}){
     SocketSingleton.instance.reconnect();
   }
-  final LoginModel lm=Constant.loginModel!;
+  final LoginModel lm=LoginModelProvider.instance.loginModel!;
 
   final ConversationListeView convView=ConversationListeView();
   final RechercheListeView rechercheView=RechercheListeView();
@@ -50,7 +53,7 @@ class _HomeViewState extends State<HomeView> {
       appBar: CustomAppBar(
           arrowReturn: false,
       ),
-      drawer: CustomDrawer(),
+      drawer: CustomDrawer(updateMain: widget.updateMain),
       body: selectedWidget,
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[

@@ -2,12 +2,15 @@ import 'dart:typed_data';
 
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Constant.dart';
+import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:discution_app/vue/CreateUserVue.dart';
 import 'package:flutter/material.dart';
 
 class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
+  Function updateMain;
+  CustomDrawer({required this.updateMain});
 
-  LoginModel lm = Constant.loginModel!;
+  LoginModel lm = LoginModelProvider.instance.loginModel!;
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +59,8 @@ class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
             leading: Icon(Icons.logout),
             title: Text("Deconexion",style: TextStyle(fontSize: SizeFont.p1)),
             onTap: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
+              LoginModelProvider.instance.setLoginModel(null);
+              updateMain();
             },
           ),
         ],

@@ -5,11 +5,13 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:discution_app/Model/UserListeModel.dart';
 import 'package:discution_app/outil/Constant.dart';
+import 'package:discution_app/outil/LoginSingleton.dart';
 
 import '../Model/UserModel.dart';
 import '../outil/Api.dart';
 
 class UserC {
+  LoginModel loginModel=LoginModelProvider.instance.loginModel!;
   Future<void> create(User user,File imageFile,String passWord,Function callBack,Function callBackError) async {
     User u;
     try {
@@ -49,7 +51,6 @@ class UserC {
     }
   }
   Future<void> modify(User user,File imageFile,String passWord,Function callBack,Function callBackError) async {
-    LoginModel loginModel =Constant.loginModel!;
     User u;
     String AuthorizationToken='Bearer ${loginModel.token}';
     try {
@@ -92,7 +93,6 @@ class UserC {
   }
 
   void deleteAmis(User user,Function callBack,Function callBackError) {
-    LoginModel loginModel =Constant.loginModel!;
     String AuthorizationToken='Bearer ${loginModel.token}';
     Api.instance.deleteData(
         "amis", null, {'uniquePseudo': user.uniquePseudo}, {'Authorization': AuthorizationToken})
@@ -107,7 +107,6 @@ class UserC {
     );
   }
   void deleteDemandeAmis(User user,Function callBack,Function callBackError) {
-    LoginModel loginModel =Constant.loginModel!;
     String AuthorizationToken='Bearer ${loginModel.token}';
     Api.instance.deleteData(
         "amis/demande", null, {'uniquePseudo': user.uniquePseudo}, {'Authorization': AuthorizationToken})
@@ -122,7 +121,6 @@ class UserC {
     );
   }
   void refuseDemandeAmis(User user,Function callBack,Function callBackError) {
-    LoginModel loginModel =Constant.loginModel!;
     String AuthorizationToken='Bearer ${loginModel.token}';
     Api.instance.deleteData(
         "amis/refuse", null, {'uniquePseudo': user.uniquePseudo}, {'Authorization': AuthorizationToken})
@@ -138,7 +136,6 @@ class UserC {
   }
 
   void addAmis(User user,Function callBack,Function callBackError) {
-    LoginModel loginModel =Constant.loginModel!;
     String AuthorizationToken='Bearer ${loginModel.token}';
     Api.instance.postData(
         "amis", {'uniquePseudo': user.uniquePseudo}, null, {'Authorization': AuthorizationToken})

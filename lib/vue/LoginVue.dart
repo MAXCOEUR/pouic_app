@@ -1,8 +1,11 @@
 
+import 'package:dio/dio.dart';
 import 'package:discution_app/Model/UserModel.dart';
+import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:discution_app/vue/CreateUserVue.dart';
 import 'package:flutter/material.dart';
 import 'package:discution_app/vue/home/HomeView.dart';
+import 'package:provider/provider.dart';
 
 import '../Controller/LoginController.dart';
 
@@ -11,8 +14,8 @@ import '../outil/Constant.dart';
 
 
 class LoginVue extends StatefulWidget {
-  const LoginVue({super.key});
-
+  Function updateMain;
+  LoginVue({super.key,required this.updateMain});
   final String title="Login";
 
   @override
@@ -71,11 +74,6 @@ class _LoginVueState extends State<LoginVue> {
                 // Code à exécuter lorsque le bouton est pressé
                 print('le username ou email est : '+userName_Email.text+" | le mdp est : "+mdp.text);
                 loginUser();
-
-                //Navigator.push(
-                //context,
-                //MaterialPageRoute(builder: (context) => const ConversationsVue()),
-                //);
               },
               child: Text('validé'),
             ),ElevatedButton(
@@ -96,14 +94,16 @@ class _LoginVueState extends State<LoginVue> {
     loginController.ask(userName_Email.text, mdp.text,reponseLoginUser,reponseLoginUserErreur);
   }
   void reponseLoginUser(LoginModel lm){
-    Constant.loginModel=lm;
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => HomeView()),
-    );
+    LoginModelProvider.instance.setLoginModel(lm);
+    widget.updateMain();
   }
-  void reponseLoginUserErreur(Exception ex){
-    Constant.showAlertDialog(context,"Erreur","erreur lors de la requette a l'api : "+ex.toString());
+  void reponseLoginUserErreur(DioException ex){
+    if(ex.response!=null && ex.response!.data["message"] != null){
+      Constant.showAlertDialog(context,"Erreur",ex.response!.data["message"]);
+    }
+    else{
+      Constant.showAlertDialog(context, "Erreur", "Une erreur s'est produite lors de la connextion");
+    }
   }
 }
 

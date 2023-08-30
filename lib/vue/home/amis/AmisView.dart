@@ -1,5 +1,6 @@
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Constant.dart';
+import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:discution_app/vue/home/amis/AmisListeView.dart';
 import 'package:discution_app/vue/home/amis/DemandeAmisListeView.dart';
 import 'package:discution_app/vue/home/amis/DemandeEnvoyeAmisListeView.dart';
@@ -8,7 +9,7 @@ import 'package:flutter/material.dart';
 
 class AmisView extends StatefulWidget {
   AmisView({super.key});
-  final LoginModel lm=Constant.loginModel!;
+  final LoginModel lm=LoginModelProvider.instance.loginModel!;
 
   final AmisListeView amisTest=AmisListeView();
   final DemandeAmisListeView demandeAmisTest=DemandeAmisListeView();

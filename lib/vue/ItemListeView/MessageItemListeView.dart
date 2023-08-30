@@ -7,6 +7,7 @@ import 'package:discution_app/Model/MessageModel.dart';
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Constant.dart';
 import 'package:discution_app/outil/LaunchFile.dart';
+import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:discution_app/vue/widget/AudioPlayerWidget.dart';
 import 'package:discution_app/vue/widget/PhotoView.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ import 'package:intl/intl.dart';
 
 class MessageItemListeView extends StatelessWidget {
   final MessageModel message;
-  final LoginModel lm = Constant.loginModel!;
+  final LoginModel lm = LoginModelProvider.instance.loginModel!;
   late final BuildContext context;
 
   MessageItemListeView(

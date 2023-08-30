@@ -3,13 +3,14 @@ import 'package:discution_app/Controller/UserController.dart';
 import 'package:discution_app/Model/UserListeModel.dart';
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Constant.dart';
+import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:discution_app/vue/ItemListeView/UserItemListeView.dart';
 import 'package:discution_app/vue/home/UserDetailView.dart';
 import 'package:discution_app/vue/widget/SearchTextField.dart';
 import 'package:flutter/material.dart';
 
 class AmisListeView extends StatefulWidget{
-  final LoginModel lm= Constant.loginModel!;
+  final LoginModel lm= LoginModelProvider.instance.loginModel!;
   AmisListeView({super.key});
 
   @override

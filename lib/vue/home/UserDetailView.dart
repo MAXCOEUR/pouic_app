@@ -5,6 +5,7 @@ import 'package:discution_app/Controller/UserC.dart';
 import 'package:discution_app/Model/ConversationModel.dart';
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Constant.dart';
+import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:discution_app/outil/SocketSingleton.dart';
 import 'package:discution_app/vue/home/message/MessagerieView.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ import 'package:flutter/material.dart';
 import '../widget/CustomAppBar.dart';
 
 class UserDetailleView extends StatefulWidget{
-  final LoginModel lm= Constant.loginModel!;
+  final LoginModel lm= LoginModelProvider.instance.loginModel!;
   final User user;
   UserDetailleView(this.user,{super.key});
 

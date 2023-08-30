@@ -1,11 +1,12 @@
 import 'package:discution_app/Model/ConversationModel.dart';
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Constant.dart';
+import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:flutter/material.dart';
 
 class ConversationItemListeView extends StatelessWidget {
   final Conversation conversation;
-  final LoginModel lm = Constant.loginModel!;
+  final LoginModel lm = LoginModelProvider.instance.loginModel!;
   Function onTap;
 
   ConversationItemListeView({super.key, required this.conversation, required this.onTap});

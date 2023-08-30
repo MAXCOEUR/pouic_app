@@ -1,10 +1,11 @@
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Constant.dart';
+import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class SocketSingleton {
   late IO.Socket socket;
-  final LoginModel lm = Constant.loginModel!;
+  final LoginModel lm = LoginModelProvider.instance.loginModel!;
 
   // Constructeur privé
   SocketSingleton._privateConstructor() {

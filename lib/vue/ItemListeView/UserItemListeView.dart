@@ -1,5 +1,6 @@
 import 'package:discution_app/Model/ConversationModel.dart';
 import 'package:discution_app/outil/Constant.dart';
+import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:flutter/material.dart';
 
 import '../../Model/UserModel.dart';
@@ -9,7 +10,7 @@ class UserItemListeView extends StatelessWidget {
   Function onTap;
   int type;
   Function? onTapButtonRight;
-  LoginModel lm = Constant.loginModel!;
+  LoginModel lm = LoginModelProvider.instance.loginModel!;
 
   UserItemListeView(
       {super.key,

@@ -6,13 +6,14 @@ import 'package:dio/dio.dart';
 import 'package:discution_app/Model/ConversationModel.dart';
 import 'package:discution_app/Model/UserListeModel.dart';
 import 'package:discution_app/outil/Constant.dart';
+import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../Model/UserModel.dart';
 import '../outil/Api.dart';
 
 class ConversationC {
-  LoginModel loginModel = Constant.loginModel!;
+  LoginModel loginModel = LoginModelProvider.instance.loginModel!;
 
   Future<void> create(Conversation conversation,File imageFile,Function callBack,Function callBackError) async {
     String AuthorizationToken='Bearer '+loginModel.token;
@@ -55,7 +56,6 @@ class ConversationC {
   }
 
   void deleteConv(Conversation conversation,Function callBack,Function callBackError) {
-    LoginModel loginModel =Constant.loginModel!;
     String AuthorizationToken='Bearer ${loginModel.token}';
     Api.instance.deleteData(
         "conv", null, {'id_conversation': conversation.id}, {'Authorization': AuthorizationToken})
@@ -71,7 +71,6 @@ class ConversationC {
   }
 
   Future<void> putConv(Conversation conversation,File imageFile,Function callBack,Function callBackError) async {
-    LoginModel loginModel = Constant.loginModel!;
     String AuthorizationToken='Bearer ${loginModel.token}';
     Api.instance.putData(
         "conv", {'name': conversation.name,'uniquePseudo_admin': conversation.uniquePseudo_admin}, {'id_conversation':conversation.id}, {'Authorization': AuthorizationToken})
@@ -119,7 +118,6 @@ class ConversationC {
     }
   }
   void getUserShort(Conversation conversation,Function callBack,Function callBackError) {
-    LoginModel loginModel =Constant.loginModel!;
     String AuthorizationToken='Bearer ${loginModel.token}';
     Api.instance.getData(
         "conv/user/short", {'id_conversation': conversation.id}, {'Authorization': AuthorizationToken})
@@ -136,7 +134,6 @@ class ConversationC {
     );
   }
   void deleteUser(User user,Conversation conversation,Function callBack,Function callBackError) {
-    LoginModel loginModel =Constant.loginModel!;
     String AuthorizationToken='Bearer ${loginModel.token}';
     Api.instance.deleteData(
         "conv/user", null, {'uniquePseudo': user.uniquePseudo,'id_conversation':conversation.id}, {'Authorization': AuthorizationToken})
@@ -151,7 +148,6 @@ class ConversationC {
     );
   }
   void addUser(User user,Conversation conversation,Function callBack,Function callBackError) {
-    LoginModel loginModel =Constant.loginModel!;
     String AuthorizationToken='Bearer ${loginModel.token}';
     Api.instance.postData(
         "conv/user", {'uniquePseudo': user.uniquePseudo,'id_conversation':conversation.id}, null, {'Authorization': AuthorizationToken})

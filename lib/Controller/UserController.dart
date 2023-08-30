@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:discution_app/Model/ConversationModel.dart';
 import 'package:discution_app/Model/UserListeModel.dart';
 import 'package:discution_app/outil/Constant.dart';
+import 'package:discution_app/outil/LoginSingleton.dart';
 
 import '../Model/UserModel.dart';
 import '../outil/Api.dart';
@@ -12,7 +13,7 @@ import '../outil/Api.dart';
 class UserController {
   UserListe users;
   UserController(this.users);
-  LoginModel loginModel = Constant.loginModel!;
+  LoginModel loginModel = LoginModelProvider.instance.loginModel!;
 
   void addUser_inListe(int page,String search,Function callBack,Function callBackError){
     String AuthorizationToken='Bearer '+loginModel.token;

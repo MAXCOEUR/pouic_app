@@ -1,6 +1,7 @@
 import 'package:discution_app/Controller/ConversationsController.dart';
 import 'package:discution_app/Model/ConversationListeModel.dart';
 import 'package:discution_app/Model/ConversationModel.dart';
+import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:discution_app/vue/CreateConversationVue.dart';
 import 'package:discution_app/vue/ItemListeView/ConversationItemListeView.dart';
 import 'package:discution_app/vue/home/message/MessagerieView.dart';
@@ -15,7 +16,7 @@ import '../ItemListeView/UserItemListeView.dart';
 import 'UserDetailView.dart';
 
 class ConversationListeView extends StatefulWidget{
-  final LoginModel lm= Constant.loginModel!;
+  final LoginModel lm= LoginModelProvider.instance.loginModel!;
   ConversationListeView({super.key});
 
   @override

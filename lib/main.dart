@@ -1,21 +1,13 @@
+import 'package:discution_app/HomeTmp.dart';
 import 'package:flutter/material.dart';
-
-import 'vue/LoginVue.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 
 void main() async {
-
-
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   MyApp({super.key});
-
-
-
-
   ColorScheme lightColorScheme = const ColorScheme(
     primary: Color(0xFF3498DB),  // Darker shade of primary color (if needed)
     secondary: Color(0xFF9A9A9A),// Darker shade of secondary color (if needed)
@@ -44,14 +36,13 @@ class MyApp extends StatelessWidget {
     brightness: Brightness.dark,        // Dark mode
   );
 
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData.light().copyWith(colorScheme: lightColorScheme),
       darkTheme: ThemeData.dark().copyWith(colorScheme: darkColorScheme),
-      home: const LoginVue(),
+      home: HomeTmp(),
     );
   }
 }

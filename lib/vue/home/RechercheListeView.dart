@@ -1,3 +1,4 @@
+import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:discution_app/vue/widget/SearchTextField.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +10,7 @@ import '../ItemListeView/UserItemListeView.dart';
 import 'UserDetailView.dart';
 
 class RechercheListeView extends StatefulWidget{
-  final LoginModel lm= Constant.loginModel!;
+  final LoginModel lm= LoginModelProvider.instance.loginModel!;
   RechercheListeView({super.key});
 
   @override

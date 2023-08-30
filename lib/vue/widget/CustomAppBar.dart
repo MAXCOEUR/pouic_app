@@ -2,10 +2,11 @@ import 'dart:typed_data';
 
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Constant.dart';
+import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  User u = Constant.loginModel!.user;// Les octets de l'image de l'utilisateur
+  User u = LoginModelProvider.instance.loginModel!.user;// Les octets de l'image de l'utilisateur
   bool arrowReturn;
 
   CustomAppBar({required this.arrowReturn});

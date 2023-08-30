@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class Constant{
-  static LoginModel? loginModel;
   static const String ServeurApi ="http://46.227.18.31:3000";
   static const String baseUrlAvatarUser =ServeurApi+"/uploads/AvatarUser";
   static const String baseUrlAvatarConversation =ServeurApi+"/uploads/ImageConversation";

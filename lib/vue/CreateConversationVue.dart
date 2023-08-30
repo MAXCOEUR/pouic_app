@@ -5,6 +5,7 @@ import 'package:discution_app/Controller/UserController.dart';
 import 'package:discution_app/Controller/UserC.dart';
 import 'package:discution_app/Model/ConversationModel.dart';
 import 'package:discution_app/Model/UserListeModel.dart';
+import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:discution_app/outil/SocketSingleton.dart';
 import 'package:discution_app/vue/home/message/MessagerieView.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class CreateConversationVue extends StatefulWidget {
   CreateConversationVue(
       {super.key, required this.conversation, required this.created});
 
-  final LoginModel lm = Constant.loginModel!;
+  final LoginModel lm = LoginModelProvider.instance.loginModel!;
   final String title = "CreateConversation Vue";
   Conversation conversation;
   bool created;

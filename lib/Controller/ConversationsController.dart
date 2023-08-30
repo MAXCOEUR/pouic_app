@@ -8,6 +8,7 @@ import 'package:discution_app/Model/MessageModel.dart';
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Api.dart';
 import 'package:discution_app/outil/Constant.dart';
+import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:discution_app/outil/SocketSingleton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -15,7 +16,7 @@ import 'package:socket_io_client/socket_io_client.dart';
 
 class ConversationController{
   ConversationListe conversations;
-  LoginModel loginModel = Constant.loginModel!;
+  LoginModel loginModel = LoginModelProvider.instance.loginModel!;
   final Socket _socket = SocketSingleton.instance.socket;
   Function callBack;
   FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;

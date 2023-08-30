@@ -11,6 +11,7 @@ import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/Model/MessageModel.dart';
 import 'package:discution_app/outil/Api.dart';
 import 'package:discution_app/outil/Constant.dart';
+import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:discution_app/outil/SocketSingleton.dart';
 import 'package:socket_io_client/src/socket.dart';
 import 'package:path/path.dart' as path;
@@ -19,7 +20,7 @@ class MessagesController {
   MessageListe messages;
   Conversation conversation;
   final Socket _socket = SocketSingleton.instance.socket;
-  LoginModel lm = Constant.loginModel!;
+  LoginModel lm = LoginModelProvider.instance.loginModel!;
   Function callBack;
 
   MessagesController(this.messages, this.conversation,this.callBack) {

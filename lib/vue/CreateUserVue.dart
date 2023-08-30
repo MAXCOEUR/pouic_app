@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:discution_app/Controller/UserController.dart';
 import 'package:discution_app/Controller/UserC.dart';
 import 'package:discution_app/Model/UserListeModel.dart';
@@ -71,8 +72,13 @@ class _CreateUserVueState extends State<CreateUserVue> {
     print(u.toJsonString());
     Navigator.pop(context);
   }
-  void reponseCreateUserError(Exception ex){
-    Constant.showAlertDialog(context,"Erreur","erreur lors de la requette a l'api : "+ex.toString());
+  void reponseCreateUserError(DioException ex){
+    if(ex.response!=null && ex.response!.data["message"] != null){
+      Constant.showAlertDialog(context,"Erreur",ex.response!.data["message"]);
+    }
+    else{
+      Constant.showAlertDialog(context, "Erreur", "Une erreur s'est produite lors de la création de l'utilisateur.");
+    }
   }
 
   @override
@@ -163,6 +169,10 @@ class _CreateUserVueState extends State<CreateUserVue> {
                   if (value == null || value.isEmpty) {
                     return 'Ce champ est requis';
                   }
+                  RegExp emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
+                  if (!emailRegex.hasMatch(value)) {
+                    return 'Veuillez entrer une adresse e-mail valide';
+                  }
                   return null; // Valide
                 },
               ),
@@ -179,6 +189,11 @@ class _CreateUserVueState extends State<CreateUserVue> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Ce champ est requis';
+                  }
+                  RegExp passwordRegex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$');
+
+                  if (!passwordRegex.hasMatch(value)) {
+                    return 'Le mot de passe doit contenir au moins 8 caractères, dont une majuscule, une minuscule, un chiffre et un caractère spécial';
                   }
                   return null; // Valide
                 },

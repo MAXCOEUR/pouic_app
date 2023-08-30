@@ -8,6 +8,7 @@ import 'package:discution_app/Model/MessageListeModel.dart';
 import 'package:discution_app/Model/MessageModel.dart';
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Constant.dart';
+import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:discution_app/vue/CreateConversationVue.dart';
 import 'package:discution_app/vue/ItemListeView/MessageItemListeView.dart';
 import 'package:discution_app/vue/home/message/AddAmisConvView.dart';
@@ -24,7 +25,7 @@ class MessagerieView extends StatefulWidget {
   MessagerieView({super.key, required this.conv});
 
   Conversation conv;
-  final LoginModel lm = Constant.loginModel!;
+  final LoginModel lm = LoginModelProvider.instance.loginModel!;
   ConversationC conversationC = ConversationC();
 
   @override

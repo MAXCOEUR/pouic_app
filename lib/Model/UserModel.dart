@@ -30,20 +30,3 @@ class User{
     return jsonEncode(toJson());
   }
 }
-
-class LoginModel{
-  User user;
-  String token;
-
-  LoginModel(this.user,this.token);
-
-  Map<String, dynamic> toJson() {
-    return {
-      'user': user,
-      'token': token,
-    };
-  }
-  String toJsonString() {
-    return jsonEncode(toJson());
-  }
-}
