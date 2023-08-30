@@ -5,7 +5,7 @@ import 'package:discution_app/Controller/UserController.dart';
 import 'package:discution_app/Controller/UserC.dart';
 import 'package:discution_app/Model/ConversationModel.dart';
 import 'package:discution_app/Model/UserListeModel.dart';
-import 'package:discution_app/vue/SocketSingleton.dart';
+import 'package:discution_app/outil/SocketSingleton.dart';
 import 'package:discution_app/vue/home/message/MessagerieView.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';

@@ -8,7 +8,7 @@ import 'package:discution_app/Model/MessageModel.dart';
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Api.dart';
 import 'package:discution_app/outil/Constant.dart';
-import 'package:discution_app/vue/SocketSingleton.dart';
+import 'package:discution_app/outil/SocketSingleton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:socket_io_client/socket_io_client.dart';
@@ -61,7 +61,7 @@ class ConversationController{
 
   void addConversation_inListe(int page,String search,Function callBack,Function callBackError){
     String AuthorizationToken='Bearer '+loginModel.token;
-    Api.getData(
+    Api.instance.getData(
         "conv", {'search': search, 'page': page}, {'Authorization': AuthorizationToken})
         .then(
             (response) {

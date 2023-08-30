@@ -22,7 +22,7 @@ class UserItemListeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+        padding: EdgeInsets.all(SizeMarginPading.p1),
         child: GestureDetector(
           onTap: () {
             if(user!=lm.user)
@@ -31,10 +31,10 @@ class UserItemListeView extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.background,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(SizeBorder.radius),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+              padding: EdgeInsets.all(SizeMarginPading.p1),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -55,15 +55,10 @@ class UserItemListeView extends StatelessWidget {
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text("Pseudo"),
-                        Text(user.pseudo),
+                        Text("Pseudo",style: TextStyle(fontSize: SizeFont.p1)),
+                        Text(user.pseudo,style: TextStyle(fontSize: SizeFont.p1)),
                       ]),
-                  Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text("Pseudo Unique"),
-                        Text(user.uniquePseudo),
-                      ]),
+                  Text("@"+user.uniquePseudo,style: TextStyle(fontSize: SizeFont.p1)),
                   if (type == 1)
                     Icon((user.sont_amis == true)
                         ? Icons.check_box_outlined

@@ -9,7 +9,7 @@ class Login {
 
 
   void ask(String userOrEmail, String mdp,Function callBack,Function callBackError) {
-      Api.postData(
+    Api.instance.postData(
           "user/login", {'emailOrPseudo': userOrEmail, 'passWord': mdp}, null, null)
           .then(
             (response) {

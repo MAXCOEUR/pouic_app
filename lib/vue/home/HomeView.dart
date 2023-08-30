@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Constant.dart';
-import 'package:discution_app/vue/SocketSingleton.dart';
+import 'package:discution_app/outil/SocketSingleton.dart';
 import 'package:discution_app/vue/home/ConversationListeView.dart';
 import 'package:discution_app/vue/widget/CustomAppBar.dart';
 import 'package:discution_app/vue/home/RechercheListeView.dart';

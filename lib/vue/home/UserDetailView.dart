@@ -5,7 +5,7 @@ import 'package:discution_app/Controller/UserC.dart';
 import 'package:discution_app/Model/ConversationModel.dart';
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Constant.dart';
-import 'package:discution_app/vue/SocketSingleton.dart';
+import 'package:discution_app/outil/SocketSingleton.dart';
 import 'package:discution_app/vue/home/message/MessagerieView.dart';
 import 'package:flutter/material.dart';
 
@@ -54,23 +54,21 @@ class _UserListeViewState extends State<UserDetailleView> {
       Container(
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(SizeBorder.radius),
         ),
-        child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
         child:Container(
+          padding: EdgeInsets.all(SizeMarginPading.h1),
           child: Column(
             children:
             [
-              Text("Pseudo Unique : " + widget.user.uniquePseudo),
-              Text("Pseudo : " + widget.user.pseudo),
+              Text("@" + widget.user.uniquePseudo,style: TextStyle(fontSize: SizeFont.h3)),
+              Text("Pseudo : " + widget.user.pseudo,style: TextStyle(fontSize: SizeFont.p1)),
             ],
           ),
         )
       ),
-      ),
 
-            SizedBox(height: 20), // Espace entre les textes et les boutons
+            SizedBox(height: SizeMarginPading.h1), // Espace entre les textes et les boutons
             if (widget.user.sont_amis == null || widget.user.sont_amis == false)
               ajouterAmisButtonWidget()
             else
@@ -93,7 +91,7 @@ class _UserListeViewState extends State<UserDetailleView> {
           },
           child: Text("Nouvelle Conversation"),
         ),
-        SizedBox(width: 20), // Espace entre les boutons
+        SizedBox(width: SizeMarginPading.h1), // Espace entre les boutons
         ElevatedButton(
           onPressed: () {
             userCreate.deleteAmis(widget.user, retourSuppretionAmis,retourSuppretionAmisError);

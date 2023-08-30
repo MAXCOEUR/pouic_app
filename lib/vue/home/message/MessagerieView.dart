@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:discution_app/Controller/ConversationC.dart';
 import 'package:discution_app/Controller/MessagesController.dart';
 import 'package:discution_app/Model/ConversationModel.dart';
@@ -11,9 +12,13 @@ import 'package:discution_app/vue/CreateConversationVue.dart';
 import 'package:discution_app/vue/ItemListeView/MessageItemListeView.dart';
 import 'package:discution_app/vue/home/message/AddAmisConvView.dart';
 import 'package:discution_app/vue/home/message/RemoveUserConvView.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:record_mp3/record_mp3.dart';
 
 class MessagerieView extends StatefulWidget {
   MessagerieView({super.key, required this.conv});
@@ -36,6 +41,9 @@ class _MessagerieViewState extends State<MessagerieView> {
   MessageListe messageListe = MessageListe();
   late MessagesController messagesController;
 
+  bool isRecording = false;
+  String? filePath;
+
   @override
   void initState() {
     super.initState();
@@ -52,6 +60,46 @@ class _MessagerieViewState extends State<MessagerieView> {
     messagesController.dispose();
     _scrollController.dispose();
     super.dispose();
+  }
+
+  void _startRecording() async {
+    if(Platform.isAndroid||Platform.isIOS){
+      if (filePath == null) {
+        final appDir = await getTemporaryDirectory();
+        filePath = '${appDir.path}/recording.mp3';
+      }
+      var status = await Permission.microphone.request();
+      if (status.isGranted) {
+        if (!isRecording) {
+          await RecordMp3.instance.start(filePath!, (type) {});
+          setState(() {
+            isRecording = true;
+          });
+        }
+      }
+    }
+
+  }
+
+  void _stopRecording(LongPressEndDetails lped) async {
+    if(Platform.isAndroid||Platform.isIOS){
+      var status = await Permission.microphone.request();
+      if (status.isGranted) {
+        if (isRecording) {
+          await RecordMp3.instance.stop();
+          listeFile.clear();
+          setState(() {
+            isRecording = false;
+            if (filePath != null) {
+              File file = File(filePath!);
+              if (file.existsSync()) {
+                listeFile.add(filePath!);
+              }
+            }
+          });
+        }
+      }
+    }
   }
 
   void modifierConv() async {
@@ -205,14 +253,15 @@ class _MessagerieViewState extends State<MessagerieView> {
     String fileName = listeFile[index];
     bool isImage = fileName.endsWith('.png') ||
         fileName.endsWith('.jpg') ||
-        fileName.endsWith('.jpeg');
+        fileName.endsWith('.jpeg') ||
+        fileName.endsWith('.gif');
 
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+      margin: EdgeInsets.all(SizeMarginPading.p1),
       width: 120,
       height: 120,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(SizeBorder.radius),
         color: Theme.of(context).colorScheme.primaryContainer,
       ),
       child: Stack(children: [
@@ -256,7 +305,7 @@ class _MessagerieViewState extends State<MessagerieView> {
                         size: 50,
                       ),
               ),
-              SizedBox(height: 5),
+              SizedBox(height: SizeMarginPading.p1),
               Text(
                 path.basename(fileName),
                 maxLines: 1,
@@ -271,11 +320,11 @@ class _MessagerieViewState extends State<MessagerieView> {
 
   Widget SendMessageBar() {
     return Container(
-      margin: EdgeInsets.all(16),
-      padding: EdgeInsets.all(16),
+      margin: EdgeInsets.all(SizeMarginPading.h1),
+      padding: EdgeInsets.all(SizeMarginPading.h1),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.background,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(SizeBorder.radius),
       ),
       child: Column(
         children: [
@@ -291,7 +340,7 @@ class _MessagerieViewState extends State<MessagerieView> {
                 },
               ),
             ),
-          if (listeFile.isNotEmpty) SizedBox(height: 10),
+          if (listeFile.isNotEmpty) SizedBox(height: SizeMarginPading.h3),
           Row(
             children: [
               IconButton(
@@ -301,25 +350,35 @@ class _MessagerieViewState extends State<MessagerieView> {
                   pickAndAddFilesToList();
                 },
               ),
-              SizedBox(width: 10),
+              SizedBox(width: SizeMarginPading.h3),
               Expanded(
                 child: TextField(
                   controller: _messageController,
                   decoration: InputDecoration(hintText: 'Votre message'),
                 ),
               ),
-              SizedBox(width: 10),
-              ElevatedButton(
-                onPressed: () {
-                  String messageText = _messageController.text;
-                  messagesController.sendMessageToSocket(messageText, listeFile);
-                  setState(() {
-                    listeFile.clear();
-                  });
-                  _messageController.clear();
-                },
-                child: Text('Envoyer'),
-              ),
+              SizedBox(width: SizeMarginPading.h3),
+              GestureDetector(
+                  onLongPress: _startRecording,
+                  onLongPressEnd: _stopRecording,
+                  onTap: () {
+                    String messageText = _messageController.text;
+                    messagesController.sendMessageToSocket(
+                        messageText, listeFile);
+                    setState(() {
+                      listeFile.clear();
+                    });
+                    _messageController.clear();
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(SizeMarginPading.h3),
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary,
+                        borderRadius: BorderRadius.circular(SizeBorder.radius)),
+                    child: Text((isRecording) ? 'Enregistrement' : 'Envoyer',
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.background)),
+                  )),
             ],
           ),
         ],
@@ -339,8 +398,9 @@ class _MessagerieViewState extends State<MessagerieView> {
               itemCount: messageListe.messages.length,
               reverse: true,
               itemBuilder: (context, index) {
+                final ValueKey key = ValueKey(messageListe.messages[index].id);
                 final message = messageListe.messages[index];
-                Widget listItem = _buildMessageListTile(message);
+                Widget listItem = _buildMessageListTile(message, key);
                 return listItem;
               },
             ),
@@ -359,17 +419,26 @@ class _MessagerieViewState extends State<MessagerieView> {
       for (var pickedFile in pickedFiles.files) {
         setState(() {
           if (pickedFile.path != null) {
-            listeFile.add(pickedFile.path!);
+            if (pickedFile.size < 100000000) {
+              listeFile.add(pickedFile.path!);
+            } else {
+              Constant.showAlertDialog(context, "Erreur",
+                  "le fichier ${pickedFile.path} fait plus de 100Mo");
+            }
           }
         });
       }
     }
   }
 
-  Widget _buildMessageListTile(MessageModel message) {
-    return MessageItemListeView(
-      message: message,
-      context: context,
+  Widget _buildMessageListTile(MessageModel message, ValueKey key) {
+    return ListTile(
+      key: key,
+      title: MessageItemListeView(
+        message: message,
+        context: context,
+        key: key,
+      ),
     );
   }
 

@@ -14,7 +14,7 @@ class ConversationItemListeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+        padding: EdgeInsets.all(SizeMarginPading.p1),
         child:GestureDetector(
           onTap: () {
             onTap(conversation);
@@ -25,7 +25,7 @@ class ConversationItemListeView extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
             ),
             child:Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+              padding: EdgeInsets.all(SizeMarginPading.p1),
               child:Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -44,20 +44,20 @@ class ConversationItemListeView extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                      child: Center( child: Text(conversation.name))
+                      child: Center( child: Text(conversation.name,style: TextStyle(fontSize: SizeFont.h3)))
                   ),
                   if (conversation.unRead > 0)
                     Align(
                       alignment: Alignment.topRight,
                       child: Container(
-                        padding: EdgeInsets.all(8),
+                        padding: EdgeInsets.all(SizeMarginPading.h2),
                         decoration: BoxDecoration(
                           color: Colors.red,
                           shape: BoxShape.circle,
                         ),
                         child: Text(
                           conversation.unRead.toString(),
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: Colors.white,fontSize: SizeFont.p1),
                         ),
                       ),
                     ),

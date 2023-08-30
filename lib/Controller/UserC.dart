@@ -13,7 +13,7 @@ class UserC {
   Future<void> create(User user,File imageFile,String passWord,Function callBack,Function callBackError) async {
     User u;
     try {
-      final responseCreate = await Api.postData(
+      final responseCreate = await Api.instance.postData(
         'user',
         {'email': user.email, 'uniquePseudo': user.uniquePseudo,'pseudo':user.pseudo,'passWord':passWord},
         null,
@@ -31,7 +31,7 @@ class UserC {
         return ;
       }
 
-      final response = await Api.postDataMultipart(
+      final response = await Api.instance.postDataMultipart(
         'user/upload',
         {'avatar': await MultipartFile.fromFile(imageFile.path),'uniquePseudo':u.uniquePseudo},
         null,
@@ -53,7 +53,7 @@ class UserC {
     User u;
     String AuthorizationToken='Bearer ${loginModel.token}';
     try {
-      final responseCreate = await Api.putData(
+      final responseCreate = await Api.instance.putData(
         'user',
         {'email': user.email, 'uniquePseudo': user.uniquePseudo,'pseudo':user.pseudo,'passWord':passWord},
         null,
@@ -72,7 +72,7 @@ class UserC {
         return ;
       }
 
-      final response = await Api.postDataMultipart(
+      final response = await Api.instance.postDataMultipart(
         'user/upload',
         {'avatar': await MultipartFile.fromFile(imageFile.path),'uniquePseudo':user.uniquePseudo},
         null,
@@ -94,7 +94,7 @@ class UserC {
   void deleteAmis(User user,Function callBack,Function callBackError) {
     LoginModel loginModel =Constant.loginModel!;
     String AuthorizationToken='Bearer ${loginModel.token}';
-    Api.deleteData(
+    Api.instance.deleteData(
         "amis", null, {'uniquePseudo': user.uniquePseudo}, {'Authorization': AuthorizationToken})
         .then( 
           (response) {
@@ -109,7 +109,7 @@ class UserC {
   void deleteDemandeAmis(User user,Function callBack,Function callBackError) {
     LoginModel loginModel =Constant.loginModel!;
     String AuthorizationToken='Bearer ${loginModel.token}';
-    Api.deleteData(
+    Api.instance.deleteData(
         "amis/demande", null, {'uniquePseudo': user.uniquePseudo}, {'Authorization': AuthorizationToken})
         .then(
           (response) {
@@ -124,7 +124,7 @@ class UserC {
   void refuseDemandeAmis(User user,Function callBack,Function callBackError) {
     LoginModel loginModel =Constant.loginModel!;
     String AuthorizationToken='Bearer ${loginModel.token}';
-    Api.deleteData(
+    Api.instance.deleteData(
         "amis/refuse", null, {'uniquePseudo': user.uniquePseudo}, {'Authorization': AuthorizationToken})
         .then(
           (response) {
@@ -140,7 +140,7 @@ class UserC {
   void addAmis(User user,Function callBack,Function callBackError) {
     LoginModel loginModel =Constant.loginModel!;
     String AuthorizationToken='Bearer ${loginModel.token}';
-    Api.postData(
+    Api.instance.postData(
         "amis", {'uniquePseudo': user.uniquePseudo}, null, {'Authorization': AuthorizationToken})
         .then(
           (response) {

@@ -11,8 +11,9 @@ import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/Model/MessageModel.dart';
 import 'package:discution_app/outil/Api.dart';
 import 'package:discution_app/outil/Constant.dart';
-import 'package:discution_app/vue/SocketSingleton.dart';
+import 'package:discution_app/outil/SocketSingleton.dart';
 import 'package:socket_io_client/src/socket.dart';
+import 'package:path/path.dart' as path;
 
 class MessagesController {
   MessageListe messages;
@@ -79,9 +80,9 @@ class MessagesController {
     for(String s in listeFile){
       try {
         File file = File(s);
-        final response = await Api.postDataMultipart(
+        final response = await Api.instance.postDataMultipart(
           'message/upload',
-          {'file': await MultipartFile.fromFile(file.path),'id_message':message.id,'name':s,'id_conversation':message.id_conversation},
+          {'file': await MultipartFile.fromFile(file.path),'id_message':message.id,'name':path.basename(s),'id_conversation':message.id_conversation},
           null,
           {'contentType':'application/json; charset=utf-8'},
         );
@@ -105,7 +106,7 @@ class MessagesController {
 
   void addOldMessage_inListe(int id_conversation,int id_lastMessage,Function callBack,Function callBackError){
     String AuthorizationToken='Bearer '+lm.token;
-    Api.getData(
+    Api.instance.getData(
         "message", {'id_conversation': id_conversation, 'id_lastMessage': id_lastMessage}, {'Authorization': AuthorizationToken})
         .then(
             (response) {

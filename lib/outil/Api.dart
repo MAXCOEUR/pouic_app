@@ -1,25 +1,34 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:discution_app/outil/Constant.dart';
 
 class Api {
-  static final Dio _dio = Dio();
-  static const String baseUrl =Constant.ServeurApi+"/api/";
+  late Dio dio;
+  String baseUrl = Constant.ServeurApi + "/api/";
 
-  static Future<Response> postData(
-      String apiUrl,
-      Map<String, dynamic>? data,
-      Map<String, dynamic>? parameters,
-      Map<String, dynamic>? headers,
-      ) async {
+  Api._privateConstructor() {
+    dio = Dio();
+  }
+  static final Api _instance = Api._privateConstructor();
+  static Api get instance => _instance;
+
+  Future<Response> postData(
+    String apiUrl,
+    Map<String, dynamic>? data,
+    Map<String, dynamic>? parameters,
+    Map<String, dynamic>? headers,
+  ) async {
     final options = Options(
       headers: headers,
       contentType: 'application/json',
     );
 
-    final String url = baseUrl+apiUrl;
+    final String url = baseUrl + apiUrl;
 
     try {
-      final response = await _dio.post(
+      final response = await dio.post(
         url,
         data: data,
         queryParameters: parameters,
@@ -30,23 +39,26 @@ class Api {
       throw error;
     }
   }
-  static Future<Response> postDataMultipart(
-      String apiUrl,
-      dynamic data, // Changez le type de data à dynamic
-      Map<String, dynamic>? parameters,
-      Map<String, dynamic>? headers,
-      ) async {
+
+  Future<Response> postDataMultipart(
+    String apiUrl,
+    dynamic data, // Changez le type de data à dynamic
+    Map<String, dynamic>? parameters,
+    Map<String, dynamic>? headers,
+  ) async {
     final options = Options(
       headers: headers,
-      contentType: 'multipart/form-data', // Utilisez 'multipart/form-data' pour les requêtes multipart
+      contentType:
+          'multipart/form-data', // Utilisez 'multipart/form-data' pour les requêtes multipart
     );
 
     final String url = baseUrl + apiUrl;
 
     try {
-      final response = await _dio.post(
+      final response = await dio.post(
         url,
-        data: FormData.fromMap(data), // Utilisez FormData pour les requêtes multipart
+        data: FormData.fromMap(data),
+        // Utilisez FormData pour les requêtes multipart
         queryParameters: parameters,
         options: options,
       );
@@ -57,20 +69,20 @@ class Api {
     }
   }
 
-  static Future<Response> getData(
-      String apiUrl,
-      Map<String, dynamic>? parameters,
-      Map<String, dynamic>? headers,
-      ) async {
+  Future<Response> getData(
+    String apiUrl,
+    Map<String, dynamic>? parameters,
+    Map<String, dynamic>? headers,
+  ) async {
     final options = Options(
       headers: headers,
       contentType: 'application/json',
     );
 
-    final String url = baseUrl+apiUrl;
+    final String url = baseUrl + apiUrl;
 
     try {
-      final response = await _dio.get(
+      final response = await dio.get(
         url,
         queryParameters: parameters,
         options: options,
@@ -80,21 +92,22 @@ class Api {
       throw Exception('Erreur lors de la requête : $error');
     }
   }
-  static Future<Response> putData(
-      String apiUrl,
-      Map<String, dynamic>? data,
-      Map<String, dynamic>? parameters,
-      Map<String, dynamic>? headers,
-      ) async {
+
+  Future<Response> putData(
+    String apiUrl,
+    Map<String, dynamic>? data,
+    Map<String, dynamic>? parameters,
+    Map<String, dynamic>? headers,
+  ) async {
     final options = Options(
       headers: headers,
       contentType: 'application/json',
     );
 
-    final String url = baseUrl+apiUrl;
+    final String url = baseUrl + apiUrl;
 
     try {
-      final response = await _dio.put(
+      final response = await dio.put(
         url,
         data: data,
         queryParameters: parameters,
@@ -105,21 +118,22 @@ class Api {
       throw Exception('Erreur lors de la requête : $error');
     }
   }
-  static Future<Response> deleteData(
-      String apiUrl,
-      Map<String, dynamic>? data,
-      Map<String, dynamic>? parameters,
-      Map<String, dynamic>? headers,
-      ) async {
+
+  Future<Response> deleteData(
+    String apiUrl,
+    Map<String, dynamic>? data,
+    Map<String, dynamic>? parameters,
+    Map<String, dynamic>? headers,
+  ) async {
     final options = Options(
       headers: headers,
       contentType: 'application/json',
     );
 
-    final String url = baseUrl+apiUrl;
+    final String url = baseUrl + apiUrl;
 
     try {
-      final response = await _dio.delete(
+      final response = await dio.delete(
         url,
         data: data,
         queryParameters: parameters,

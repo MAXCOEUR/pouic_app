@@ -16,7 +16,7 @@ class UserController {
 
   void addUser_inListe(int page,String search,Function callBack,Function callBackError){
     String AuthorizationToken='Bearer '+loginModel.token;
-    Api.getData(
+    Api.instance.getData(
         "user", {'search': search, 'page': page}, {'Authorization': AuthorizationToken})
         .then(
             (response) {
@@ -36,7 +36,7 @@ class UserController {
   }
   void addAmis_inListe(int page,String search,Function callBack,Function callBackError){
     String AuthorizationToken='Bearer '+loginModel.token;
-    Api.getData(
+    Api.instance.getData(
         "amis", {'search': search, 'page': page}, {'Authorization': AuthorizationToken})
         .then(
             (response) {
@@ -56,7 +56,7 @@ class UserController {
   }
   void addDemande_inListe(int page,String search,Function callBack,Function callBackError){
     String AuthorizationToken='Bearer '+loginModel.token;
-    Api.getData(
+    Api.instance.getData(
         "amis/demande", {'search': search, 'page': page}, {'Authorization': AuthorizationToken})
         .then(
             (response) {
@@ -76,7 +76,7 @@ class UserController {
   }
   void addSendDemande_inListe(int page,String search,Function callBack,Function callBackError){
     String AuthorizationToken='Bearer '+loginModel.token;
-    Api.getData(
+    Api.instance.getData(
         "amis/demande/send", {'search': search, 'page': page}, {'Authorization': AuthorizationToken})
         .then(
             (response) {
@@ -96,7 +96,7 @@ class UserController {
   }
   void addUserConv_inListe(Conversation conversation,int page,String search,Function callBack,Function callBackError){
     String AuthorizationToken='Bearer '+loginModel.token;
-    Api.getData(
+    Api.instance.getData(
         "conv/user", {'id_conversation':conversation.id,'search': search, 'page': page}, {'Authorization': AuthorizationToken})
         .then(
             (response) {

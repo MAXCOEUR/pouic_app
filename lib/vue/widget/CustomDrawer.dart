@@ -36,15 +36,15 @@ class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 10),
-                Text(lm.user.uniquePseudo),
-                Text(lm.user.pseudo),
+                SizedBox(height: SizeMarginPading.h3),
+                Text("@"+lm.user.uniquePseudo,style: TextStyle(fontSize: SizeFont.h3)),
+                Text(lm.user.pseudo,style: TextStyle(fontSize: SizeFont.p1)),
               ],
             ),
           ),
           ListTile(
             leading: Icon(Icons.account_circle),
-            title: Text("Profil"),
+            title: Text("Profil",style: TextStyle(fontSize: SizeFont.p1)),
             onTap: () {
               Navigator.push(
                 context,
@@ -54,7 +54,7 @@ class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
           ),
           ListTile(
             leading: Icon(Icons.logout),
-            title: Text("Deconexion"),
+            title: Text("Deconexion",style: TextStyle(fontSize: SizeFont.p1)),
             onTap: () {
               Navigator.pop(context);
               Navigator.pop(context);

@@ -18,7 +18,7 @@ class ConversationC {
     String AuthorizationToken='Bearer '+loginModel.token;
     Conversation u;
     try {
-      final responseCreate = await Api.postData(
+      final responseCreate = await Api.instance.postData(
         'conv',
         {'name': conversation.name},
         null,
@@ -36,7 +36,7 @@ class ConversationC {
         return ;
       }
 
-      final response = await Api.postDataMultipart(
+      final response = await Api.instance.postDataMultipart(
         'conv/upload',
         {'avatar': await MultipartFile.fromFile(imageFile.path),'uniquePseudo':u.id},
         null,
@@ -57,7 +57,7 @@ class ConversationC {
   void deleteConv(Conversation conversation,Function callBack,Function callBackError) {
     LoginModel loginModel =Constant.loginModel!;
     String AuthorizationToken='Bearer ${loginModel.token}';
-    Api.deleteData(
+    Api.instance.deleteData(
         "conv", null, {'id_conversation': conversation.id}, {'Authorization': AuthorizationToken})
         .then(
           (response) {
@@ -73,7 +73,7 @@ class ConversationC {
   Future<void> putConv(Conversation conversation,File imageFile,Function callBack,Function callBackError) async {
     LoginModel loginModel = Constant.loginModel!;
     String AuthorizationToken='Bearer ${loginModel.token}';
-    Api.putData(
+    Api.instance.putData(
         "conv", {'name': conversation.name,'uniquePseudo_admin': conversation.uniquePseudo_admin}, {'id_conversation':conversation.id}, {'Authorization': AuthorizationToken})
         .then(
           (response) {
@@ -85,7 +85,7 @@ class ConversationC {
       },
     );
     try {
-      final responseCreate = await Api.putData(
+      final responseCreate = await Api.instance.putData(
         'conv',
         {'name': conversation.name,'uniquePseudo_admin': conversation.uniquePseudo_admin},
         {'id_conversation':conversation.id},
@@ -101,7 +101,7 @@ class ConversationC {
         return ;
       }
 
-      final response = await Api.postDataMultipart(
+      final response = await Api.instance.postDataMultipart(
         'conv/upload',
         {'avatar': await MultipartFile.fromFile(imageFile.path),'uniquePseudo':conversation.id},
         null,
@@ -121,7 +121,7 @@ class ConversationC {
   void getUserShort(Conversation conversation,Function callBack,Function callBackError) {
     LoginModel loginModel =Constant.loginModel!;
     String AuthorizationToken='Bearer ${loginModel.token}';
-    Api.getData(
+    Api.instance.getData(
         "conv/user/short", {'id_conversation': conversation.id}, {'Authorization': AuthorizationToken})
         .then(
           (response) {
@@ -138,7 +138,7 @@ class ConversationC {
   void deleteUser(User user,Conversation conversation,Function callBack,Function callBackError) {
     LoginModel loginModel =Constant.loginModel!;
     String AuthorizationToken='Bearer ${loginModel.token}';
-    Api.deleteData(
+    Api.instance.deleteData(
         "conv/user", null, {'uniquePseudo': user.uniquePseudo,'id_conversation':conversation.id}, {'Authorization': AuthorizationToken})
         .then(
           (response) {
@@ -153,7 +153,7 @@ class ConversationC {
   void addUser(User user,Conversation conversation,Function callBack,Function callBackError) {
     LoginModel loginModel =Constant.loginModel!;
     String AuthorizationToken='Bearer ${loginModel.token}';
-    Api.postData(
+    Api.instance.postData(
         "conv/user", {'uniquePseudo': user.uniquePseudo,'id_conversation':conversation.id}, null, {'Authorization': AuthorizationToken})
         .then(
           (response) {

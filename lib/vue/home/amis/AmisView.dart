@@ -62,21 +62,3 @@ class _AmisViewState extends State<AmisView> {
     );
   }
 }
-
-
-class ConversationTest extends StatelessWidget{
-  ConversationTest({super.key});
-  LoginModel lm = Constant.loginModel!;
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(lm.user.uniquePseudo),
-          //Image.memory(lm.user.Avatar!)
-        ],
-      ),
-    );
-  }
-}

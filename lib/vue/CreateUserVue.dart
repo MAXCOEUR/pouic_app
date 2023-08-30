@@ -125,7 +125,7 @@ class _CreateUserVueState extends State<CreateUserVue> {
                 controller: userNameUnique,
                 decoration: const InputDecoration(
                   border: UnderlineInputBorder(),
-                  labelText: 'Entrée votre userNameUnique',
+                  labelText: 'Entrée votre @',
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {

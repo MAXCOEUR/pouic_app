@@ -63,3 +63,21 @@ class Constant{
   }
 
 }
+
+class SizeFont{
+  static double h1 = 26;
+  static double h2 = 24;
+  static double h3 = 20;
+  static double p1 = 16;
+  static double p2 = 12;
+}
+class SizeMarginPading{
+  static double h1 = 16;
+  static double h2 = 12;
+  static double h3 = 8;
+  static double p1 = 4;
+  static double p2 = 2;
+}
+class SizeBorder{
+  static double radius = 10;
+}
