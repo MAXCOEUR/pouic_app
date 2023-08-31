@@ -422,25 +422,25 @@ class _MessagerieViewState extends State<MessagerieView> {
           if (pickedFile.path != null) {
             if(pickedFile.extension!=null){
               if(pickedFile.extension==".mp4"||pickedFile.extension==".avi"){
-                if (pickedFile.size < 100000000) {
+                if (pickedFile.size < 75000000) {
                   listeFile.add(pickedFile.path!);
                 } else {
                   Constant.showAlertDialog(context, "Erreur",
-                      "la video ${pickedFile.path} fait plus de 100Mo");
+                      "la video ${pickedFile.path} fait plus de 75Mo");
                 }
               }else if(pickedFile.extension==".mp3"||pickedFile.extension==".aac"){
+                if (pickedFile.size < 20000000) {
+                  listeFile.add(pickedFile.path!);
+                } else {
+                  Constant.showAlertDialog(context, "Erreur",
+                      "le audio ${pickedFile.path} fait plus de 20Mo");
+                }
+              }else{
                 if (pickedFile.size < 10000000) {
                   listeFile.add(pickedFile.path!);
                 } else {
                   Constant.showAlertDialog(context, "Erreur",
-                      "le audio ${pickedFile.path} fait plus de 10Mo");
-                }
-              }else{
-                if (pickedFile.size < 5000000) {
-                  listeFile.add(pickedFile.path!);
-                } else {
-                  Constant.showAlertDialog(context, "Erreur",
-                      "le fichier ${pickedFile.path} fait plus de 5Mo");
+                      "le fichier ${pickedFile.path} fait plus de 10Mo");
                 }
               }
             }

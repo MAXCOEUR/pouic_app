@@ -40,9 +40,9 @@ class _CreateUserVueState extends State<CreateUserVue> {
     if (pickedImage != null) {
       File imageTmp = File(pickedImage.path);
 
-      if (imageTmp.lengthSync() > 5 * 1024 * 1024) {
-        print('Veuillez sélectionner une image de moins de 5 Mo.');
-        Constant.showAlertDialog(context, "Erreur", "Veuillez sélectionner une image de moins de 5 Mo.");
+      if (imageTmp.lengthSync() > 10 * 1024 * 1024) {
+        print('Veuillez sélectionner une image de moins de 10 Mo.');
+        Constant.showAlertDialog(context, "Erreur", "Veuillez sélectionner une image de moins de 10 Mo.");
         return;
       }
 
