@@ -1,3 +1,4 @@
+import 'package:discution_app/Controller/HomeController.dart';
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Constant.dart';
 import 'package:discution_app/outil/LoginSingleton.dart';
@@ -22,8 +23,7 @@ class AmisView extends StatefulWidget {
 }
 
 class _AmisViewState extends State<AmisView> {
-  int _selectedIndex = 0; // 0 pour convTest, 1 pour mesTest
-
+  int _selectedIndex = 0;
   void _onItemTapped(int index) {
     print(index);
     setState(() {

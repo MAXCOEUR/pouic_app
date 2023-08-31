@@ -61,7 +61,7 @@ class MessagesController {
     if(listeString.length>0){
       sendFile(listeString,message);
     }
-    //luMessage(data["id"]);
+    luMessage(message.id);
     callBack();
   }
 

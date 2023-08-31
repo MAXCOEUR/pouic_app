@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginModelProvider {
-  LoginModelProvider(Function callBack){
+  LoginModelProvider._privateConstructor(Function callBack){
     getLoginModelFromCache().then(
             (value) {
               _loginModel=value;
@@ -31,7 +31,7 @@ class LoginModelProvider {
   static LoginModelProvider? _instance;
 
   static LoginModelProvider getInstance(Function callBack) {
-    _instance ??= LoginModelProvider(callBack);
+    _instance ??= LoginModelProvider._privateConstructor(callBack);
     return _instance!;
   }
 

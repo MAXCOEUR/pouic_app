@@ -2,6 +2,7 @@ import 'package:discution_app/Controller/ConversationsController.dart';
 import 'package:discution_app/Model/ConversationListeModel.dart';
 import 'package:discution_app/Model/ConversationModel.dart';
 import 'package:discution_app/outil/LoginSingleton.dart';
+import 'package:discution_app/outil/SocketSingleton.dart';
 import 'package:discution_app/vue/CreateConversationVue.dart';
 import 'package:discution_app/vue/ItemListeView/ConversationItemListeView.dart';
 import 'package:discution_app/vue/home/message/MessagerieView.dart';
@@ -15,68 +16,75 @@ import '../../outil/Constant.dart';
 import '../ItemListeView/UserItemListeView.dart';
 import 'UserDetailView.dart';
 
-class ConversationListeView extends StatefulWidget{
-  final LoginModel lm= LoginModelProvider.getInstance((){}).loginModel!;
+class ConversationListeView extends StatefulWidget {
+  final LoginModel lm = LoginModelProvider.getInstance(() {}).loginModel!;
+
   ConversationListeView({super.key});
 
   @override
   State<ConversationListeView> createState() => _ConversationListeViewState();
 }
-class _ConversationListeViewState extends State<ConversationListeView> {
 
-  ConversationListe conversations=ConversationListe();
+class _ConversationListeViewState extends State<ConversationListeView> {
+  ConversationListe conversations = ConversationListe();
   ConversationController? conversationController;
 
-  String rechercheInput="";
+  String rechercheInput = "";
 
   final ScrollController _scrollController = ScrollController();
-  int page=0;
+  int page = 0;
   bool isLoadingMore = false;
 
-  _ConversationListeViewState(){
-    conversationController = ConversationController(conversations,reponseUpdate);
+  _ConversationListeViewState() {
+    conversationController =
+        ConversationController(conversations, reponseUpdate);
     recherche(rechercheInput);
   }
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_onScroll); // Ajoute un écouteur pour le défilement
+    _scrollController
+        .addListener(_onScroll); // Ajoute un écouteur pour le défilement
   }
 
-  void reponseUpdate(){
+  void reponseUpdate() {
     if (mounted) {
       setState(() {
         // Votre code de mise à jour de l'état ici
       });
     }
   }
-  void reponseUpdateError(Exception ex){
-    Constant.showAlertDialog(context,"Erreur","erreur lors de la requette a l'api : "+ex.toString());
+
+  void reponseUpdateError(Exception ex) {
+    Constant.showAlertDialog(context, "Erreur",
+        "erreur lors de la requette a l'api : " + ex.toString());
   }
 
   Future<void> _refreshData() async {
     recherche(rechercheInput);
   }
 
-  void recherche(String recherche){
-    page=0;
+  void recherche(String recherche) {
+    page = 0;
     conversationController!.removeAllConversation_inListe();
-    conversationController!.addConversation_inListe(page, recherche, reponseUpdate,reponseUpdateError);
+    conversationController!.addConversation_inListe(
+        page, recherche, reponseUpdate, reponseUpdateError);
   }
 
   void _onScroll() {
     if (_scrollController.position.atEdge &&
         _scrollController.position.pixels != 0 &&
         !isLoadingMore) {
-
       // Lorsque l'utilisateur atteint le bas de la liste
       setState(() {
-        isLoadingMore = true; // Définir isLoadingMore à true pour indiquer le chargement
+        isLoadingMore =
+            true; // Définir isLoadingMore à true pour indiquer le chargement
       });
 
       page++; // Augmenter le numéro de page pour charger la page suivante
-      conversationController!.addConversation_inListe(page, "", reponseUpdate,reponseUpdateError);
+      conversationController!
+          .addConversation_inListe(page, "", reponseUpdate, reponseUpdateError);
 
       // Après avoir chargé les données, définissez isLoadingMore à false
       setState(() {
@@ -85,15 +93,17 @@ class _ConversationListeViewState extends State<ConversationListeView> {
     }
   }
 
-  void OpenConversation(Conversation conversation)async{
-      await Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => MessagerieView(conv:conversation)),
-      );
-      // Appeler _refreshData ici pour actualiser les données
-      _refreshData();
+  void OpenConversation(Conversation conversation) async {
+    conversationController!.setIdConvertationOpen(conversation.id);
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => MessagerieView(conv: conversation)),
+    );
+    conversationController!.setNullIdConvertationOpen();
+    _refreshData();
+    SocketSingleton.instance.socket.emit("updateMessageNonLu",{'token':widget.lm.token});
   }
-
 
   Widget _buildConversationListTile(Conversation conversation) {
     return ConversationItemListeView(
@@ -105,7 +115,7 @@ class _ConversationListeViewState extends State<ConversationListeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body :RefreshIndicator(
+      body: RefreshIndicator(
         onRefresh: _refreshData,
         child: Container(
           color: Theme.of(context).colorScheme.primary,
@@ -123,7 +133,8 @@ class _ConversationListeViewState extends State<ConversationListeView> {
                   controller: _scrollController,
                   child: ListView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(), // Disable inner ListView's scrolling
+                    physics: NeverScrollableScrollPhysics(),
+                    // Disable inner ListView's scrolling
                     itemCount: conversations.conversations.length,
                     itemBuilder: (context, index) {
                       final conversation = conversations.conversations[index];
@@ -141,7 +152,11 @@ class _ConversationListeViewState extends State<ConversationListeView> {
           Conversation conv = Conversation(0, "", "", 0);
           await Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CreateConversationVue(conversation: conv,created: true,)),
+            MaterialPageRoute(
+                builder: (context) => CreateConversationVue(
+                      conversation: conv,
+                      created: true,
+                    )),
           );
           // Appeler _refreshData ici pour actualiser les données
           _refreshData();
@@ -150,5 +165,4 @@ class _ConversationListeViewState extends State<ConversationListeView> {
       ),
     );
   }
-
 }

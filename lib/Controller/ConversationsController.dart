@@ -20,14 +20,20 @@ class ConversationController{
   final Socket _socket = SocketSingleton.instance.socket;
   Function callBack;
   FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
+  int? idConvertationOpen;
 
   ConversationController(this.conversations,this.callBack){
     _socket.on("recevoirMessage", _handleReceivedMessage);
-
     if(Platform.isAndroid || Platform.isIOS||Platform.isLinux || Platform.isMacOS){
       flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
       initNotif();
     }
+  }
+  void setIdConvertationOpen(int idConvertation){
+    idConvertationOpen=idConvertation;
+  }
+  void setNullIdConvertationOpen(){
+    idConvertationOpen=null;
   }
   Future<void> initNotif () async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -45,14 +51,16 @@ class ConversationController{
   }
   void _handleReceivedMessage(data) {
     Map<String,dynamic> messageMap = data["message"];
+    User user = User(messageMap["email"], messageMap["uniquePseudo"], messageMap["pseudo"], messageMap["Avatar"]);
+    MessageModel message = MessageModel(messageMap["id"], user, messageMap["Message"], DateTime.parse(messageMap["date"]), messageMap["id_conversation"],true,[]);
     int idConv = messageMap["id_conversation"];
     for(Conversation conv in conversations.conversations){
       if(conv.id==idConv){
         conv.unRead++;
-        if(flutterLocalNotificationsPlugin!=null){
-          User user = User(messageMap["email"], messageMap["uniquePseudo"], messageMap["pseudo"], messageMap["Avatar"]);
-          MessageModel message = MessageModel(messageMap["id"], user, messageMap["Message"], DateTime.parse(messageMap["date"]), messageMap["id_conversation"],true,[]);
-          showCustomNotification(message,conv);
+        if(message.user!=loginModel.user && idConvertationOpen!=idConv){
+          if(flutterLocalNotificationsPlugin!=null){
+            showCustomNotification(message,conv);
+          }
         }
         callBack();
       }
