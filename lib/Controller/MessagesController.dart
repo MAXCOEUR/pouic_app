@@ -89,7 +89,7 @@ class MessagesController {
         );
 
         if (response.statusCode == 200) {
-          callBack();
+          //callBack();
         } else {
           throw Exception();
         }

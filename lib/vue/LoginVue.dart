@@ -6,6 +6,7 @@ import 'package:discution_app/vue/CreateUserVue.dart';
 import 'package:flutter/material.dart';
 import 'package:discution_app/vue/home/HomeView.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Controller/LoginController.dart';
 
@@ -95,6 +96,7 @@ class _LoginVueState extends State<LoginVue> {
   }
   void reponseLoginUser(LoginModel lm){
     LoginModelProvider.instance.setLoginModel(lm);
+    storeTokenInCache(lm.token);
     widget.updateMain();
   }
   void reponseLoginUserErreur(DioException ex){
@@ -104,6 +106,10 @@ class _LoginVueState extends State<LoginVue> {
     else{
       Constant.showAlertDialog(context, "Erreur", "Une erreur s'est produite lors de la connextion");
     }
+  }
+  void storeTokenInCache(String token) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('authToken', token);
   }
 }
 

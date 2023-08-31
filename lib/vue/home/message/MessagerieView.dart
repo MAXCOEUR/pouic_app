@@ -4,6 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:discution_app/Controller/ConversationC.dart';
 import 'package:discution_app/Controller/MessagesController.dart';
 import 'package:discution_app/Model/ConversationModel.dart';
+import 'package:discution_app/Model/FileModel.dart';
 import 'package:discution_app/Model/MessageListeModel.dart';
 import 'package:discution_app/Model/MessageModel.dart';
 import 'package:discution_app/Model/UserModel.dart';
@@ -368,8 +369,8 @@ class _MessagerieViewState extends State<MessagerieView> {
                         messageText, listeFile);
                     setState(() {
                       listeFile.clear();
+                      _messageController.clear();
                     });
-                    _messageController.clear();
                   },
                   child: Container(
                     padding: EdgeInsets.all(SizeMarginPading.h3),
@@ -452,11 +453,10 @@ class _MessagerieViewState extends State<MessagerieView> {
     Constant.showAlertDialog(context, "Erreur",
         "erreur lors de la requette a l'api : " + ex.toString());
   }
-
   reponseUpdate() {
     if (mounted) {
       setState(() {
-        // Votre code de mise à jour de l'état ici
+
       });
     }
   }
