@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 import '../widget/CustomAppBar.dart';
 
 class UserDetailleView extends StatefulWidget{
-  final LoginModel lm= LoginModelProvider.instance.loginModel!;
+  final LoginModel lm= LoginModelProvider.getInstance((){}).loginModel!;
   final User user;
   UserDetailleView(this.user,{super.key});
 

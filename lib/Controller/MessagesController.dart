@@ -20,7 +20,7 @@ class MessagesController {
   MessageListe messages;
   Conversation conversation;
   final Socket _socket = SocketSingleton.instance.socket;
-  LoginModel lm = LoginModelProvider.instance.loginModel!;
+  LoginModel lm = LoginModelProvider.getInstance((){}).loginModel!;
   Function callBack;
 
   MessagesController(this.messages, this.conversation,this.callBack) {

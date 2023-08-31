@@ -13,7 +13,7 @@ import '../Model/UserModel.dart';
 import '../outil/Api.dart';
 
 class ConversationC {
-  LoginModel loginModel = LoginModelProvider.instance.loginModel!;
+  LoginModel loginModel = LoginModelProvider.getInstance((){}).loginModel!;
 
   Future<void> create(Conversation conversation,File imageFile,Function callBack,Function callBackError) async {
     String AuthorizationToken='Bearer '+loginModel.token;

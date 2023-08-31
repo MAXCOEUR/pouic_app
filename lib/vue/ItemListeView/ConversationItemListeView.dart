@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 class ConversationItemListeView extends StatelessWidget {
   final Conversation conversation;
-  final LoginModel lm = LoginModelProvider.instance.loginModel!;
+  final LoginModel lm = LoginModelProvider.getInstance((){}).loginModel!;
   Function onTap;
 
   ConversationItemListeView({super.key, required this.conversation, required this.onTap});

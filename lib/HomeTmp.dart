@@ -6,18 +6,19 @@ import 'package:flutter/material.dart';
 class HomeTmp extends StatefulWidget {
 
   @override
-  State<HomeTmp> createState() => _HomeTmpState();
+  State<HomeTmp> createState() => HomeTmpState();
 }
 
-class _HomeTmpState extends State<HomeTmp> {
+class HomeTmpState extends State<HomeTmp> {
+
   void update(){
-    print("update");
+    print(LoginModelProvider.getInstance(update).loginModel);
     setState(() {});
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: LoginModelProvider.instance.loginModel != null ? HomeView(updateMain: update,) : LoginVue(updateMain: update,),
+      body: LoginModelProvider.getInstance(update).loginModel != null ? HomeView(updateMain: update,) : LoginVue(updateMain: update,),
     );
   }
 

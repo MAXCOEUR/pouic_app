@@ -15,7 +15,7 @@ import 'package:intl/intl.dart';
 
 class MessageItemListeView extends StatelessWidget {
   final MessageModel message;
-  final LoginModel lm = LoginModelProvider.instance.loginModel!;
+  final LoginModel lm = LoginModelProvider.getInstance((){}).loginModel!;
   late final BuildContext context;
 
   MessageItemListeView(

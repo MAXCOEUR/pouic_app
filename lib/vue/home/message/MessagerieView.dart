@@ -26,7 +26,7 @@ class MessagerieView extends StatefulWidget {
   MessagerieView({super.key, required this.conv});
 
   Conversation conv;
-  final LoginModel lm = LoginModelProvider.instance.loginModel!;
+  final LoginModel lm = LoginModelProvider.getInstance((){}).loginModel!;
   ConversationC conversationC = ConversationC();
 
   @override

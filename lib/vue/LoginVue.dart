@@ -95,8 +95,7 @@ class _LoginVueState extends State<LoginVue> {
     loginController.ask(userName_Email.text, mdp.text,reponseLoginUser,reponseLoginUserErreur);
   }
   void reponseLoginUser(LoginModel lm){
-    LoginModelProvider.instance.setLoginModel(lm);
-    storeTokenInCache(lm.token);
+    LoginModelProvider.getInstance((){}).setLoginModel(lm);
     widget.updateMain();
   }
   void reponseLoginUserErreur(DioException ex){
@@ -106,10 +105,6 @@ class _LoginVueState extends State<LoginVue> {
     else{
       Constant.showAlertDialog(context, "Erreur", "Une erreur s'est produite lors de la connextion");
     }
-  }
-  void storeTokenInCache(String token) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('authToken', token);
   }
 }
 

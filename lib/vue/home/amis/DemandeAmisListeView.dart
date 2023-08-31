@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 
 
 class DemandeAmisListeView extends StatefulWidget{
-  final LoginModel lm= LoginModelProvider.instance.loginModel!;
+  final LoginModel lm= LoginModelProvider.getInstance((){}).loginModel!;
   DemandeAmisListeView({super.key});
 
   @override

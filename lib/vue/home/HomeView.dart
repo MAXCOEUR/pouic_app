@@ -17,7 +17,7 @@ class HomeView extends StatefulWidget {
   HomeView({super.key,required this.updateMain}){
     SocketSingleton.instance.reconnect();
   }
-  final LoginModel lm=LoginModelProvider.instance.loginModel!;
+  final LoginModel lm=LoginModelProvider.getInstance((){}).loginModel!;
 
   final ConversationListeView convView=ConversationListeView();
   final RechercheListeView rechercheView=RechercheListeView();

@@ -10,7 +10,7 @@ class UserItemListeView extends StatelessWidget {
   Function onTap;
   int type;
   Function? onTapButtonRight;
-  LoginModel lm = LoginModelProvider.instance.loginModel!;
+  LoginModel lm = LoginModelProvider.getInstance((){}).loginModel!;
 
   UserItemListeView(
       {super.key,

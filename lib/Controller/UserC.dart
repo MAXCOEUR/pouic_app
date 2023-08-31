@@ -11,7 +11,7 @@ import '../Model/UserModel.dart';
 import '../outil/Api.dart';
 
 class UserC {
-  LoginModel loginModel=LoginModelProvider.instance.loginModel!;
+  LoginModel loginModel=LoginModelProvider.getInstance((){}).loginModel!;
   Future<void> create(User user,File imageFile,String passWord,Function callBack,Function callBackError) async {
     User u;
     try {

@@ -19,7 +19,7 @@ class CreateConversationVue extends StatefulWidget {
   CreateConversationVue(
       {super.key, required this.conversation, required this.created});
 
-  final LoginModel lm = LoginModelProvider.instance.loginModel!;
+  final LoginModel lm = LoginModelProvider.getInstance((){}).loginModel!;
   final String title = "CreateConversation Vue";
   Conversation conversation;
   bool created;

@@ -5,7 +5,7 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class SocketSingleton {
   late IO.Socket socket;
-  final LoginModel lm = LoginModelProvider.instance.loginModel!;
+  final LoginModel lm = LoginModelProvider.getInstance((){}).loginModel!;
 
   // Constructeur privé
   SocketSingleton._privateConstructor() {

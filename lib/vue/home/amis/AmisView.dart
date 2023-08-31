@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 
 class AmisView extends StatefulWidget {
   AmisView({super.key});
-  final LoginModel lm=LoginModelProvider.instance.loginModel!;
+  final LoginModel lm=LoginModelProvider.getInstance((){}).loginModel!;
 
   final AmisListeView amisTest=AmisListeView();
   final DemandeAmisListeView demandeAmisTest=DemandeAmisListeView();

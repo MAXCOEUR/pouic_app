@@ -10,7 +10,7 @@ class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
   Function updateMain;
   CustomDrawer({required this.updateMain});
 
-  LoginModel lm = LoginModelProvider.instance.loginModel!;
+  LoginModel lm = LoginModelProvider.getInstance((){}).loginModel!;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,7 @@ class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
             leading: Icon(Icons.logout),
             title: Text("Deconexion",style: TextStyle(fontSize: SizeFont.p1)),
             onTap: () {
-              LoginModelProvider.instance.setLoginModel(null);
+              LoginModelProvider.getInstance((){}).setLoginModel(null);
               updateMain();
             },
           ),

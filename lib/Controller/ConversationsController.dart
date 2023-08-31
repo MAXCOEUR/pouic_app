@@ -16,7 +16,7 @@ import 'package:socket_io_client/socket_io_client.dart';
 
 class ConversationController{
   ConversationListe conversations;
-  LoginModel loginModel = LoginModelProvider.instance.loginModel!;
+  LoginModel loginModel = LoginModelProvider.getInstance((){}).loginModel!;
   final Socket _socket = SocketSingleton.instance.socket;
   Function callBack;
   FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;

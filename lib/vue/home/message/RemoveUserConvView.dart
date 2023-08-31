@@ -11,7 +11,7 @@ import 'package:discution_app/vue/widget/SearchTextField.dart';
 import 'package:flutter/material.dart';
 
 class RemoveUserConvView extends StatefulWidget{
-  final LoginModel lm= LoginModelProvider.instance.loginModel!;
+  final LoginModel lm= LoginModelProvider.getInstance((){}).loginModel!;
   Conversation conversation;
   RemoveUserConvView({required this.conversation,super.key});
 

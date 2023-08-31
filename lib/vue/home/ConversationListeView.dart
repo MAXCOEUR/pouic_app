@@ -16,7 +16,7 @@ import '../ItemListeView/UserItemListeView.dart';
 import 'UserDetailView.dart';
 
 class ConversationListeView extends StatefulWidget{
-  final LoginModel lm= LoginModelProvider.instance.loginModel!;
+  final LoginModel lm= LoginModelProvider.getInstance((){}).loginModel!;
   ConversationListeView({super.key});
 
   @override

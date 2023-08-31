@@ -10,7 +10,7 @@ import '../ItemListeView/UserItemListeView.dart';
 import 'UserDetailView.dart';
 
 class RechercheListeView extends StatefulWidget{
-  final LoginModel lm= LoginModelProvider.instance.loginModel!;
+  final LoginModel lm= LoginModelProvider.getInstance((){}).loginModel!;
   RechercheListeView({super.key});
 
   @override

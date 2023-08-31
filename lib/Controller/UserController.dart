@@ -13,7 +13,7 @@ import '../outil/Api.dart';
 class UserController {
   UserListe users;
   UserController(this.users);
-  LoginModel loginModel = LoginModelProvider.instance.loginModel!;
+  LoginModel loginModel = LoginModelProvider.getInstance((){}).loginModel!;
 
   void addUser_inListe(int page,String search,Function callBack,Function callBackError){
     String AuthorizationToken='Bearer '+loginModel.token;

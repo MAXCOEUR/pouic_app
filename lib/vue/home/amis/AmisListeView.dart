@@ -10,7 +10,7 @@ import 'package:discution_app/vue/widget/SearchTextField.dart';
 import 'package:flutter/material.dart';
 
 class AmisListeView extends StatefulWidget{
-  final LoginModel lm= LoginModelProvider.instance.loginModel!;
+  final LoginModel lm= LoginModelProvider.getInstance((){}).loginModel!;
   AmisListeView({super.key});
 
   @override
