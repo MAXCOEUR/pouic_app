@@ -136,6 +136,7 @@ class _HomeViewState extends State<HomeView> {
   @override
   void dispose() {
     SocketSingleton.instance.disconnect();
+    homeController.dispose();
     super.dispose();
   }
 }

@@ -19,6 +19,13 @@ class HomeController{
     askApiNbrMessageNonLu();
     askApiNbrDemande();
   }
+  void dispose() {
+    _socket.off("recevoirMessage", _handleReceivedMessage);
+    _socket.off("demandeAmis", _handledemandeAmis);
+    _socket.off("newAmis", _handlenewAmis);
+    _socket.off("deleteAmis", _handledeleteAmis);
+    _socket.off("updateMessageNonLu", _handleupdateMessageNonLu);
+  }
 
   void askApiNbrMessageNonLu() async {
     String AuthorizationToken='Bearer '+loginModel.token;

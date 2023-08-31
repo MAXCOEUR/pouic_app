@@ -140,8 +140,7 @@ class MessageItemListeView extends StatelessWidget {
               child: Constant.buildImageOrIcon(
                   Constant.baseUrlAvatarUser +
                       "/" +
-                      message.user.uniquePseudo +
-                      ".png",
+                      message.user.uniquePseudo,
                   Icon(Icons.account_circle)),
             ),
           ),

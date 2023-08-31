@@ -42,16 +42,16 @@ class Constant{
   }
 
   static Widget buildImageOrIcon(String imageUrl,Icon icon) {
-    return FutureBuilder<bool>(
-      future: _checkImageExists(imageUrl),
+    return FutureBuilder<String?>(
+      future: _findAvailableImage(imageUrl),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator();
         } else if (snapshot.hasError) {
           return Icon(Icons.error);
-        } else if (snapshot.data == true) {
+        } else if (snapshot.data != null) {
           return Image.network(
-            imageUrl,
+            snapshot.data!,
             fit: BoxFit.cover,
           );
         } else {
@@ -59,6 +59,19 @@ class Constant{
         }
       },
     );
+  }
+  static Future<String?> _findAvailableImage(String baseUrl) async {
+    final List<String> imageExtensions = ['.png', '.jpg', '.jpeg', '.gif'];
+
+    for (final extension in imageExtensions) {
+      final imageUrl = '$baseUrl$extension';
+      final imageExists = await _checkImageExists(imageUrl);
+      if (imageExists) {
+        return imageUrl;
+      }
+    }
+
+    return null; // No available image with supported extensions
   }
 
 }

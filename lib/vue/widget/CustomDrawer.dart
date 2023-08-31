@@ -34,7 +34,7 @@ class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
                   ),
                   child: ClipOval(
                     child: Constant.buildImageOrIcon(
-                        Constant.baseUrlAvatarUser+"/"+lm.user.uniquePseudo+".png",
+                        Constant.baseUrlAvatarUser+"/"+lm.user.uniquePseudo,
                         Icon(Icons.account_circle)
                     ),
                   ),

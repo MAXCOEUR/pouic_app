@@ -46,7 +46,7 @@ class _UserListeViewState extends State<UserDetailleView> {
                 ),
                 child: ClipOval(
                   child: Constant.buildImageOrIcon(
-                      Constant.baseUrlAvatarUser+"/"+widget.user.uniquePseudo+".png",
+                      Constant.baseUrlAvatarUser+"/"+widget.user.uniquePseudo,
                       Icon(Icons.account_circle)
                   ),
                 ),

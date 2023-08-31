@@ -48,7 +48,7 @@ class UserItemListeView extends StatelessWidget {
                     ),
                     child: ClipOval(
                       child: Constant.buildImageOrIcon(
-                          Constant.baseUrlAvatarUser+"/"+user.uniquePseudo+".png",
+                          Constant.baseUrlAvatarUser+"/"+user.uniquePseudo,
                           Icon(Icons.account_circle)
                       ),
                     ),

@@ -40,11 +40,17 @@ class _CreateUserVueState extends State<CreateUserVue> {
     if (pickedImage != null) {
       File imageTmp = File(pickedImage.path);
 
-      if (imageTmp.path.toLowerCase().endsWith('.png')) {
+      if (imageTmp.lengthSync() > 5 * 1024 * 1024) {
+        print('Veuillez sélectionner une image de moins de 5 Mo.');
+        Constant.showAlertDialog(context, "Erreur", "Veuillez sélectionner une image de moins de 5 Mo.");
+        return;
+      }
+
+      if (imageTmp.path.toLowerCase().endsWith('.png')||imageTmp.path.toLowerCase().endsWith('.jpg')||imageTmp.path.toLowerCase().endsWith('.jpeg')||imageTmp.path.toLowerCase().endsWith('.gif')) {
         imageFile = imageTmp;
       } else {
-        print('Veuillez sélectionner une image au format PNG.');
-        Constant.showAlertDialog(context, "erreur", "Veuillez sélectionner une image au format PNG.");
+        print('Veuillez sélectionner une image au format PNG jpg jpeg ou gif.');
+        Constant.showAlertDialog(context, "erreur", "Veuillez sélectionner une image au format PNG jpg jpeg ou gif.");
         return;
       }
 
@@ -107,7 +113,7 @@ class _CreateUserVueState extends State<CreateUserVue> {
       );
     } else {
       return Constant.buildImageOrIcon(
-          Constant.baseUrlAvatarUser+"/"+widget.user.uniquePseudo+".png",
+          Constant.baseUrlAvatarUser+"/"+widget.user.uniquePseudo,
           Icon(Icons.add_a_photo)
       );
     }

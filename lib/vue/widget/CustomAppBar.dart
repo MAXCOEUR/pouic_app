@@ -32,7 +32,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
               child: ClipOval(
                 child: Constant.buildImageOrIcon(
-                    Constant.baseUrlAvatarUser+"/"+u.uniquePseudo+".png",
+                    Constant.baseUrlAvatarUser+"/"+u.uniquePseudo,
                     Icon(Icons.account_circle)
                 ),
               ),

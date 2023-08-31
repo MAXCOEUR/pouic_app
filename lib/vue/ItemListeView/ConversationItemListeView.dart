@@ -39,7 +39,7 @@ class ConversationItemListeView extends StatelessWidget {
                     ),
                     child: ClipOval(
                       child: Constant.buildImageOrIcon(
-                          Constant.baseUrlAvatarConversation+"/"+conversation.id.toString()+".png",
+                          Constant.baseUrlAvatarConversation+"/"+conversation.id.toString(),
                           Icon(Icons.comment)
                       ),
                     ),

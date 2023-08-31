@@ -178,8 +178,7 @@ class _MessagerieViewState extends State<MessagerieView> {
               child: Constant.buildImageOrIcon(
                   Constant.baseUrlAvatarConversation +
                       "/" +
-                      widget.conv.id.toString() +
-                      ".png",
+                      widget.conv.id.toString(),
                   Icon(Icons.comment)),
             ),
           ),
@@ -421,12 +420,32 @@ class _MessagerieViewState extends State<MessagerieView> {
       for (var pickedFile in pickedFiles.files) {
         setState(() {
           if (pickedFile.path != null) {
-            if (pickedFile.size < 100000000) {
-              listeFile.add(pickedFile.path!);
-            } else {
-              Constant.showAlertDialog(context, "Erreur",
-                  "le fichier ${pickedFile.path} fait plus de 100Mo");
+            if(pickedFile.extension!=null){
+              if(pickedFile.extension==".mp4"||pickedFile.extension==".avi"){
+                if (pickedFile.size < 100000000) {
+                  listeFile.add(pickedFile.path!);
+                } else {
+                  Constant.showAlertDialog(context, "Erreur",
+                      "la video ${pickedFile.path} fait plus de 100Mo");
+                }
+              }else if(pickedFile.extension==".mp3"||pickedFile.extension==".aac"){
+                if (pickedFile.size < 10000000) {
+                  listeFile.add(pickedFile.path!);
+                } else {
+                  Constant.showAlertDialog(context, "Erreur",
+                      "le audio ${pickedFile.path} fait plus de 10Mo");
+                }
+              }else{
+                if (pickedFile.size < 5000000) {
+                  listeFile.add(pickedFile.path!);
+                } else {
+                  Constant.showAlertDialog(context, "Erreur",
+                      "le fichier ${pickedFile.path} fait plus de 5Mo");
+                }
+              }
             }
+
+
           }
         });
       }
