@@ -11,7 +11,7 @@ import '../Model/UserModel.dart';
 import '../outil/Api.dart';
 
 class UserC {
-  LoginModel loginModel=LoginModelProvider.getInstance((){}).loginModel!;
+  LoginModel? loginModel=LoginModelProvider.getInstance((){}).loginModel;
   Future<void> create(User user,File imageFile,String passWord,Function callBack,Function callBackError) async {
     User u;
     try {
@@ -52,7 +52,7 @@ class UserC {
   }
   Future<void> modify(User user,File imageFile,String passWord,Function callBack,Function callBackError) async {
     User u;
-    String AuthorizationToken='Bearer ${loginModel.token}';
+    String AuthorizationToken='Bearer ${loginModel!.token}';
     try {
       final responseCreate = await Api.instance.putData(
         'user',
@@ -93,7 +93,7 @@ class UserC {
   }
 
   void deleteAmis(User user,Function callBack,Function callBackError) {
-    String AuthorizationToken='Bearer ${loginModel.token}';
+    String AuthorizationToken='Bearer ${loginModel!.token}';
     Api.instance.deleteData(
         "amis", null, {'uniquePseudo': user.uniquePseudo}, {'Authorization': AuthorizationToken})
         .then( 
@@ -107,7 +107,7 @@ class UserC {
     );
   }
   void deleteDemandeAmis(User user,Function callBack,Function callBackError) {
-    String AuthorizationToken='Bearer ${loginModel.token}';
+    String AuthorizationToken='Bearer ${loginModel!.token}';
     Api.instance.deleteData(
         "amis/demande", null, {'uniquePseudo': user.uniquePseudo}, {'Authorization': AuthorizationToken})
         .then(
@@ -121,7 +121,7 @@ class UserC {
     );
   }
   void refuseDemandeAmis(User user,Function callBack,Function callBackError) {
-    String AuthorizationToken='Bearer ${loginModel.token}';
+    String AuthorizationToken='Bearer ${loginModel!.token}';
     Api.instance.deleteData(
         "amis/refuse", null, {'uniquePseudo': user.uniquePseudo}, {'Authorization': AuthorizationToken})
         .then(
@@ -136,7 +136,7 @@ class UserC {
   }
 
   void addAmis(User user,Function callBack,Function callBackError) {
-    String AuthorizationToken='Bearer ${loginModel.token}';
+    String AuthorizationToken='Bearer ${loginModel!.token}';
     Api.instance.postData(
         "amis", {'uniquePseudo': user.uniquePseudo}, null, {'Authorization': AuthorizationToken})
         .then(

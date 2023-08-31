@@ -39,7 +39,13 @@ class MessagesController {
   }
   void _handleReceivedMessage(data) {
     Map<String,dynamic> messageMap = data["message"];
-    User user = User(messageMap["email"], messageMap["uniquePseudo"], messageMap["pseudo"], messageMap["Avatar"]);
+
+    if(messageMap["id_conversation"]!=conversation.id){
+      return ;
+    }
+
+
+    User user = User(messageMap["email"], messageMap["uniquePseudo"], messageMap["pseudo"]);
     List<String> listeLinkFile= [];
     List<String> listenameFile= [];
     if(messageMap["linkfile"]!=null && messageMap["name"]!=null){

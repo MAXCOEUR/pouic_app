@@ -129,7 +129,7 @@ class _CreateConversationVueState extends State<CreateConversationVue> {
     } else {
       return Constant.buildImageOrIcon(
           Constant.baseUrlAvatarConversation+"/"+widget.conversation.id.toString(),
-          Icon(Icons.add_a_photo)
+          Icon(Icons.add_a_photo,size: 75,),false
       );
     }
   }
@@ -156,8 +156,8 @@ class _CreateConversationVueState extends State<CreateConversationVue> {
                     labelText: 'Entrée le nom de la conversation',
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Ce champ est requis';
+                    if (value == null || value.isEmpty || value.length>=255) {
+                      return 'Ce champ est requis et < 255 caractères';
                     }
                     return null; // Valide
                   },

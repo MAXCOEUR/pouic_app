@@ -179,12 +179,14 @@ class _MessagerieViewState extends State<MessagerieView> {
                   Constant.baseUrlAvatarConversation +
                       "/" +
                       widget.conv.id.toString(),
-                  Icon(Icons.comment)),
+                  Icon(Icons.comment),false),
             ),
           ),
+          SizedBox(width: SizeMarginPading.h3),
           Expanded(
             child: Center(child: Text(widget.conv.name)),
           ),
+          SizedBox(width: SizeMarginPading.h3),
           if (widget.conv.uniquePseudo_admin == widget.lm.user.uniquePseudo)
             PopupMenuButton<String>(
               icon: Icon(Icons.more_vert),

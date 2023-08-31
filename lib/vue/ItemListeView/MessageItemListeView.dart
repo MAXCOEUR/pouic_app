@@ -8,6 +8,7 @@ import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Constant.dart';
 import 'package:discution_app/outil/LaunchFile.dart';
 import 'package:discution_app/outil/LoginSingleton.dart';
+import 'package:discution_app/vue/home/UserDetailView.dart';
 import 'package:discution_app/vue/widget/AudioPlayerWidget.dart';
 import 'package:discution_app/vue/widget/PhotoView.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ import 'package:intl/intl.dart';
 
 class MessageItemListeView extends StatelessWidget {
   final MessageModel message;
-  final LoginModel lm = LoginModelProvider.getInstance((){}).loginModel!;
+  final LoginModel lm = LoginModelProvider.getInstance(() {}).loginModel!;
   late final BuildContext context;
 
   MessageItemListeView(
@@ -27,6 +28,7 @@ class MessageItemListeView extends StatelessWidget {
       fit: BoxFit.cover,
     );
   }
+
   Widget videoFileWidget() {
     return Icon(
       Icons.play_circle,
@@ -34,13 +36,11 @@ class MessageItemListeView extends StatelessWidget {
     );
   }
 
-
   Widget audioFileWidget(String url) {
     return AudioPlayerWidget(
       audioUrl: url,
     );
   }
-
 
   Widget genericFileWidget() {
     return Icon(
@@ -51,11 +51,13 @@ class MessageItemListeView extends StatelessWidget {
 
   Widget viewFile(FileModel file, bool isImage, bool isVideo, bool isAudio) {
     if (isImage) {
-      return imageFileWidget(Constant.baseUrlFilesMessages + "/" + file.linkFile);
+      return imageFileWidget(
+          Constant.baseUrlFilesMessages + "/" + file.linkFile);
     } else if (isVideo) {
       return videoFileWidget();
     } else if (isAudio) {
-      return audioFileWidget(Constant.baseUrlFilesMessages + "/" + file.linkFile);
+      return audioFileWidget(
+          Constant.baseUrlFilesMessages + "/" + file.linkFile);
     } else {
       return genericFileWidget();
     }
@@ -96,11 +98,9 @@ class MessageItemListeView extends StatelessWidget {
               }
             },
             child: Container(
-              height: 120,
-              child: viewFile(file,isImage,isVideo,isaudio)
-            ),
+                height: 120, child: viewFile(file, isImage, isVideo, isaudio)),
           ),
-          SizedBox(height: 5),
+          SizedBox(width: SizeMarginPading.h3),
           Container(
             constraints: BoxConstraints(
               minWidth: 80, // Largeur minimale de 80
@@ -117,6 +117,13 @@ class MessageItemListeView extends StatelessWidget {
     );
   }
 
+  void DetailUser(User user){
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => UserDetailleView(user)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -129,22 +136,27 @@ class MessageItemListeView extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.grey[300],
-            ),
-            child: ClipOval(
-              child: Constant.buildImageOrIcon(
-                  Constant.baseUrlAvatarUser +
-                      "/" +
-                      message.user.uniquePseudo,
-                  Icon(Icons.account_circle)),
+          GestureDetector(
+            onTap: () {
+              DetailUser(message.user);
+            },
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.grey[300],
+              ),
+              child: ClipOval(
+                child: Constant.buildImageOrIcon(
+                    Constant.baseUrlAvatarUser +
+                        "/" +
+                        message.user.uniquePseudo,
+                    Icon(Icons.account_circle),false),
+              ),
             ),
           ),
-          SizedBox(width: 5),
+          SizedBox(width: SizeMarginPading.h3),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,28 +164,43 @@ class MessageItemListeView extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        // Ajoutez ici la logique à exécuter lorsque le pseudo est cliqué
-                      },
-                      child: Text(
-                        message.user.pseudo,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: SizeFont.h3,
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          DetailUser(message.user);
+                        },
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                message.user.pseudo,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: SizeFont.h3,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            SizedBox(width: SizeMarginPading.h3),
+                            // Espacement entre le pseudo et la date
+                            Expanded(
+                              child: Text(
+                                "@" + message.user.uniquePseudo,
+                                style: TextStyle(
+                                  fontSize: SizeFont.p1,
+                                  // Taille de police plus petite
+                                  color: Colors.grey, // Couleur plus discrète
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    SizedBox(width: 5),
-                    // Espacement entre le pseudo et la date
-                    Text(
-                      "@" + message.user.uniquePseudo,
-                      style: TextStyle(
-                        fontSize: SizeFont.p1, // Taille de police plus petite
-                        color: Colors.grey, // Couleur plus discrète
-                      ),
-                    ),
-                    SizedBox(width: 5),
+                    SizedBox(width: SizeMarginPading.h3),
                     // Espacement entre le pseudo et la date
                     Text(
                       DateFormat('MM/dd/yyyy HH:mm')
@@ -183,7 +210,7 @@ class MessageItemListeView extends StatelessWidget {
                         color: Colors.grey, // Couleur plus discrète
                       ),
                     ),
-                    SizedBox(width: 5),
+                    SizedBox(width: SizeMarginPading.h3),
                     if (!message.isread)
                       Container(
                         width: 10,

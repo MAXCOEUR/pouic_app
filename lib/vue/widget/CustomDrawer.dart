@@ -8,9 +8,10 @@ import 'package:flutter/material.dart';
 
 class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
   Function updateMain;
+
   CustomDrawer({required this.updateMain});
 
-  LoginModel lm = LoginModelProvider.getInstance((){}).loginModel!;
+  LoginModel lm = LoginModelProvider.getInstance(() {}).loginModel!;
 
   @override
   Widget build(BuildContext context) {
@@ -34,32 +35,46 @@ class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
                   ),
                   child: ClipOval(
                     child: Constant.buildImageOrIcon(
-                        Constant.baseUrlAvatarUser+"/"+lm.user.uniquePseudo,
-                        Icon(Icons.account_circle)
-                    ),
+                        Constant.baseUrlAvatarUser + "/" + lm.user.uniquePseudo,
+                        Icon(
+                          Icons.account_circle,
+                          size: 80,
+                        ),true),
                   ),
                 ),
                 SizedBox(height: SizeMarginPading.h3),
-                Text("@"+lm.user.uniquePseudo,style: TextStyle(fontSize: SizeFont.h3)),
-                Text(lm.user.pseudo,style: TextStyle(fontSize: SizeFont.p1)),
+                Text(
+                  "@" + lm.user.uniquePseudo,
+                  style: TextStyle(fontSize: SizeFont.h3),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  lm.user.pseudo,
+                  style: TextStyle(fontSize: SizeFont.p1),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ],
             ),
           ),
           ListTile(
             leading: Icon(Icons.account_circle),
-            title: Text("Profil",style: TextStyle(fontSize: SizeFont.p1)),
+            title: Text("Profil", style: TextStyle(fontSize: SizeFont.p1)),
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CreateUserVue(created: false,user:lm.user)),
+                MaterialPageRoute(
+                    builder: (context) =>
+                        CreateUserVue(created: false, user: lm.user)),
               );
             },
           ),
           ListTile(
             leading: Icon(Icons.logout),
-            title: Text("Deconexion",style: TextStyle(fontSize: SizeFont.p1)),
+            title: Text("Deconexion", style: TextStyle(fontSize: SizeFont.p1)),
             onTap: () {
-              LoginModelProvider.getInstance((){}).setLoginModel(null);
+              LoginModelProvider.getInstance(() {}).setLoginModel(null);
               updateMain();
             },
           ),

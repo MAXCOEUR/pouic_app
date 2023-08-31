@@ -114,7 +114,7 @@ class _CreateUserVueState extends State<CreateUserVue> {
     } else {
       return Constant.buildImageOrIcon(
           Constant.baseUrlAvatarUser+"/"+widget.user.uniquePseudo,
-          Icon(Icons.add_a_photo)
+          Icon(Icons.add_a_photo),false
       );
     }
   }
@@ -140,8 +140,8 @@ class _CreateUserVueState extends State<CreateUserVue> {
                   labelText: 'Entrée votre @',
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Ce champ est requis';
+                  if (value == null || value.isEmpty|| value.length>=80) {
+                    return 'le champ @ est obligatoir et unique et < 80 caractères';
                   }
                   return null; // Valide
                 },
@@ -153,11 +153,11 @@ class _CreateUserVueState extends State<CreateUserVue> {
                 controller: userName,
                 decoration: const InputDecoration(
                   border: UnderlineInputBorder(),
-                  labelText: 'Entrée votre userName',
+                  labelText: 'Entrée votre Pseudo',
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Ce champ est requis';
+                  if (value == null || value.isEmpty|| value.length>=80) {
+                    return 'le champ Pseudo est obligatoir et doit etre < 80 caractères';
                   }
                   return null; // Valide
                 },
@@ -176,7 +176,7 @@ class _CreateUserVueState extends State<CreateUserVue> {
                     return 'Ce champ est requis';
                   }
                   RegExp emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
-                  if (!emailRegex.hasMatch(value)) {
+                  if (!emailRegex.hasMatch(value) || value.length>=255) {
                     return 'Veuillez entrer une adresse e-mail valide';
                   }
                   return null; // Valide
@@ -196,10 +196,10 @@ class _CreateUserVueState extends State<CreateUserVue> {
                   if (value == null || value.isEmpty) {
                     return 'Ce champ est requis';
                   }
-                  RegExp passwordRegex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$');
+                  RegExp passwordRegex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,255}$');
 
-                  if (!passwordRegex.hasMatch(value)) {
-                    return 'Le mot de passe doit contenir au moins 8 caractères, dont une majuscule, une minuscule, un chiffre et un caractère spécial';
+                  if (!passwordRegex.hasMatch(value)|| value.length>=255) {
+                    return 'Le mot de passe doit contenir entre 8 et 255 caractères, dont une majuscule, une minuscule, un chiffre et un caractère spécial (@\$!%*?&)';
                   }
                   return null; // Valide
                 },

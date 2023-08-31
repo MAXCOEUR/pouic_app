@@ -10,7 +10,7 @@ class UserItemListeView extends StatelessWidget {
   Function onTap;
   int type;
   Function? onTapButtonRight;
-  LoginModel lm = LoginModelProvider.getInstance((){}).loginModel!;
+  LoginModel lm = LoginModelProvider.getInstance(() {}).loginModel!;
 
   UserItemListeView(
       {super.key,
@@ -26,8 +26,7 @@ class UserItemListeView extends StatelessWidget {
         padding: EdgeInsets.all(SizeMarginPading.p1),
         child: GestureDetector(
           onTap: () {
-            if(user!=lm.user)
-            onTap(user);
+            if (user != lm.user) onTap(user);
           },
           child: Container(
             decoration: BoxDecoration(
@@ -48,30 +47,59 @@ class UserItemListeView extends StatelessWidget {
                     ),
                     child: ClipOval(
                       child: Constant.buildImageOrIcon(
-                          Constant.baseUrlAvatarUser+"/"+user.uniquePseudo,
-                          Icon(Icons.account_circle)
-                      ),
+                          Constant.baseUrlAvatarUser + "/" + user.uniquePseudo,
+                          Icon(
+                            Icons.account_circle,
+                            size: 70,
+                          ),false),
                     ),
                   ),
-                  Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text("Pseudo",style: TextStyle(fontSize: SizeFont.p1)),
-                        Text(user.pseudo,style: TextStyle(fontSize: SizeFont.p1)),
-                      ]),
-                  Text("@"+user.uniquePseudo,style: TextStyle(fontSize: SizeFont.p1)),
+                  SizedBox(width: SizeMarginPading.h3),
+                  Expanded(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Pseudo",
+                            style: TextStyle(fontSize: SizeFont.p1),
+                          ),
+                          Text(
+                            user.pseudo,
+                            style: TextStyle(fontSize: SizeFont.p1),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ]),
+                  ),
+                  SizedBox(width: SizeMarginPading.h3),
+                  Expanded(
+                      child: Column(
+                    children: [
+                      Text(
+                        "@",
+                        style: TextStyle(fontSize: SizeFont.p1),
+                      ),
+                      Text(
+                        "@" + user.uniquePseudo,
+                        style: TextStyle(fontSize: SizeFont.p1),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  )),
+                  SizedBox(width: SizeMarginPading.h3),
                   if (type == 1)
                     Icon((user.sont_amis == true)
                         ? Icons.check_box_outlined
                         : Icons.check_box_outline_blank),
                   if (type == 2)
-                    if(user!=lm.user)
-                    IconButton(
-                      icon: Icon(Icons.close),
-                      onPressed: () {
-                        onTapButtonRight!(user);
-                      },
-                    ),
+                    if (user != lm.user)
+                      IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: () {
+                          onTapButtonRight!(user);
+                        },
+                      ),
                   if (type == 3)
                     Row(
                       children: [
@@ -93,7 +121,8 @@ class UserItemListeView extends StatelessWidget {
                     IconButton(
                       icon: Icon(Icons.check),
                       onPressed: () {
-                        onTapButtonRight!(user,Conversation(0, "name", "uniquePseudo_admin", 0));
+                        onTapButtonRight!(user,
+                            Conversation(0, "name", "uniquePseudo_admin", 0));
                       },
                     ),
                 ],

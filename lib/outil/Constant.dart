@@ -1,16 +1,18 @@
 import 'dart:typed_data';
 
 import 'package:discution_app/Model/UserModel.dart';
+import 'package:discution_app/vue/widget/PhotoView.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class Constant{
-  static const String ServeurApi ="http://46.227.18.31:3000";
-  static const String baseUrlAvatarUser =ServeurApi+"/uploads/AvatarUser";
-  static const String baseUrlAvatarConversation =ServeurApi+"/uploads/ImageConversation";
-  static const String baseUrlFilesMessages =ServeurApi+"/uploads/messages";
+class Constant {
+  static const String ServeurApi = "http://46.227.18.31:3000";
+  static const String baseUrlAvatarUser = ServeurApi + "/uploads/AvatarUser";
+  static const String baseUrlAvatarConversation =
+      ServeurApi + "/uploads/ImageConversation";
+  static const String baseUrlFilesMessages = ServeurApi + "/uploads/messages";
 
-  static showAlertDialog(BuildContext context,String titre,String erreur) {
+  static showAlertDialog(BuildContext context, String titre, String erreur) {
     // set up the button
     Widget okButton = TextButton(
       child: Text("OK"),
@@ -36,12 +38,13 @@ class Constant{
       },
     );
   }
+
   static Future<bool> _checkImageExists(String url) async {
     final response = await http.head(Uri.parse(url));
     return response.statusCode == 200;
   }
 
-  static Widget buildImageOrIcon(String imageUrl,Icon icon) {
+  static Widget buildImageOrIcon(String imageUrl, Icon icon, bool clicable) {
     return FutureBuilder<String?>(
       future: _findAvailableImage(imageUrl),
       builder: (context, snapshot) {
@@ -49,17 +52,34 @@ class Constant{
           return CircularProgressIndicator();
         } else if (snapshot.hasError) {
           return Icon(Icons.error);
-        } else if (snapshot.data != null) {
-          return Image.network(
-            snapshot.data!,
-            fit: BoxFit.cover,
-          );
+        } else if (snapshot.data != null && imageUrl.split("/").last != "0") {
+          if (clicable) {
+            return InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PhotoViewCustom(snapshot.data!)),
+                );
+              },
+              child: Image.network(
+                snapshot.data!,
+                fit: BoxFit.cover,
+              ),
+            );
+          }else{
+            return Image.network(
+              snapshot.data!,
+              fit: BoxFit.cover,
+            );
+          }
         } else {
           return icon;
         }
       },
     );
   }
+
   static Future<String?> _findAvailableImage(String baseUrl) async {
     final List<String> imageExtensions = ['.png', '.jpg', '.jpeg', '.gif'];
 
@@ -73,23 +93,24 @@ class Constant{
 
     return null; // No available image with supported extensions
   }
-
 }
 
-class SizeFont{
+class SizeFont {
   static double h1 = 26;
   static double h2 = 24;
   static double h3 = 20;
   static double p1 = 16;
   static double p2 = 12;
 }
-class SizeMarginPading{
+
+class SizeMarginPading {
   static double h1 = 16;
   static double h2 = 12;
   static double h3 = 8;
   static double p1 = 4;
   static double p2 = 2;
 }
-class SizeBorder{
+
+class SizeBorder {
   static double radius = 10;
 }
