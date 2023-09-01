@@ -62,9 +62,8 @@ class _RechercheListeViewState extends State<RechercheListeView> {
         !isLoadingMore) {
 
       // Lorsque l'utilisateur atteint le bas de la liste
-      setState(() {
         isLoadingMore = true; // Définir isLoadingMore à true pour indiquer le chargement
-      });
+
 
       page++; // Augmenter le numéro de page pour charger la page suivante
       userController!.addUser_inListe(page, "", reponseUpdate,reponseUpdateError);

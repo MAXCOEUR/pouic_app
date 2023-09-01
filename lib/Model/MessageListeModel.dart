@@ -14,6 +14,26 @@ class MessageListe{
   void remove(MessageModel message){
     messages.remove(message);
   }
+  void removeId(int id){
+    MessageModel? message;
+    for(MessageModel m in messages){
+      if(m.id==id){
+        message=m;
+        break;
+      }
+    }
+    if(message!=null){
+      remove(message);
+    }
+  }
+  void editMessage(int id,String edit){
+    for(MessageModel m in messages){
+      if(m.id==id){
+        m.message=edit;
+        break;
+      }
+    }
+  }
   String toJsonString() {
     List<Map<String, dynamic>> messageJson = messages.map((message) => message.toJson()).toList();
     return jsonEncode(messageJson);

@@ -25,11 +25,34 @@ class MessagesController {
 
   MessagesController(this.messages, this.conversation,this.callBack) {
     _socket.on("recevoirMessage", _handleReceivedMessage);
+    _socket.on("deleteMessage", _handleDeleteMessage);
+    _socket.on("editMessage", _handleEditMessage);
     _socket.on("EndFile", _handleEndFile);
   }
   void dispose() {
     _socket.off("recevoirMessage", _handleReceivedMessage);
+    _socket.off("deleteMessage", _handleDeleteMessage);
+    _socket.off("editMessage", _handleEditMessage);
     _socket.off("EndFile", _handleEndFile);
+  }
+  void _handleEditMessage(data){
+    int id_message=int.parse(data["id_message"]);
+    int id_conversation=data["id_conversation"];
+    String message=data["message"];
+    if(id_conversation!=conversation.id){
+      return ;
+    }
+    messages.editMessage(id_message,message);
+    callBack();
+  }
+  void _handleDeleteMessage(data){
+    int id_message=int.parse(data["id_message"]);
+    int id_conversation=data["id_conversation"];
+    if(id_conversation!=conversation.id){
+      return ;
+    }
+    messages.removeId(id_message);
+    callBack();
   }
   void _handleEndFile(data) {
     int id_message = data["id_message"];
@@ -67,7 +90,10 @@ class MessagesController {
     if(listeString.length>0){
       sendFile(listeString,message);
     }
-    luMessage(message.id);
+    if(user!=lm.user){
+      luMessage(message.id);
+    }
+
     callBack();
   }
 
@@ -172,5 +198,34 @@ class MessagesController {
       'token': lm.token,
       'messageId': id_message,
     });
+  }
+
+  static void delete(MessageModel message,Function callBack,Function callBackError) async {
+    LoginModel loginModel = LoginModelProvider.getInstance((){}).loginModel!;
+    String AuthorizationToken='Bearer ${loginModel.token}';
+    try{
+      final response = await Api.instance.deleteData("message", null, {'id_message': message.id}, {'Authorization': AuthorizationToken});
+      if(response.statusCode==201){
+        callBack();
+      }else{
+        throw Exception();
+      }
+    }catch(error){
+      callBackError(error);
+    }
+  }
+  static void edit(MessageModel message,String edit,Function callBack,Function callBackError) async {
+    LoginModel loginModel = LoginModelProvider.getInstance((){}).loginModel!;
+    String AuthorizationToken='Bearer ${loginModel.token}';
+    try{
+      final response = await Api.instance.putData("message", {'message':edit}, {'id_message': message.id}, {'Authorization': AuthorizationToken});
+      if(response.statusCode==201){
+        callBack();
+      }else{
+        throw Exception();
+      }
+    }catch(error){
+      callBackError(error);
+    }
   }
 }

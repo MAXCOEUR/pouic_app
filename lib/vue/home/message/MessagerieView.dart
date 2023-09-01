@@ -247,9 +247,30 @@ class _MessagerieViewState extends State<MessagerieView> {
                 ),
               ],
             ),
+          if (widget.conv.uniquePseudo_admin != widget.lm.user.uniquePseudo)
+            PopupMenuButton<String>(
+              icon: Icon(Icons.more_vert),
+              onSelected: (value) {
+                if (value == 'quitter') {
+                  widget.conversationC.deleteUserMe(widget.lm.user,widget.conv, reponseDeleteUser,reponseError);
+                }
+              },
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                const PopupMenuItem<String>(
+                  value: 'quitter',
+                  child: Text('Quitter la conversation'),
+                ),
+              ],
+            ),
+
         ],
       ),
     );
+  }
+  void reponseDeleteUser(User u){
+    setState(() {
+      Navigator.pop(context,true);
+    });
   }
 
   Widget file(int index) {

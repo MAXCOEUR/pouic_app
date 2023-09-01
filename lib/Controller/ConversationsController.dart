@@ -24,6 +24,8 @@ class ConversationController{
 
   ConversationController(this.conversations,this.callBack){
     _socket.on("recevoirMessage", _handleReceivedMessage);
+    _socket.on("newConversation", _handleNewConv);
+    _socket.on("deleteConversation", _handleDeleteConv);
     if(Platform.isAndroid || Platform.isIOS||Platform.isLinux || Platform.isMacOS){
       flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
       initNotif();
@@ -47,7 +49,25 @@ class ConversationController{
   }
   void dispose() {
     _socket.off("recevoirMessage", _handleReceivedMessage);
+    _socket.off("newConversation", _handleNewConv);
+    _socket.off("deleteConversation", _handleDeleteConv);
     _socket.emit('leaveConversation', {'uniquePseudo': loginModel.user.uniquePseudo});
+  }
+  void _handleDeleteConv(data){
+    int id_conversation = int.parse(data["id_conversation"]);
+
+    conversations.removeConvId(id_conversation);
+    SocketSingleton.instance.socket.emit('leaveConversation', {'idConversation': id_conversation});
+    callBack();
+  }
+  void _handleNewConv(data){
+    Map<String,dynamic> messageMap = data["conversation"];
+
+    Conversation conversation = Conversation(messageMap["id"], messageMap["name"], messageMap["uniquePseudo_admin"], 0);
+    conversations.addConv(conversation);
+    SocketSingleton.instance.socket.emit('joinConversation', {'idConversation': conversation.id});
+    callBack();
+
   }
   void _handleReceivedMessage(data) {
     Map<String,dynamic> messageMap = data["message"];

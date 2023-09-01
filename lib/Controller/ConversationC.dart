@@ -147,6 +147,20 @@ class ConversationC {
       },
     );
   }
+  void deleteUserMe(User user,Conversation conversation,Function callBack,Function callBackError) {
+    String AuthorizationToken='Bearer ${loginModel.token}';
+    Api.instance.deleteData(
+        "conv/user/me", null, {'id_conversation':conversation.id}, {'Authorization': AuthorizationToken})
+        .then(
+          (response) {
+
+        callBack(user);
+      },
+      onError: (error) {
+        callBackError(error);
+      },
+    );
+  }
   void addUser(User user,Conversation conversation,Function callBack,Function callBackError) {
     String AuthorizationToken='Bearer ${loginModel.token}';
     Api.instance.postData(
