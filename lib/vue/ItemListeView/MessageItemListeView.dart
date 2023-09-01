@@ -30,6 +30,7 @@ class MessageItemListeView extends StatelessWidget {
     return Image.network(
       url,
       fit: BoxFit.cover,
+      scale: 0.1,
     );
   }
 
