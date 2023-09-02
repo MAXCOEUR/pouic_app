@@ -44,6 +44,7 @@ class _AmisViewState extends State<AmisView> {
     return Scaffold(
       body: selectedWidget,
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Theme.of(context).colorScheme.background,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.supervised_user_circle),
