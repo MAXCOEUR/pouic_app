@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:discution_app/Model/UserModel.dart';
+import 'package:discution_app/vue/home/UserDetailView.dart';
 import 'package:discution_app/vue/widget/PhotoView.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -45,37 +47,40 @@ class Constant {
   }
 
   static Widget buildImageOrIcon(String imageUrl, Icon icon, bool clicable) {
+
+    if(imageUrl.split('/').last=="0"){
+      return icon;
+    }
     return FutureBuilder<String?>(
       future: _findAvailableImage(imageUrl),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
-        } else if (snapshot.hasError) {
-          return Icon(Icons.error);
-        } else if (snapshot.data != null && imageUrl.split("/").last != "0") {
-          if (clicable) {
-            return InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => PhotoViewCustom(snapshot.data!)),
-                );
-              },
-              child: Image.network(
-                snapshot.data!,
-                fit: BoxFit.cover,
-              ),
-            );
-          }else{
-            return Image.network(
-              snapshot.data!,
-              fit: BoxFit.cover,
-            );
-          }
-        } else {
-          return icon;
-        }
+        return clicable
+            ?InkWell(
+          onTap: () {
+            if(snapshot.data!=null){
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PhotoViewCustom(snapshot.data!)),
+              );
+            }
+          },
+          child: (snapshot.data!=null)?CachedNetworkImage(
+            key: Key(snapshot.data!),
+            imageUrl: snapshot.data!,
+            fit: BoxFit.cover,
+            progressIndicatorBuilder: (context, url, downloadProgress) =>
+                CircularProgressIndicator(value: downloadProgress.progress),
+            errorWidget: (context, url, error) => Icon(Icons.error),
+          ):icon,
+        ): (snapshot.data!=null)?CachedNetworkImage(
+          key: Key(snapshot.data!),
+          imageUrl: snapshot.data!,
+          fit: BoxFit.cover,
+          progressIndicatorBuilder: (context, url, downloadProgress) =>
+              CircularProgressIndicator(value: downloadProgress.progress),
+          errorWidget: (context, url, error) => Icon(Icons.error),
+        ):icon;
       },
     );
   }

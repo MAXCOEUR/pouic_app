@@ -1,10 +1,12 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:discution_app/Model/FileModel.dart';
+import 'package:discution_app/outil/Constant.dart';
 import 'package:flutter/material.dart';
 
 class AudioPlayerWidget extends StatefulWidget {
-  final String audioUrl;
+  final FileModel file;
 
-  AudioPlayerWidget({required this.audioUrl});
+  AudioPlayerWidget({required this.file});
 
   @override
   _AudioPlayerWidgetState createState() => _AudioPlayerWidgetState();
@@ -31,6 +33,11 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
       if (mounted) {
         setState(() {
           _position = position;
+
+          if (_position >= _duration) {
+            print("end");
+            _playPause();
+          }
         });
       }
     });
@@ -40,7 +47,8 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
     if (_isPlaying) {
       _audioPlayer.pause();
     } else {
-      _audioPlayer.play(UrlSource(widget.audioUrl));
+      _audioPlayer.play(UrlSource(
+          Constant.baseUrlFilesMessages + "/" + widget.file.linkFile));
     }
     if (mounted) {
       setState(() {
@@ -51,25 +59,34 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        Container(
-          child: Expanded(
-            child: Slider(
-              value: _position.inSeconds.toDouble(),
-              max: _duration.inSeconds.toDouble(),
-              onChanged: (double value) {
-                setState(() {
-                  _audioPlayer.seek(Duration(seconds: value.toInt()));
-                });
-              },
+    return Column(
+      children: [
+        Row(
+          children: <Widget>[
+            Container(
+              child: Expanded(
+                child: Slider(
+                  value: _position.inSeconds.toDouble(),
+                  max: _duration.inSeconds.toDouble(),
+                  onChanged: (double value) {
+                    setState(() {
+                      _audioPlayer.seek(Duration(seconds: value.toInt()));
+                    });
+                  },
+                ),
+              ),
             ),
+            IconButton(
+              icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
+              onPressed: _playPause,
+            ),
+          ],
+        ),SizedBox(width: SizeMarginPading.h3),
+        Text(
+            widget.file.name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
-        ),
-        IconButton(
-          icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
-          onPressed: _playPause,
-        ),
       ],
     );
   }

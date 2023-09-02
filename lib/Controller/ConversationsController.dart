@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:discution_app/Model/ConversationListeModel.dart';
 import 'package:discution_app/Model/ConversationModel.dart';
 import 'package:discution_app/Model/MessageModel.dart';
+import 'package:discution_app/Model/MessageParentModel.dart';
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Api.dart';
 import 'package:discution_app/outil/Constant.dart';
@@ -71,8 +72,15 @@ class ConversationController{
   }
   void _handleReceivedMessage(data) {
     Map<String,dynamic> messageMap = data["message"];
+
+    MessageParentModel? parent;
+    if(messageMap["id_parent"]!=null){
+      User userParent= User("", messageMap['parent_uniquePseudo'], messageMap['parent_pseudo']);
+      parent = MessageParentModel(messageMap["id_parent"], userParent, messageMap["parent_Message"], DateTime.parse(messageMap["parent_date"]));
+    }
+
     User user = User(messageMap["email"], messageMap["uniquePseudo"], messageMap["pseudo"], messageMap["Avatar"]);
-    MessageModel message = MessageModel(messageMap["id"], user, messageMap["Message"], DateTime.parse(messageMap["date"]), messageMap["id_conversation"],true,[]);
+    MessageModel message = MessageModel(messageMap["id"], user, messageMap["Message"], DateTime.parse(messageMap["date"]), messageMap["id_conversation"],true,[],parent);
     int idConv = messageMap["id_conversation"];
     for(Conversation conv in conversations.conversations){
       if(conv.id==idConv){

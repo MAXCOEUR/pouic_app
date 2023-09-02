@@ -7,6 +7,7 @@ import 'package:discution_app/Model/ConversationModel.dart';
 import 'package:discution_app/Model/FileModel.dart';
 import 'package:discution_app/Model/MessageListeModel.dart';
 import 'package:discution_app/Model/MessageModel.dart';
+import 'package:discution_app/Model/MessageParentModel.dart';
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Constant.dart';
 import 'package:discution_app/outil/LoginSingleton.dart';
@@ -14,6 +15,7 @@ import 'package:discution_app/vue/CreateConversationVue.dart';
 import 'package:discution_app/vue/ItemListeView/MessageItemListeView.dart';
 import 'package:discution_app/vue/home/message/AddAmisConvView.dart';
 import 'package:discution_app/vue/home/message/RemoveUserConvView.dart';
+import 'package:discution_app/vue/widget/parent.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -26,7 +28,7 @@ class MessagerieView extends StatefulWidget {
   MessagerieView({super.key, required this.conv});
 
   Conversation conv;
-  final LoginModel lm = LoginModelProvider.getInstance((){}).loginModel!;
+  final LoginModel lm = LoginModelProvider.getInstance(() {}).loginModel!;
   ConversationC conversationC = ConversationC();
 
   @override
@@ -34,6 +36,7 @@ class MessagerieView extends StatefulWidget {
 }
 
 class _MessagerieViewState extends State<MessagerieView> {
+  MessageParentModel? parent;
   TextEditingController _messageController = TextEditingController();
   List<String> listeFile = [];
   final ScrollController _scrollController = ScrollController();
@@ -45,6 +48,17 @@ class _MessagerieViewState extends State<MessagerieView> {
 
   bool isRecording = false;
   String? filePath;
+
+  void setParent(MessageParentModel p) {
+    setState(() {
+      parent = p;
+    });
+  }
+  void nullParent() {
+    setState(() {
+      parent = null;
+    });
+  }
 
   @override
   void initState() {
@@ -65,7 +79,7 @@ class _MessagerieViewState extends State<MessagerieView> {
   }
 
   void _startRecording() async {
-    if(Platform.isAndroid||Platform.isIOS){
+    if (Platform.isAndroid || Platform.isIOS) {
       if (filePath == null) {
         final appDir = await getTemporaryDirectory();
         filePath = '${appDir.path}/recording.mp3';
@@ -80,11 +94,10 @@ class _MessagerieViewState extends State<MessagerieView> {
         }
       }
     }
-
   }
 
   void _stopRecording(LongPressEndDetails lped) async {
-    if(Platform.isAndroid||Platform.isIOS){
+    if (Platform.isAndroid || Platform.isIOS) {
       var status = await Permission.microphone.request();
       if (status.isGranted) {
         if (isRecording) {
@@ -179,7 +192,8 @@ class _MessagerieViewState extends State<MessagerieView> {
                   Constant.baseUrlAvatarConversation +
                       "/" +
                       widget.conv.id.toString(),
-                  Icon(Icons.comment),false),
+                  Icon(Icons.comment),
+                  true),
             ),
           ),
           SizedBox(width: SizeMarginPading.h3),
@@ -252,7 +266,8 @@ class _MessagerieViewState extends State<MessagerieView> {
               icon: Icon(Icons.more_vert),
               onSelected: (value) {
                 if (value == 'quitter') {
-                  widget.conversationC.deleteUserMe(widget.lm.user,widget.conv, reponseDeleteUser,reponseError);
+                  widget.conversationC.deleteUserMe(widget.lm.user, widget.conv,
+                      reponseDeleteUser, reponseError);
                 }
               },
               itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
@@ -262,14 +277,14 @@ class _MessagerieViewState extends State<MessagerieView> {
                 ),
               ],
             ),
-
         ],
       ),
     );
   }
-  void reponseDeleteUser(User u){
+
+  void reponseDeleteUser(User u) {
     setState(() {
-      Navigator.pop(context,true);
+      Navigator.pop(context, true);
     });
   }
 
@@ -342,10 +357,19 @@ class _MessagerieViewState extends State<MessagerieView> {
     );
   }
 
+  void sendMessage() {
+    String messageText = _messageController.text;
+    messagesController.sendMessageToSocket(messageText, listeFile, parent);
+    setState(() {
+      listeFile.clear();
+      _messageController.clear();
+      nullParent();
+    });
+  }
+
   Widget SendMessageBar() {
     return Container(
       margin: EdgeInsets.all(SizeMarginPading.h1),
-      padding: EdgeInsets.all(SizeMarginPading.h1),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.background,
         borderRadius: BorderRadius.circular(SizeBorder.radius),
@@ -365,46 +389,60 @@ class _MessagerieViewState extends State<MessagerieView> {
               ),
             ),
           if (listeFile.isNotEmpty) SizedBox(height: SizeMarginPading.h3),
-          Row(
-            children: [
-              IconButton(
-                icon: Icon(Icons.add),
-                onPressed: () {
-                  // Appeler une fonction pour ajouter des fichiers à la liste listeFile
-                  pickAndAddFilesToList();
-                },
-              ),
-              SizedBox(width: SizeMarginPading.h3),
-              Expanded(
-                child: TextField(
-                  controller: _messageController,
-                  decoration: InputDecoration(hintText: 'Votre message'),
-                ),
-              ),
-              SizedBox(width: SizeMarginPading.h3),
-              GestureDetector(
-                  onLongPress: _startRecording,
-                  onLongPressEnd: _stopRecording,
-                  onTap: () {
-                    String messageText = _messageController.text;
-                    messagesController.sendMessageToSocket(
-                        messageText, listeFile);
-                    setState(() {
-                      listeFile.clear();
-                      _messageController.clear();
-                    });
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(SizeMarginPading.h3),
-                    decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary,
-                        borderRadius: BorderRadius.circular(SizeBorder.radius)),
-                    child: Text((isRecording) ? 'Enregistrement' : 'Envoyer',
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.background)),
-                  )),
-            ],
+          if (parent!=null) Dismissible(
+            key: Key(parent!.id.toString()),
+            child: Parent(parent),
+            onDismissed: (DismissDirection direction){
+              nullParent();
+            },
           ),
+          Container(
+            margin: EdgeInsets.all(SizeMarginPading.h1),
+            child: Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () {
+                    // Appeler une fonction pour ajouter des fichiers à la liste listeFile
+                    pickAndAddFilesToList();
+                  },
+                ),
+                SizedBox(width: SizeMarginPading.h3),
+                Expanded(
+                  child: TextField(
+                    autofocus: true,
+                    controller: _messageController,
+                    decoration: InputDecoration(
+                      hintText: 'Votre message',
+                    ),
+                    onSubmitted: (String messageText) {
+                      sendMessage();
+                    },
+                    textInputAction: TextInputAction.done,
+                    minLines: 1,
+                    maxLines: 10,
+                  ),
+                ),
+                SizedBox(width: SizeMarginPading.h3),
+                GestureDetector(
+                    onLongPress: _startRecording,
+                    onLongPressEnd: _stopRecording,
+                    onTap: () {
+                      sendMessage();
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(SizeMarginPading.h3),
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary,
+                          borderRadius: BorderRadius.circular(SizeBorder.radius)),
+                      child: Text((isRecording) ? 'Enregistrement' : 'Envoyer',
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.background)),
+                    )),
+              ],
+            ),
+          )
+
         ],
       ),
     );
@@ -414,7 +452,9 @@ class _MessagerieViewState extends State<MessagerieView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppBar(),
-      body: Column(
+      body: Container(
+        color: Theme.of(context).colorScheme.surface,
+        child:Column(
         children: [
           Expanded(
             child: ListView.builder(
@@ -432,6 +472,7 @@ class _MessagerieViewState extends State<MessagerieView> {
           SendMessageBar(),
         ],
       ),
+      ),
     );
   }
 
@@ -443,22 +484,27 @@ class _MessagerieViewState extends State<MessagerieView> {
       for (var pickedFile in pickedFiles.files) {
         setState(() {
           if (pickedFile.path != null) {
-            if(pickedFile.extension!=null){
-              if(pickedFile.extension==".mp4"||pickedFile.extension==".avi"){
+            if (pickedFile.extension != null) {
+              if (pickedFile.name.length > 255) {
+                Constant.showAlertDialog(context, "Erreur",
+                    "le ficher ${pickedFile.path} a un nom de plus de 255 caractere");
+              } else if (pickedFile.extension == ".mp4" ||
+                  pickedFile.extension == ".avi") {
                 if (pickedFile.size < 75000000) {
                   listeFile.add(pickedFile.path!);
                 } else {
                   Constant.showAlertDialog(context, "Erreur",
                       "la video ${pickedFile.path} fait plus de 75Mo");
                 }
-              }else if(pickedFile.extension==".mp3"||pickedFile.extension==".aac"){
+              } else if (pickedFile.extension == ".mp3" ||
+                  pickedFile.extension == ".aac") {
                 if (pickedFile.size < 20000000) {
                   listeFile.add(pickedFile.path!);
                 } else {
                   Constant.showAlertDialog(context, "Erreur",
                       "le audio ${pickedFile.path} fait plus de 20Mo");
                 }
-              }else{
+              } else {
                 if (pickedFile.size < 10000000) {
                   listeFile.add(pickedFile.path!);
                 } else {
@@ -467,8 +513,6 @@ class _MessagerieViewState extends State<MessagerieView> {
                 }
               }
             }
-
-
           }
         });
       }
@@ -482,6 +526,7 @@ class _MessagerieViewState extends State<MessagerieView> {
         message: message,
         context: context,
         key: key,
+        setParent: setParent,
       ),
     );
   }
@@ -495,11 +540,10 @@ class _MessagerieViewState extends State<MessagerieView> {
     Constant.showAlertDialog(context, "Erreur",
         "erreur lors de la requette a l'api : " + ex.toString());
   }
+
   reponseUpdate() {
     if (mounted) {
-      setState(() {
-
-      });
+      setState(() {});
     }
   }
 

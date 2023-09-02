@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:discution_app/Model/FileModel.dart';
+import 'package:discution_app/Model/MessageParentModel.dart';
 import 'package:discution_app/Model/UserModel.dart';
 
 class MessageModel{
@@ -12,8 +13,9 @@ class MessageModel{
   int id_conversation;
   bool isread;
   List<FileModel> files;
+  MessageParentModel? parent;
 
-  MessageModel(this.id, this.user, this.message, this.date, this.id_conversation,this.isread,this.files);
+  MessageModel(this.id, this.user, this.message, this.date, this.id_conversation,this.isread,this.files,this.parent);
 
   @override
   bool operator ==(Object other) {

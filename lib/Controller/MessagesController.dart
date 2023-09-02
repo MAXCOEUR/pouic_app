@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:discution_app/Model/FileModel.dart';
 import 'package:discution_app/Model/MessageListeModel.dart';
 import 'package:discution_app/Model/ConversationModel.dart';
+import 'package:discution_app/Model/MessageParentModel.dart';
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/Model/MessageModel.dart';
 import 'package:discution_app/outil/Api.dart';
@@ -82,7 +83,14 @@ class MessagesController {
     for(int i=0;i<listeLinkFile.length;i++){
       listeFile.add(FileModel(listeLinkFile[i], listenameFile[i]));
     }
-    MessageModel message =MessageModel(messageMap["id"], user, messageMap["Message"], DateTime.parse(messageMap["date"]), messageMap["id_conversation"],true,listeFile);
+    MessageParentModel? parent;
+    if(messageMap["id_parent"]!=null){
+      User userParent= User("", messageMap['parent_uniquePseudo'], messageMap['parent_pseudo']);
+      parent = MessageParentModel(messageMap["id_parent"], userParent, messageMap["parent_Message"], DateTime.parse(messageMap["parent_date"]));
+    }
+
+
+    MessageModel message =MessageModel(messageMap["id"], user, messageMap["Message"], DateTime.parse(messageMap["date"]), messageMap["id_conversation"],true,listeFile,parent);
     messages.newMessage(message);
     print(data);
     List<dynamic> listeFileTmp =data["file"];
@@ -97,7 +105,7 @@ class MessagesController {
     callBack();
   }
 
-  void sendMessageToSocket(String messageText,List<String> listeFile) {
+  void sendMessageToSocket(String messageText,List<String> listeFile,MessageParentModel? parent) {
     listeFile;
     if(listeFile.length>0 || messageText.isNotEmpty){
       _socket.emit('envoyerMessage', {
@@ -105,6 +113,7 @@ class MessagesController {
         'messageText': messageText,
         'conversationId': conversation.id,
         'file':listeFile,
+        'id_parent':(parent==null)?null:parent.id,
       });
     }
   }
@@ -138,6 +147,7 @@ class MessagesController {
   }
 
   void addOldMessage_inListe(int id_conversation,int id_lastMessage,Function callBack,Function callBackError){
+    print("getMessage Api");
     String AuthorizationToken='Bearer '+lm.token;
     Api.instance.getData(
         "message", {'id_conversation': id_conversation, 'id_lastMessage': id_lastMessage}, {'Authorization': AuthorizationToken})
@@ -161,9 +171,15 @@ class MessagesController {
             for(int i=0;i<listeLinkFile.length;i++){
               listeFile.add(FileModel(listeLinkFile[i], listenameFile[i]));
             }
+            MessageParentModel? parent;
+            if(data["id_parent"]!=null){
+              User userParent= User("", data['parent_uniquePseudo'], data['parent_pseudo']);
+              parent = MessageParentModel(data["id_parent"], userParent, data["parent_Message"], DateTime.parse(data["parent_date"]));
+            }
+
 
             User user= User(data['email'], data['uniquePseudo'], data['pseudo']);
-            messagesTmp.add(MessageModel(data["id"], user, data["Message"], DateTime.parse(data["date"]), data["id_conversation"],(data["is_read"]==1)?true:false,listeFile));
+            messagesTmp.add(MessageModel(data["id"], user, data["Message"], DateTime.parse(data["date"]), data["id_conversation"],(data["is_read"]==1)?true:false,listeFile,parent));
           }
           messages.addOldMessages(messagesTmp);
 

@@ -111,7 +111,7 @@ class _DemandeEnvoyeAmisListeViewState extends State<DemandeEnvoyeAmisListeView>
     return RefreshIndicator(
       onRefresh: _refreshData,
       child: Container(
-        color: Theme.of(context).colorScheme.primary,
+        color: Theme.of(context).colorScheme.surface,
         child: Column(
           children: [
             SearchTextField(

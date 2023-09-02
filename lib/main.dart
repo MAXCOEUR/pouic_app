@@ -9,32 +9,34 @@ void main() async {
 class MyApp extends StatelessWidget {
   MyApp({super.key});
   ColorScheme lightColorScheme = const ColorScheme(
-    primary: Color(0xFF3498DB),  // Darker shade of primary color (if needed)
-    secondary: Color(0xFF9A9A9A),// Darker shade of secondary color (if needed)
-    surface: Color(0xFFF5F5F5),         // Background color
-    background: Color(0xFFF5F5F5),      // Background color
-    error: Color(0xFFDC0202),           // Error color
-    onPrimary: Color(0xFF333333),       // Text color on primary color
-    onSecondary: Color(0xFFFFFFFF),     // Text color on secondary color
-    onSurface: Color(0xFF333333),       // Text color on background color
-    onBackground: Color(0xFF333333),    // Text color on background color
-    onError: Color(0xFFFFFFFF),         // Text color on error color
-    brightness: Brightness.light,       // Light mode
+    primary: Color(0xFF2196F3),    // Bleu primaire
+    secondary: Color(0xFF64B5F6),  // Bleu clair
+    surface: Color(0xFFC0C0C0),   // Blanc (arrière-plan)
+    background: Color(0xFFFFFFFF),// Blanc (arrière-plan)
+    error: Color(0xFFC62828),     // Rouge (erreur)
+    onPrimary: Color(0xFFFFFFFF), // Texte blanc sur fond bleu primaire
+    onSecondary: Color(0xFF333333),// Texte gris foncé sur fond bleu clair
+    onSurface: Color(0xFF333333), // Texte gris foncé sur fond blanc
+    onBackground: Color(0xFF000000),// Texte noir sur fond blanc
+    onError: Color(0xFFFFFFFF),    // Texte blanc sur fond rouge (erreur)
+    brightness: Brightness.light,  // Mode clair
   );
 
   ColorScheme darkColorScheme = const ColorScheme(
-    primary: Color(0xFF3498DB),  // Darker shade of primary color (if needed)
-    secondary: Color(0xFF9A9A9A),// Darker shade of secondary color (if needed)
-    surface: Color(0xFF1A1A1A),         // Background color
-    background: Color(0xFF1A1A1A),      // Background color
-    error: Color(0xFFDC0202),           // Error color
-    onPrimary: Color(0xFFFFFFFF),       // Text color on primary color
-    onSecondary: Color(0xFFFFFFFF),     // Text color on secondary color
-    onSurface: Color(0xFFFFFFFF),       // Text color on background color
-    onBackground: Color(0xFFFFFFFF),    // Text color on background color
-    onError: Color(0xFF333333),         // Text color on error color
-    brightness: Brightness.dark,        // Dark mode
+    primary: Color(0xFF2196F3),    // Bleu primaire
+    secondary: Color(0xFF64B5F6),  // Bleu clair
+    surface: Color(0xFF1F1F1F),   // Gris foncé (arrière-plan)
+    background: Color(0xFF121212),// Gris foncé (arrière-plan)
+    error: Color(0xFFC62828),     // Rouge (erreur)
+    onPrimary: Color(0xFFFFFFFF), // Texte blanc sur fond bleu primaire
+    onSecondary: Color(0xFF333333),// Texte gris foncé sur fond bleu clair
+    onSurface: Color(0xFFFFFFFF), // Texte blanc sur fond gris foncé
+    onBackground: Color(0xFFFFFFFF),// Texte blanc sur fond gris foncé
+    onError: Color(0xFF333333),    // Texte gris foncé sur fond rouge (erreur)
+    brightness: Brightness.dark,   // Mode sombre
   );
+
+
 
   @override
   Widget build(BuildContext context) {

@@ -75,6 +75,7 @@ class _HomeViewState extends State<HomeView> {
       drawer: CustomDrawer(updateMain: widget.updateMain),
       body: selectedWidget,
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Theme.of(context).colorScheme.background,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Row(
