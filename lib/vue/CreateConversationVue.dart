@@ -8,9 +8,11 @@ import 'package:discution_app/Model/UserListeModel.dart';
 import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:discution_app/outil/SocketSingleton.dart';
 import 'package:discution_app/vue/home/message/MessagerieView.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
+import 'package:http/http.dart' as http;
 
 import '../Model/UserModel.dart';
 import '../outil/Constant.dart';
@@ -41,19 +43,27 @@ class _CreateConversationVueState extends State<CreateConversationVue> {
     final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedImage != null) {
-      File imageTmp = File(pickedImage.path);
-
-      if (imageTmp.lengthSync() > 10 * 1024 * 1024) {
+      // Vérifier la taille de l'image avant de la télécharger
+      if (await pickedImage.length() > 10 * 1024 * 1024) {
         print('Veuillez sélectionner une image de moins de 10 Mo.');
         Constant.showAlertDialog(context, "Erreur", "Veuillez sélectionner une image de moins de 10 Mo.");
         return;
       }
 
-      if (imageTmp.path.toLowerCase().endsWith('.png')||imageTmp.path.toLowerCase().endsWith('.jpg')||imageTmp.path.toLowerCase().endsWith('.jpeg')||imageTmp.path.toLowerCase().endsWith('.gif')) {
+      File imageTmp;
+
+      if (kIsWeb){
+        final imageBytes = await http.get(Uri.parse(pickedImage.path));
+        File imageFile = File.fromRawPath(imageBytes.bodyBytes);
+        imageTmp = imageFile;
+      } else {
+        imageTmp = File(pickedImage.path);
+      }
+      if (pickedImage.name.toLowerCase().endsWith('.png')||pickedImage.name.toLowerCase().endsWith('.jpg')||pickedImage.name.toLowerCase().endsWith('.jpeg')||pickedImage.name.toLowerCase().endsWith('.gif')) {
         imageFile = imageTmp;
       } else {
         print('Veuillez sélectionner une image au format PNG jpg jpeg ou gif.');
-        Constant.showAlertDialog(context, "erreur", "Veuillez sélectionner une image au format PNG jpg jpeg ou gif.");
+        Constant.showAlertDialog(context, "Erreur", "Veuillez sélectionner une image au format PNG jpg jpeg ou gif.");
         return;
       }
 
@@ -62,6 +72,7 @@ class _CreateConversationVueState extends State<CreateConversationVue> {
       });
     }
   }
+
 
   void createConversation() {
     if (_formKey.currentState!.validate()) {
@@ -121,16 +132,24 @@ class _CreateConversationVueState extends State<CreateConversationVue> {
   }
 
   Widget buildImageOrIcon() {
-    if (imageFile.existsSync()) {
-      return Image.file(
-        imageFile,
-        fit: BoxFit.cover,
-      );
-    } else {
+    if(kIsWeb){
+      //ca marche pas
       return Constant.buildImageOrIcon(
           Constant.baseUrlAvatarConversation+"/"+widget.conversation.id.toString(),
           Icon(Icons.add_a_photo,size: 75,),false
       );
+    }else{
+      if (imageFile.existsSync()) {
+        return Image.file(
+          imageFile,
+          fit: BoxFit.cover,
+        );
+      } else {
+        return Constant.buildImageOrIcon(
+            Constant.baseUrlAvatarConversation+"/"+widget.conversation.id.toString(),
+            Icon(Icons.add_a_photo,size: 75,),false
+        );
+      }
     }
   }
 
