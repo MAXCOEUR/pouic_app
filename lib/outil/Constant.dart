@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/vue/home/UserDetailView.dart';
 import 'package:discution_app/vue/widget/PhotoView.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -65,7 +66,7 @@ class Constant {
               );
             }
           },
-          child: (snapshot.data!=null)?CachedNetworkImage(
+          child: (snapshot.data!=null)? CachedNetworkImage(
             key: Key(snapshot.data!),
             imageUrl: snapshot.data!,
             fit: BoxFit.cover,

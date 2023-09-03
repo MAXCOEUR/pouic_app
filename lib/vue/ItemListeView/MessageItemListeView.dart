@@ -89,12 +89,12 @@ class MessageItemListeView extends StatelessWidget {
 
   Widget file(int index) {
     FileModel file = message.files[index];
-    bool isImage = file.name.endsWith('.png') ||
-        file.name.endsWith('.jpg') ||
-        file.name.endsWith('.jpeg') ||
-        file.name.endsWith('.gif');
-    bool isVideo = file.name.endsWith('.mp4') || file.name.endsWith('.avi');
-    bool isaudio = file.name.endsWith('.mp3') || file.name.endsWith('.aac');
+    bool isImage = file.name.toLowerCase().endsWith('.png') ||
+        file.name.toLowerCase().endsWith('.jpg') ||
+        file.name.toLowerCase().endsWith('.jpeg') ||
+        file.name.toLowerCase().endsWith('.gif');
+    bool isVideo = file.name.toLowerCase().endsWith('.mp4') || file.name.toLowerCase().endsWith('.avi');
+    bool isaudio = file.name.toLowerCase().endsWith('.mp3') || file.name.toLowerCase().endsWith('.aac');
     return Container(
       margin: EdgeInsets.all(10),
       child: InkWell(

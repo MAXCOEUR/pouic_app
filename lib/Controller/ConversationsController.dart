@@ -11,6 +11,7 @@ import 'package:discution_app/outil/Api.dart';
 import 'package:discution_app/outil/Constant.dart';
 import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:discution_app/outil/SocketSingleton.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:socket_io_client/socket_io_client.dart';
@@ -27,9 +28,11 @@ class ConversationController{
     _socket.on("recevoirMessage", _handleReceivedMessage);
     _socket.on("newConversation", _handleNewConv);
     _socket.on("deleteConversation", _handleDeleteConv);
-    if(Platform.isAndroid || Platform.isIOS||Platform.isLinux || Platform.isMacOS){
-      flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-      initNotif();
+    if (!kIsWeb) {
+      if(Platform.isAndroid || Platform.isIOS||Platform.isLinux || Platform.isMacOS){
+        flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+        initNotif();
+      }
     }
   }
   void setIdConvertationOpen(int idConvertation){

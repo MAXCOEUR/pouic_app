@@ -290,10 +290,10 @@ class _MessagerieViewState extends State<MessagerieView> {
 
   Widget file(int index) {
     String fileName = listeFile[index];
-    bool isImage = fileName.endsWith('.png') ||
-        fileName.endsWith('.jpg') ||
-        fileName.endsWith('.jpeg') ||
-        fileName.endsWith('.gif');
+    bool isImage = fileName.toLowerCase().endsWith('.png') ||
+        fileName.toLowerCase().endsWith('.jpg') ||
+        fileName.toLowerCase().endsWith('.jpeg') ||
+        fileName.toLowerCase().endsWith('.gif');
 
     return Container(
       margin: EdgeInsets.all(SizeMarginPading.p1),
@@ -376,26 +376,37 @@ class _MessagerieViewState extends State<MessagerieView> {
       ),
       child: Column(
         children: [
-          if (listeFile.isNotEmpty)
-            Container(
-              height: 150,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                // Définir l'orientation horizontale
-                itemCount: listeFile.length,
-                itemBuilder: (context, index) {
-                  return file(index);
-                },
-              ),
+          Container(
+            constraints: BoxConstraints(
+                minHeight: 0,
+                maxHeight: listeFile.isNotEmpty ? parent!=null?300:150 : parent!=null?150:0
             ),
-          if (listeFile.isNotEmpty) SizedBox(height: SizeMarginPading.h3),
-          if (parent!=null) Dismissible(
-            key: Key(parent!.id.toString()),
-            child: Parent(parent),
-            onDismissed: (DismissDirection direction){
-              nullParent();
-            },
+            child:ListView(
+              children: [
+                if (listeFile.isNotEmpty)
+                  Container(
+                    height: 150,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      // Définir l'orientation horizontale
+                      itemCount: listeFile.length,
+                      itemBuilder: (context, index) {
+                        return file(index);
+                      },
+                    ),
+                  ),
+                if (listeFile.isNotEmpty) SizedBox(height: SizeMarginPading.h3),
+                if (parent!=null) Dismissible(
+                  key: Key(parent!.id.toString()),
+                  child: Parent(parent),
+                  onDismissed: (DismissDirection direction){
+                    nullParent();
+                  },
+                ),
+              ],
+            ),
           ),
+
           Container(
             margin: EdgeInsets.all(SizeMarginPading.h1),
             child: Row(
@@ -410,7 +421,6 @@ class _MessagerieViewState extends State<MessagerieView> {
                 SizedBox(width: SizeMarginPading.h3),
                 Expanded(
                   child: TextField(
-                    autofocus: true,
                     controller: _messageController,
                     decoration: InputDecoration(
                       hintText: 'Votre message',

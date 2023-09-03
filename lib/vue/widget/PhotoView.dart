@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:discution_app/vue/widget/CustomAppBar.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
@@ -12,7 +13,7 @@ class PhotoViewCustom extends StatelessWidget{
       return Scaffold(
         appBar: CustomAppBar(arrowReturn: true),
         body: PhotoView(
-          imageProvider: NetworkImage(url),
+          imageProvider: CachedNetworkImageProvider(url),
           backgroundDecoration: BoxDecoration(
             color: Colors.black,
           ),
