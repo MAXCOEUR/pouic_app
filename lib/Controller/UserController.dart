@@ -25,7 +25,7 @@ class UserController {
           List<dynamic> jsonData = response.data;
           
           for(Map<String, dynamic> user in jsonData){
-            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"],(user["sont_amis"])==0?false:true));
+            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"],user["bio"],user["extension"],(user["sont_amis"])==0?false:true));
           }
 
           callBack();
@@ -45,7 +45,7 @@ class UserController {
           List<dynamic> jsonData = response.data;
 
           for(Map<String, dynamic> user in jsonData){
-            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"],true));
+            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"],user["bio"],user["extension"],true));
           }
 
           callBack();
@@ -65,7 +65,7 @@ class UserController {
           List<dynamic> jsonData = response.data;
 
           for(Map<String, dynamic> user in jsonData){
-            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"]));
+            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"],user["bio"],user["extension"]));
           }
 
           callBack();
@@ -85,7 +85,7 @@ class UserController {
           List<dynamic> jsonData = response.data;
 
           for(Map<String, dynamic> user in jsonData){
-            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"]));
+            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"],user["bio"],user["extension"]));
           }
 
           callBack();
@@ -105,7 +105,7 @@ class UserController {
           List<dynamic> jsonData = response.data;
 
           for(Map<String, dynamic> user in jsonData){
-            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"],(user["sont_amis"])==0?false:true));
+            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"],user["bio"],user["extension"],(user["sont_amis"])==0?false:true));
           }
 
           callBack();

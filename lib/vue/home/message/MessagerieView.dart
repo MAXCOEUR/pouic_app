@@ -1,9 +1,11 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:discution_app/Controller/ConversationC.dart';
 import 'package:discution_app/Controller/MessagesController.dart';
 import 'package:discution_app/Model/ConversationModel.dart';
+import 'package:discution_app/Model/FileCustom.dart';
 import 'package:discution_app/Model/FileModel.dart';
 import 'package:discution_app/Model/MessageListeModel.dart';
 import 'package:discution_app/Model/MessageModel.dart';
@@ -15,7 +17,8 @@ import 'package:discution_app/vue/CreateConversationVue.dart';
 import 'package:discution_app/vue/ItemListeView/MessageItemListeView.dart';
 import 'package:discution_app/vue/home/message/AddAmisConvView.dart';
 import 'package:discution_app/vue/home/message/RemoveUserConvView.dart';
-import 'package:discution_app/vue/widget/parent.dart';
+import 'package:discution_app/vue/home/message/parent.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -38,7 +41,7 @@ class MessagerieView extends StatefulWidget {
 class _MessagerieViewState extends State<MessagerieView> {
   MessageParentModel? parent;
   TextEditingController _messageController = TextEditingController();
-  List<String> listeFile = [];
+  List<FileCustom> listeFile = [];
   final ScrollController _scrollController = ScrollController();
   bool isLoadingMore = false;
   int lastTailleListe = 0;
@@ -103,14 +106,16 @@ class _MessagerieViewState extends State<MessagerieView> {
         if (isRecording) {
           await RecordMp3.instance.stop();
           listeFile.clear();
-          setState(() {
-            isRecording = false;
-            if (filePath != null) {
-              File file = File(filePath!);
-              if (file.existsSync()) {
-                listeFile.add(filePath!);
-              }
+          isRecording = false;
+          if (filePath != null) {
+            File file = File(filePath!);
+            Uint8List? fileBytes = await file.readAsBytes();
+            if (file.existsSync()) {
+              listeFile.add(FileCustom(fileBytes, file.uri.pathSegments.last));
             }
+          }
+          setState(() {
+
           });
         }
       }
@@ -188,12 +193,7 @@ class _MessagerieViewState extends State<MessagerieView> {
               color: Colors.grey[300],
             ),
             child: ClipOval(
-              child: Constant.buildImageOrIcon(
-                  Constant.baseUrlAvatarConversation +
-                      "/" +
-                      widget.conv.id.toString(),
-                  Icon(Icons.comment),
-                  true),
+              child:Constant.buildImageConversation(widget.conv,30,true),
             ),
           ),
           SizedBox(width: SizeMarginPading.h3),
@@ -289,11 +289,11 @@ class _MessagerieViewState extends State<MessagerieView> {
   }
 
   Widget file(int index) {
-    String fileName = listeFile[index];
-    bool isImage = fileName.toLowerCase().endsWith('.png') ||
-        fileName.toLowerCase().endsWith('.jpg') ||
-        fileName.toLowerCase().endsWith('.jpeg') ||
-        fileName.toLowerCase().endsWith('.gif');
+    FileCustom file = listeFile[index];
+    bool isImage = file.fileName.toLowerCase().endsWith('.png') ||
+        file.fileName.toLowerCase().endsWith('.jpg') ||
+        file.fileName.toLowerCase().endsWith('.jpeg') ||
+        file.fileName.toLowerCase().endsWith('.gif');
 
     return Container(
       margin: EdgeInsets.all(SizeMarginPading.p1),
@@ -335,8 +335,8 @@ class _MessagerieViewState extends State<MessagerieView> {
                 width: 80,
                 height: 80,
                 child: isImage
-                    ? Image.file(
-                        File(fileName),
+                    ? Image.memory(
+                        file.fileBytes!,
                         fit: BoxFit.cover,
                       )
                     : Icon(
@@ -346,7 +346,7 @@ class _MessagerieViewState extends State<MessagerieView> {
               ),
               SizedBox(height: SizeMarginPading.p1),
               Text(
-                path.basename(fileName),
+                path.basename(file.fileName),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -491,40 +491,52 @@ class _MessagerieViewState extends State<MessagerieView> {
         await FilePicker.platform.pickFiles(allowMultiple: true);
 
     if (pickedFiles != null) {
-      for (var pickedFile in pickedFiles.files) {
-        setState(() {
-          if (pickedFile.path != null) {
-            if (pickedFile.extension != null) {
-              if (pickedFile.name.length > 255) {
-                Constant.showAlertDialog(context, "Erreur",
-                    "le ficher ${pickedFile.path} a un nom de plus de 255 caractere");
-              } else if (pickedFile.extension == ".mp4" ||
-                  pickedFile.extension == ".avi") {
-                if (pickedFile.size < 75000000) {
-                  listeFile.add(pickedFile.path!);
-                } else {
-                  Constant.showAlertDialog(context, "Erreur",
-                      "la video ${pickedFile.path} fait plus de 75Mo");
-                }
-              } else if (pickedFile.extension == ".mp3" ||
-                  pickedFile.extension == ".aac") {
-                if (pickedFile.size < 20000000) {
-                  listeFile.add(pickedFile.path!);
-                } else {
-                  Constant.showAlertDialog(context, "Erreur",
-                      "le audio ${pickedFile.path} fait plus de 20Mo");
-                }
-              } else {
-                if (pickedFile.size < 10000000) {
-                  listeFile.add(pickedFile.path!);
-                } else {
-                  Constant.showAlertDialog(context, "Erreur",
-                      "le fichier ${pickedFile.path} fait plus de 10Mo");
-                }
-              }
-            }
+      for (PlatformFile file in pickedFiles.files) {
+        late Uint8List? fileBytes;
+        late String fileName= file.name;
+
+        if(kIsWeb){
+          fileBytes = file.bytes;
+        }else{
+          File localFile = File(file.path!);
+          fileBytes = await localFile.readAsBytes();
+        }
+
+        if (fileName.length >= 255) {
+          print("le ficher ${fileName} a un nom de plus de 255 caractere");
+          Constant.showAlertDialog(context, "Erreur", "le ficher ${fileName} a un nom de plus de 255 caractere");
+          return;
+        }
+
+
+        if(fileName.toLowerCase().endsWith(".mp4")||fileName.toLowerCase().endsWith(".avi")){
+          if (fileBytes!.length < 75000000) {
+            setState(() {
+              listeFile.add(FileCustom(fileBytes, fileName));
+            });
+          } else {
+            Constant.showAlertDialog(context, "Erreur",
+                "la video ${fileName} fait plus de 75Mo");
           }
-        });
+        }else if(fileName.toLowerCase().endsWith(".mp3")||fileName.toLowerCase().endsWith(".aac")){
+          if (fileBytes!.length < 20000000) {
+            setState(() {
+              listeFile.add(FileCustom(fileBytes, fileName));
+            });
+          } else {
+            Constant.showAlertDialog(context, "Erreur",
+                "le audio ${fileName} fait plus de 20Mo");
+          }
+        }else{
+          if (fileBytes!.length < 10000000) {
+            setState(() {
+              listeFile.add(FileCustom(fileBytes, fileName));
+            });
+          } else {
+            Constant.showAlertDialog(context, "Erreur",
+                "le fichier ${fileName} fait plus de 10Mo");
+          }
+        }
       }
     }
   }

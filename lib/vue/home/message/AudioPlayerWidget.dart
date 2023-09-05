@@ -34,7 +34,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
         setState(() {
           _position = position;
 
-          if (_position >= _duration) {
+          if (_duration.inMilliseconds!= Duration().inMilliseconds && _position >= _duration) {
             print("end");
             _playPause();
           }

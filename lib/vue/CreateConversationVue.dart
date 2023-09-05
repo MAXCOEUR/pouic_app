@@ -4,10 +4,12 @@ import 'package:discution_app/Controller/ConversationC.dart';
 import 'package:discution_app/Controller/UserController.dart';
 import 'package:discution_app/Controller/UserC.dart';
 import 'package:discution_app/Model/ConversationModel.dart';
+import 'package:discution_app/Model/FileCustom.dart';
 import 'package:discution_app/Model/UserListeModel.dart';
 import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:discution_app/outil/SocketSingleton.dart';
 import 'package:discution_app/vue/home/message/MessagerieView.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -32,7 +34,7 @@ class CreateConversationVue extends StatefulWidget {
 
 class _CreateConversationVueState extends State<CreateConversationVue> {
   final name = TextEditingController();
-  File imageFile = File('');
+  FileCustom? imageFile;
 
   final _formKey = GlobalKey<FormState>();
   List<String> listUser = [];
@@ -40,35 +42,30 @@ class _CreateConversationVueState extends State<CreateConversationVue> {
   ConversationC conversationC = ConversationC();
 
   Future<void> _pickImage() async {
-    final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+    FilePickerResult? pickedImage = await FilePicker.platform.pickFiles(type: FileType.custom,
+      allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'],);
 
     if (pickedImage != null) {
+      PlatformFile file = pickedImage.files.first;
+      late Uint8List? fileBytes;
+      late String fileName= file.name;
+
+      if(kIsWeb){
+        fileBytes = file.bytes;
+      }else{
+        File localFile = File(file.path!);
+        fileBytes = await localFile.readAsBytes();
+      }
       // Vérifier la taille de l'image avant de la télécharger
-      if (await pickedImage.length() > 10 * 1024 * 1024) {
+      if (fileBytes!.length > 10000000) {
         print('Veuillez sélectionner une image de moins de 10 Mo.');
         Constant.showAlertDialog(context, "Erreur", "Veuillez sélectionner une image de moins de 10 Mo.");
         return;
       }
 
-      File imageTmp;
-
-      if (kIsWeb){
-        final imageBytes = await http.get(Uri.parse(pickedImage.path));
-        File imageFile = File.fromRawPath(imageBytes.bodyBytes);
-        imageTmp = imageFile;
-      } else {
-        imageTmp = File(pickedImage.path);
-      }
-      if (pickedImage.name.toLowerCase().endsWith('.png')||pickedImage.name.toLowerCase().endsWith('.jpg')||pickedImage.name.toLowerCase().endsWith('.jpeg')||pickedImage.name.toLowerCase().endsWith('.gif')) {
-        imageFile = imageTmp;
-      } else {
-        print('Veuillez sélectionner une image au format PNG jpg jpeg ou gif.');
-        Constant.showAlertDialog(context, "Erreur", "Veuillez sélectionner une image au format PNG jpg jpeg ou gif.");
-        return;
-      }
-
       setState(() {
-        // Mettre à jour l'interface utilisateur
+        widget.conversation.extension=fileName.split(".").last;
+        imageFile = FileCustom(fileBytes, fileName);
       });
     }
   }
@@ -90,6 +87,7 @@ class _CreateConversationVueState extends State<CreateConversationVue> {
   void reponseCreateConversation(Conversation conversation) {
     print("la conversation a été creer");
     SocketSingleton.instance.socket.emit('joinConversation', {'idConversation': conversation.id});
+    imageFile=null;
     Navigator.pop(context);
     Navigator.push(
       context,
@@ -99,6 +97,7 @@ class _CreateConversationVueState extends State<CreateConversationVue> {
 
   void reponsePutConversation() {
     print("la conversation a été modifié");
+    imageFile=null;
     Navigator.pop(context);
   }
 
@@ -132,25 +131,14 @@ class _CreateConversationVueState extends State<CreateConversationVue> {
   }
 
   Widget buildImageOrIcon() {
-    if(kIsWeb){
-      //ca marche pas
-      return Constant.buildImageOrIcon(
-          Constant.baseUrlAvatarConversation+"/"+widget.conversation.id.toString(),
-          Icon(Icons.add_a_photo,size: 75,),false
-      );
-    }else{
-      if (imageFile.existsSync()) {
-        return Image.file(
-          imageFile,
+      if (imageFile!=null) {
+        return Image.memory(
+          imageFile!.fileBytes!,
           fit: BoxFit.cover,
         );
       } else {
-        return Constant.buildImageOrIcon(
-            Constant.baseUrlAvatarConversation+"/"+widget.conversation.id.toString(),
-            Icon(Icons.add_a_photo,size: 75,),false
-        );
+        return Constant.buildImageConversation(widget.conversation,75,true);
       }
-    }
   }
 
   @override

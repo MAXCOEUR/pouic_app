@@ -99,7 +99,7 @@ class _AddAmisConvViewState extends State<AddAmisConvView> {
     MaterialPageRoute(builder: (context) => UserDetailleView(user)),
     );
   }
-  void addAmisConv(User user,Conversation conv){
+  void addAmisConv(User user){
     conversationC.addUser(user,widget.conversation, reponseAddAmis,reponseError);
   }
 

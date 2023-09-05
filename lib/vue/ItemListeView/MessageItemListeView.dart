@@ -14,9 +14,10 @@ import 'package:discution_app/outil/Constant.dart';
 import 'package:discution_app/outil/LaunchFile.dart';
 import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:discution_app/vue/home/UserDetailView.dart';
-import 'package:discution_app/vue/widget/AudioPlayerWidget.dart';
+import 'package:discution_app/vue/home/message/AudioPlayerWidget.dart';
+import 'package:discution_app/vue/home/message/FileCustomMessage.dart';
 import 'package:discution_app/vue/widget/PhotoView.dart';
-import 'package:discution_app/vue/widget/parent.dart';
+import 'package:discution_app/vue/home/message/parent.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -30,98 +31,10 @@ class MessageItemListeView extends StatelessWidget {
   MessageItemListeView(
       {super.key, required this.message, required this.context,required this.setParent});
 
-  Widget imageFileWidget(String url) {
-    return CachedNetworkImage(
-      imageUrl: url,
-      fit: BoxFit.cover,
-      key: Key(url),
-      progressIndicatorBuilder: (context, url, downloadProgress) =>
-          CircularProgressIndicator(value: downloadProgress.progress),
-      errorWidget: (context, url, error) => Icon(Icons.error),
-    );
 
-  }
 
-  Widget videoFileWidget() {
-    return Icon(
-      Icons.play_circle,
-      size: 50,
-    );
-  }
 
-  Widget audioFileWidget(FileModel file) {
-    return AudioPlayerWidget(
-      file: file,
-    );
-  }
 
-  Widget genericFileWidget(FileModel file) {
-    return Column(
-      children: [
-        Icon(
-          Icons.insert_drive_file,
-          size: 50,
-        ),
-        SizedBox(width: SizeMarginPading.h3),
-        Container(
-          child: Text(
-            file.name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget viewFile(FileModel file, bool isImage, bool isVideo, bool isAudio) {
-    if (isImage) {
-      return imageFileWidget(
-          Constant.baseUrlFilesMessages + "/" + file.linkFile);
-    } else if (isVideo) {
-      return videoFileWidget();
-    } else if (isAudio) {
-      return audioFileWidget(file);
-    } else {
-      return genericFileWidget(file);
-    }
-  }
-
-  Widget file(int index) {
-    FileModel file = message.files[index];
-    bool isImage = file.name.toLowerCase().endsWith('.png') ||
-        file.name.toLowerCase().endsWith('.jpg') ||
-        file.name.toLowerCase().endsWith('.jpeg') ||
-        file.name.toLowerCase().endsWith('.gif');
-    bool isVideo = file.name.toLowerCase().endsWith('.mp4') || file.name.toLowerCase().endsWith('.avi');
-    bool isaudio = file.name.toLowerCase().endsWith('.mp3') || file.name.toLowerCase().endsWith('.aac');
-    return Container(
-      margin: EdgeInsets.all(10),
-      child: InkWell(
-        onLongPress: () {
-          FileGestion.downloadFile(
-              Constant.baseUrlFilesMessages + "/" + file.linkFile,
-              file.name,
-              context);
-        },
-        onTap: () {
-          if (isImage) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => PhotoViewCustom(
-                      Constant.baseUrlFilesMessages + "/" + file.linkFile)),
-            );
-          } else {
-            FileGestion.Open(
-                Constant.baseUrlFilesMessages + "/" + file.linkFile, file.name);
-          }
-        },
-        child: Container(
-            height: 120, child: viewFile(file, isImage, isVideo, isaudio)),
-      ),
-    );
-  }
 
   void showEditDialog(BuildContext context) {
     final edit = TextEditingController(text: message.message);
@@ -242,7 +155,7 @@ class MessageItemListeView extends StatelessWidget {
       } else if (selectedValue == "modifier") {
         onEdit(); // Appeler la fonction onEdit
       } else if (selectedValue == "repondre") {
-        setParent(MessageParentModel(message.id, message.user, message.message, message.date));
+        setParent(MessageParentModel(message.id, message.user, message.message, message.date,message.files));
       }
     });
   }
@@ -268,10 +181,7 @@ class MessageItemListeView extends StatelessWidget {
               color: Colors.grey[300],
             ),
             child: ClipOval(
-              child: Constant.buildImageOrIcon(
-                  Constant.baseUrlAvatarUser + "/" + message.user.uniquePseudo,
-                  Icon(Icons.account_circle),
-                  false),
+              child: Constant.buildAvatarUser(message.user,30,false),
             ),
           ),
         ),
@@ -353,7 +263,7 @@ class MessageItemListeView extends StatelessWidget {
                           // Espacement vertical entre les lignes
                           children:
                               List.generate(message.files.length, (index) {
-                            return file(index);
+                            return FileCustomMessage(message.files[index]);
                           }),
                         )),
                 ],

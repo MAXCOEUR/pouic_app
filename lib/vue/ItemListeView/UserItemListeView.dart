@@ -46,47 +46,28 @@ class UserItemListeView extends StatelessWidget {
                       color: Colors.grey[300],
                     ),
                     child: ClipOval(
-                      child: Constant.buildImageOrIcon(
-                          Constant.baseUrlAvatarUser + "/" + user.uniquePseudo,
-                          Icon(
-                            Icons.account_circle,
-                            size: 70,
-                          ),false),
+                      child: Constant.buildAvatarUser(user,70,false),
                     ),
                   ),
                   SizedBox(width: SizeMarginPading.h3),
                   Expanded(
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Pseudo",
-                            style: TextStyle(fontSize: SizeFont.p1),
-                          ),
-                          Text(
-                            user.pseudo,
-                            style: TextStyle(fontSize: SizeFont.p1),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ]),
+                    child: Text(
+                      user.pseudo,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: SizeFont.p1,fontWeight: FontWeight.bold,),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                   SizedBox(width: SizeMarginPading.h3),
                   Expanded(
-                      child: Column(
-                    children: [
-                      Text(
-                        "@",
-                        style: TextStyle(fontSize: SizeFont.p1),
-                      ),
-                      Text(
+                      child: Text(
                         "@" + user.uniquePseudo,
+                        textAlign: TextAlign.center,
                         style: TextStyle(fontSize: SizeFont.p1),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  )),
+                      ),),
                   SizedBox(width: SizeMarginPading.h3),
                   if (type == 1)
                     Icon((user.sont_amis == true)
@@ -121,8 +102,7 @@ class UserItemListeView extends StatelessWidget {
                     IconButton(
                       icon: Icon(Icons.check),
                       onPressed: () {
-                        onTapButtonRight!(user,
-                            Conversation(0, "name", "uniquePseudo_admin", 0));
+                        onTapButtonRight!(user);
                       },
                     ),
                 ],

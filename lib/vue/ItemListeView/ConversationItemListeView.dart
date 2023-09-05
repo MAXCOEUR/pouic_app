@@ -38,10 +38,7 @@ class ConversationItemListeView extends StatelessWidget {
                       color: Colors.grey[300],
                     ),
                     child: ClipOval(
-                      child: Constant.buildImageOrIcon(
-                          Constant.baseUrlAvatarConversation+"/"+conversation.id.toString(),
-                          Icon(Icons.comment,size: 50,),true
-                      ),
+                      child: Constant.buildImageConversation(conversation,50,true),
                     ),
                   ),
                   SizedBox(width: SizeMarginPading.h3),

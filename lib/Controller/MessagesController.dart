@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:dio/dio.dart';
+import 'package:discution_app/Model/FileCustom.dart';
 import 'package:discution_app/Model/FileModel.dart';
 import 'package:discution_app/Model/MessageListeModel.dart';
 import 'package:discution_app/Model/ConversationModel.dart';
@@ -18,6 +19,7 @@ import 'package:socket_io_client/src/socket.dart';
 import 'package:path/path.dart' as path;
 
 class MessagesController {
+  List<FileCustom> _listeFile=[];
   MessageListe messages;
   Conversation conversation;
   final Socket _socket = SocketSingleton.instance.socket;
@@ -69,7 +71,7 @@ class MessagesController {
     }
 
 
-    User user = User(messageMap["email"], messageMap["uniquePseudo"], messageMap["pseudo"]);
+    User user = User(messageMap["email"], messageMap["uniquePseudo"], messageMap["pseudo"],messageMap["bio"],messageMap["extension"]);
     List<String> listeLinkFile= [];
     List<String> listenameFile= [];
     if(messageMap["linkfile"]!=null && messageMap["name"]!=null){
@@ -85,18 +87,18 @@ class MessagesController {
     }
     MessageParentModel? parent;
     if(messageMap["id_parent"]!=null){
-      User userParent= User("", messageMap['parent_uniquePseudo'], messageMap['parent_pseudo']);
-      parent = MessageParentModel(messageMap["id_parent"], userParent, messageMap["parent_Message"], DateTime.parse(messageMap["parent_date"]));
+      User userParent= User("", messageMap['parent_uniquePseudo'], messageMap['parent_pseudo'],messageMap["parent_bio"],messageMap["parent_extension"]);
+      List<FileModel> listeFileParent=splitGroupConcat(messageMap["parent_linkfile"],messageMap["parent_name"]);
+      parent = MessageParentModel(messageMap["id_parent"], userParent, messageMap["parent_Message"], DateTime.parse(messageMap["parent_date"]),listeFileParent);
     }
 
 
     MessageModel message =MessageModel(messageMap["id"], user, messageMap["Message"], DateTime.parse(messageMap["date"]), messageMap["id_conversation"],true,listeFile,parent);
     messages.newMessage(message);
     print(data);
-    List<dynamic> listeFileTmp =data["file"];
-    List<String> listeString = listeFileTmp.map((item) => item.toString()).toList();
-    if(listeString.length>0){
-      sendFile(listeString,message);
+
+    if(_listeFile.length>0){
+      sendFile(message);
     }
     if(user!=lm.user){
       luMessage(message.id);
@@ -105,28 +107,26 @@ class MessagesController {
     callBack();
   }
 
-  void sendMessageToSocket(String messageText,List<String> listeFile,MessageParentModel? parent) {
-    listeFile;
+  void sendMessageToSocket(String messageText,List<FileCustom> listeFile,MessageParentModel? parent) {
+    _listeFile.addAll(listeFile);
     if(listeFile.length>0 || messageText.isNotEmpty){
       _socket.emit('envoyerMessage', {
         'token': lm.token,
         'messageText': messageText,
         'conversationId': conversation.id,
-        'file':listeFile,
         'id_parent':(parent==null)?null:parent.id,
       });
     }
   }
 
-  Future<void> sendFile(List<String> listeFile,MessageModel message) async {
-    for(String s in listeFile){
+  Future<void> sendFile(MessageModel message) async {
+    for(FileCustom f in _listeFile){
       try {
-        File file = File(s);
         final response = await Api.instance.postDataMultipart(
           'message/upload',
-          {'file': await MultipartFile.fromFile(file.path),'id_message':message.id,'name':path.basename(s),'id_conversation':message.id_conversation},
+          {'file':  MultipartFile.fromBytes(f.fileBytes!.toList(),filename:f.fileName),'id_message':message.id,'name':f.fileName,'id_conversation':message.id_conversation},
           null,
-          {'contentType':'application/json; charset=utf-8'},
+          null,
         );
 
         if (response.statusCode == 200) {
@@ -138,7 +138,7 @@ class MessagesController {
 
       }
     }
-    listeFile.clear();
+    _listeFile.clear();
   }
 
   int getLastId(){
@@ -158,27 +158,15 @@ class MessagesController {
           
           List<MessageModel> messagesTmp=[];
           for(Map<String, dynamic> data in jsonData){
-            List<String> listeLinkFile= [];
-            List<String> listenameFile= [];
-            if(data["linkfile"]!=null && data["name"]!=null){
-              listeLinkFile=data["linkfile"].split(',');
-              listenameFile=data["name"].split(',');
-            }else{
-              listeLinkFile=[];
-              listenameFile=[];
-            }
-            List<FileModel> listeFile= [];
-            for(int i=0;i<listeLinkFile.length;i++){
-              listeFile.add(FileModel(listeLinkFile[i], listenameFile[i]));
-            }
             MessageParentModel? parent;
             if(data["id_parent"]!=null){
-              User userParent= User("", data['parent_uniquePseudo'], data['parent_pseudo']);
-              parent = MessageParentModel(data["id_parent"], userParent, data["parent_Message"], DateTime.parse(data["parent_date"]));
+              List<FileModel> listeFileParent=splitGroupConcat(data["parent_linkfile"],data["parent_name"]);
+              User userParent= User("", data['parent_uniquePseudo'], data['parent_pseudo'],data["parent_bio"],data["parent_extension"]);
+              parent = MessageParentModel(data["id_parent"], userParent, data["parent_Message"], DateTime.parse(data["parent_date"]),listeFileParent);
             }
 
-
-            User user= User(data['email'], data['uniquePseudo'], data['pseudo']);
+            List<FileModel> listeFile=splitGroupConcat(data["linkfile"],data["name"]);
+            User user= User(data['email'], data['uniquePseudo'], data['pseudo'],data["bio"],data["extension"]);
             messagesTmp.add(MessageModel(data["id"], user, data["Message"], DateTime.parse(data["date"]), data["id_conversation"],(data["is_read"]==1)?true:false,listeFile,parent));
           }
           messages.addOldMessages(messagesTmp);
@@ -190,6 +178,25 @@ class MessagesController {
         }
     );
   }
+
+  List<FileModel> splitGroupConcat(String? linkfile,String? name){
+    List<FileModel> listeFile= [];
+    List<String> listeLinkFile= [];
+    List<String> listenameFile= [];
+    if(linkfile!=null && name!=null){
+      listeLinkFile=linkfile.split(',');
+      listenameFile=name.split(',');
+    }else{
+      listeLinkFile=[];
+      listenameFile=[];
+    }
+    for(int i=0;i<listeLinkFile.length;i++){
+      listeFile.add(FileModel(listeLinkFile[i], listenameFile[i]));
+    }
+
+    return listeFile;
+  }
+
   void initListe(int id_conversation,Function callBack,Function callBackError){
     addOldMessage_inListe(id_conversation,0,callBack,callBackError);
   }

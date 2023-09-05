@@ -149,7 +149,7 @@ class _ConversationListeViewState extends State<ConversationListeView> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          Conversation conv = Conversation(0, "", "", 0);
+          Conversation conv = Conversation(0, "", "",null, 0);
           await Navigator.push(
             context,
             MaterialPageRoute(

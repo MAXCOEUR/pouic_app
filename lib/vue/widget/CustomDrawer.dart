@@ -34,12 +34,7 @@ class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
                     color: Colors.grey[300],
                   ),
                   child: ClipOval(
-                    child: Constant.buildImageOrIcon(
-                        Constant.baseUrlAvatarUser + "/" + lm.user.uniquePseudo,
-                        Icon(
-                          Icons.account_circle,
-                          size: 80,
-                        ),true),
+                    child: Constant.buildAvatarUser(lm.user,80,true),
                   ),
                 ),
                 SizedBox(height: SizeMarginPading.h3),

@@ -67,7 +67,7 @@ class ConversationController{
   void _handleNewConv(data){
     Map<String,dynamic> messageMap = data["conversation"];
 
-    Conversation conversation = Conversation(messageMap["id"], messageMap["name"], messageMap["uniquePseudo_admin"], 0);
+    Conversation conversation = Conversation(messageMap["id"], messageMap["name"], messageMap["uniquePseudo_admin"],messageMap["extension"], 0);
     conversations.addConv(conversation);
     SocketSingleton.instance.socket.emit('joinConversation', {'idConversation': conversation.id});
     callBack();
@@ -78,11 +78,11 @@ class ConversationController{
 
     MessageParentModel? parent;
     if(messageMap["id_parent"]!=null){
-      User userParent= User("", messageMap['parent_uniquePseudo'], messageMap['parent_pseudo']);
-      parent = MessageParentModel(messageMap["id_parent"], userParent, messageMap["parent_Message"], DateTime.parse(messageMap["parent_date"]));
+      User userParent= User("", messageMap['parent_uniquePseudo'], messageMap['parent_pseudo'],messageMap["parent_bio"],messageMap["parent_extension"]);
+      parent = MessageParentModel(messageMap["id_parent"], userParent, messageMap["parent_Message"], DateTime.parse(messageMap["parent_date"]),[]);
     }
 
-    User user = User(messageMap["email"], messageMap["uniquePseudo"], messageMap["pseudo"], messageMap["Avatar"]);
+    User user = User(messageMap["email"], messageMap["uniquePseudo"], messageMap["pseudo"],messageMap["bio"],messageMap["extension"]);
     MessageModel message = MessageModel(messageMap["id"], user, messageMap["Message"], DateTime.parse(messageMap["date"]), messageMap["id_conversation"],true,[],parent);
     int idConv = messageMap["id_conversation"];
     for(Conversation conv in conversations.conversations){
@@ -109,7 +109,7 @@ class ConversationController{
           List<dynamic> jsonData = response.data;
 
           for(Map<String, dynamic> user in jsonData){
-            conversations.addConv(Conversation(user["id"], user["name"], user["uniquePseudo_admin"],user["unRead"]));
+            conversations.addConv(Conversation(user["id"], user["name"], user["uniquePseudo_admin"],user["extension"],user["unRead"]));
           }
 
           callBack();

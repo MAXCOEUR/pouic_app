@@ -1,11 +1,13 @@
 import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:discution_app/Model/ConversationModel.dart';
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/vue/home/UserDetailView.dart';
 import 'package:discution_app/vue/widget/PhotoView.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:http/http.dart' as http;
 
 class Constant {
@@ -41,64 +43,53 @@ class Constant {
       },
     );
   }
+  static Widget buildAvatarUser(User u,double size, bool clicable){
+    Icon icon = Icon(Icons.account_circle,size: size,);
+    String? avatar=u.getNameImage();
+    if(avatar==null){
+      return icon;
+    }
+    else{
+      return _buildImageOrIcon(
+          Constant.baseUrlAvatarUser + "/" + avatar ,
+          icon,
+          false
+      );
+    }
 
-  static Future<bool> _checkImageExists(String url) async {
-    final response = await http.head(Uri.parse(url));
-    return response.statusCode == 200;
+  }
+  static Widget buildImageConversation(Conversation c,double size, bool clicable){
+    Icon icon = Icon(Icons.comment,size: size,);
+    String? image=c.getNameImage();
+    if(image==null){
+      return icon;
+    }
+    else{
+      return _buildImageOrIcon(
+          Constant.baseUrlAvatarConversation+"/"+image,
+          icon,
+          true
+      );
+    }
+
   }
 
-  static Widget buildImageOrIcon(String imageUrl, Icon icon, bool clicable) {
+  static Widget _buildImageOrIcon(String imageUrl, Icon icon, bool clicable) {
 
     if(imageUrl.split('/').last=="0"){
       return icon;
     }
-    return FutureBuilder<String?>(
-      future: _findAvailableImage(imageUrl),
-      builder: (context, snapshot) {
-        return clicable
-            ?InkWell(
-          onTap: () {
-            if(snapshot.data!=null){
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => PhotoViewCustom(snapshot.data!)),
-              );
-            }
-          },
-          child: (snapshot.data!=null)? CachedNetworkImage(
-            key: Key(snapshot.data!),
-            imageUrl: snapshot.data!,
-            fit: BoxFit.cover,
-            progressIndicatorBuilder: (context, url, downloadProgress) =>
-                CircularProgressIndicator(value: downloadProgress.progress),
-            errorWidget: (context, url, error) => Icon(Icons.error),
-          ):icon,
-        ): (snapshot.data!=null)?CachedNetworkImage(
-          key: Key(snapshot.data!),
-          imageUrl: snapshot.data!,
-          fit: BoxFit.cover,
-          progressIndicatorBuilder: (context, url, downloadProgress) =>
-              CircularProgressIndicator(value: downloadProgress.progress),
-          errorWidget: (context, url, error) => Icon(Icons.error),
-        ):icon;
-      },
+    return CachedNetworkImage(
+      key: Key(imageUrl),
+      imageUrl: imageUrl,
+      fit: BoxFit.cover,
+      progressIndicatorBuilder: (context, url, downloadProgress) =>
+          CircularProgressIndicator(value: downloadProgress.progress),
+      errorWidget: (context, url, error) => icon,
     );
   }
 
-  static Future<String?> _findAvailableImage(String baseUrl) async {
-    final List<String> imageExtensions = ['.png', '.jpg', '.jpeg', '.gif'];
 
-    for (final extension in imageExtensions) {
-      final imageUrl = '$baseUrl$extension';
-      final imageExists = await _checkImageExists(imageUrl);
-      if (imageExists) {
-        return imageUrl;
-      }
-    }
-
-    return null; // No available image with supported extensions
-  }
 }
 
 class SizeFont {

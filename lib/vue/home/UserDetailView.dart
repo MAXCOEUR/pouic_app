@@ -32,56 +32,90 @@ class _UserListeViewState extends State<UserDetailleView> {
       appBar: CustomAppBar(
         arrowReturn: true,
       ),
-      body: Center(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              child: Container(
-                width: 200,
-                height: 200,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.grey[300],
-                ),
-                child: ClipOval(
-                  child: Constant.buildImageOrIcon(
-                      Constant.baseUrlAvatarUser +
-                          "/" +
-                          widget.user.uniquePseudo,
-                      Icon(
-                        Icons.account_circle,
-                        size: 150,
-                      ),
-                      true),
+      body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                child: Container(
+                  width: 200,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.grey[300],
+                  ),
+                  child: ClipOval(
+                      child: Constant.buildAvatarUser(widget.user, 150, true)),
                 ),
               ),
-            ),
-            Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface,
-                  borderRadius: BorderRadius.circular(SizeBorder.radius),
-                ),
-                child: Container(
-                  padding: EdgeInsets.all(SizeMarginPading.h1),
-                  child: Column(
-                    children: [
-                      Text("@" + widget.user.uniquePseudo,
-                          style: TextStyle(fontSize: SizeFont.h3)),
-                      Text("Pseudo : " + widget.user.pseudo,
-                          style: TextStyle(fontSize: SizeFont.p1)),
-                    ],
-                  ),
-                )),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                      margin: EdgeInsets.all(SizeMarginPading.h1),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                        borderRadius: BorderRadius.circular(SizeBorder.radius),
+                      ),
+                      child: Container(
+                        padding: EdgeInsets.all(SizeMarginPading.h1),
+                        child: Column(
+                          children: [
+                            Text(widget.user.pseudo,
+                                style: TextStyle(
+                                  fontSize: SizeFont.h3,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                            Text("@" + widget.user.uniquePseudo,
+                                style: TextStyle(fontSize: SizeFont.p1)),
+                          ],
+                        ),
+                      )),
+                  if (widget.user.bio != null)
+                    Expanded(
+                      child: Container(
+                        margin: EdgeInsets.all(SizeMarginPading.h1),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surface,
+                          borderRadius:
+                              BorderRadius.circular(SizeBorder.radius),
+                        ),
+                        child: Container(
+                          padding: EdgeInsets.all(SizeMarginPading.h1),
+                          child: Row(
+                            children: [
+                              Text(
+                                "bio : ",
+                                style: TextStyle(
+                                    fontSize: SizeFont.p1,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  widget.user.bio!,
+                                  style: TextStyle(fontSize: SizeFont.p1),
+                                  softWrap: true,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
 
-            SizedBox(height: SizeMarginPading.h1),
-            // Espace entre les textes et les boutons
-            if (widget.user.sont_amis == null || widget.user.sont_amis == false)
-              ajouterAmisButtonWidget()
-            else
-              amisButtonsWidget(),
-          ],
-        ),
+              SizedBox(height: SizeMarginPading.h1),
+              // Espace entre les textes et les boutons
+              if (widget.user.sont_amis == null ||
+                  widget.user.sont_amis == false)
+                ajouterAmisButtonWidget()
+              else
+                amisButtonsWidget(),
+            ],
+          ),
+
       ),
     );
   }
@@ -96,10 +130,11 @@ class _UserListeViewState extends State<UserDetailleView> {
                 0,
                 widget.lm.user.pseudo + " " + widget.user.pseudo,
                 widget.lm.user.uniquePseudo,
+                null,
                 0);
 
-            conversationC.create(conversation, File(""),
-                reponseCreateConversation, retourCreateConversationError);
+            conversationC.create(conversation, null, reponseCreateConversation,
+                retourCreateConversationError);
           },
           child: Text("Nouvelle Conversation"),
         ),

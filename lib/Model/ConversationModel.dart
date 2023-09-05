@@ -6,8 +6,9 @@ class Conversation{
   String name;
   String uniquePseudo_admin;
   int unRead;
+  String? extension;
 
-  Conversation(this.id, this.name, this.uniquePseudo_admin,this.unRead);
+  Conversation(this.id, this.name, this.uniquePseudo_admin,this.extension,this.unRead);
 
   @override
   bool operator ==(Object other) {
@@ -28,5 +29,11 @@ class Conversation{
   }
   String toJsonString() {
     return jsonEncode(toJson());
+  }
+  String? getNameImage(){
+    if (extension==null){
+      return null;
+    }
+    return id.toString()+"."+extension!;
   }
 }

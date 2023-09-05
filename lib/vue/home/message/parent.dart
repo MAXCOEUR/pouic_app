@@ -1,5 +1,6 @@
 import 'package:discution_app/Model/MessageParentModel.dart';
 import 'package:discution_app/outil/Constant.dart';
+import 'package:discution_app/vue/home/message/FileCustomMessage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -37,12 +38,7 @@ class Parent extends StatelessWidget{
               color: Colors.grey[300],
             ),
             child: ClipOval(
-              child: Constant.buildImageOrIcon(
-                  Constant.baseUrlAvatarUser +
-                      "/" +
-                      parent!.user.uniquePseudo,
-                  Icon(Icons.account_circle),
-                  false),
+              child: Constant.buildAvatarUser(parent!.user,30,true)
             ),
           ),
           SizedBox(width: SizeMarginPading.h3),
@@ -100,6 +96,23 @@ class Parent extends StatelessWidget{
                   ),
                   softWrap: true, // Permettre le wrapping automatique du texte
                 ),
+                if (parent!.files.isNotEmpty)
+                  Container(
+                      //width: double.infinity,
+                      child: Wrap(
+                        direction: Axis.horizontal,
+                        // Orientation horizontale
+                        alignment: WrapAlignment.start,
+                        // Alignement des éléments à gauche
+                        spacing: 8,
+                        // Espacement horizontal entre les éléments
+                        runSpacing: 8,
+                        // Espacement vertical entre les lignes
+                        children:
+                        List.generate(parent!.files.length, (index) {
+                          return FileCustomMessage(parent!.files[index]);
+                        }),
+                      )),
               ],
             ),
           ),

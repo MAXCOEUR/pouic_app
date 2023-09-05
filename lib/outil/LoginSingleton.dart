@@ -51,7 +51,7 @@ class LoginModelProvider {
         String token = jsonData["token"];
 
         User u = User(
-            userMap["email"], userMap["uniquePseudo"], userMap["pseudo"]);
+            userMap["email"], userMap["uniquePseudo"], userMap["pseudo"], userMap["bio"], userMap["extension"]);
         LoginModel lm = LoginModel(u, token);
         LoginModelProvider._storeTokenInCache(token);
         return lm;

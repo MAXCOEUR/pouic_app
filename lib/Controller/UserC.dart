@@ -3,39 +3,41 @@ import 'dart:typed_data';
 
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:discution_app/Model/FileCustom.dart';
 import 'package:discution_app/Model/UserListeModel.dart';
 import 'package:discution_app/outil/Constant.dart';
 import 'package:discution_app/outil/LoginSingleton.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import '../Model/UserModel.dart';
 import '../outil/Api.dart';
 
 class UserC {
   LoginModel? loginModel=LoginModelProvider.getInstance((){}).loginModel;
-  Future<void> create(User user,File imageFile,String passWord,Function callBack,Function callBackError) async {
+  Future<void> create(User user,FileCustom? imageFile,String passWord,Function callBack,Function callBackError) async {
     User u;
     try {
       final responseCreate = await Api.instance.postData(
         'user',
-        {'email': user.email, 'uniquePseudo': user.uniquePseudo,'pseudo':user.pseudo,'passWord':passWord},
+        {'email': user.email, 'uniquePseudo': user.uniquePseudo,'pseudo':user.pseudo,'passWord':passWord,'extension':user.extantion,'bio':user.bio},
         null,
         null,
       );
       if(responseCreate.statusCode==201){
         Map<String, dynamic> jsonData = responseCreate.data;
-        u = User(jsonData["email"], jsonData["uniquePseudo"], jsonData["pseudo"]);
+        u = User(jsonData["email"], jsonData["uniquePseudo"], jsonData["pseudo"],jsonData["bio"],jsonData["extension"]);
       }else{
         throw Exception();
       }
 
-      if(!imageFile.existsSync()){
+      if(imageFile==null){
         callBack(u);
         return ;
       }
 
       final response = await Api.instance.postDataMultipart(
         'user/upload',
-        {'avatar': await MultipartFile.fromFile(imageFile.path),'uniquePseudo':u.uniquePseudo},
+        {'avatar': MultipartFile.fromBytes(imageFile.fileBytes!.toList(),filename:imageFile.fileName),'uniquePseudo':u.uniquePseudo},
         null,
         null,
       );
@@ -50,38 +52,39 @@ class UserC {
       callBackError(error);
     }
   }
-  Future<void> modify(User user,File imageFile,String passWord,Function callBack,Function callBackError) async {
+  Future<void> modify(User user,FileCustom? imageFile,String passWord,Function callBack,Function callBackError) async {
     User u;
     String AuthorizationToken='Bearer ${loginModel!.token}';
     try {
       final responseCreate = await Api.instance.putData(
         'user',
-        {'email': user.email, 'uniquePseudo': user.uniquePseudo,'pseudo':user.pseudo,'passWord':passWord},
+        {'email': user.email, 'uniquePseudo': user.uniquePseudo,'pseudo':user.pseudo,'passWord':passWord,'extension':user.extantion,'bio':user.bio},
         null,
         {'Authorization': AuthorizationToken},
       );
       if(responseCreate.statusCode==201){
         Map<String, dynamic> jsonData = responseCreate.data;
         u = User(
-            jsonData["email"], jsonData["uniquePseudo"], jsonData["pseudo"]);
+            jsonData["email"], jsonData["uniquePseudo"], jsonData["pseudo"],jsonData["bio"],jsonData["extension"]);
       }else{
         throw Exception();
       }
 
-      if(!imageFile.existsSync()){
+      if(imageFile==null){
         callBack(u);
         return ;
       }
 
       final response = await Api.instance.postDataMultipart(
         'user/upload',
-        {'avatar': await MultipartFile.fromFile(imageFile.path),'uniquePseudo':user.uniquePseudo},
+        {'avatar': MultipartFile.fromBytes(imageFile.fileBytes!.toList(),filename:imageFile.fileName),'uniquePseudo':user.uniquePseudo},
         null,
         null,
       );
 
       print(response.statusCode);
       if (response.statusCode == 200) {
+        DefaultCacheManager().emptyCache();
         callBack(u);
       } else {
         throw Exception();

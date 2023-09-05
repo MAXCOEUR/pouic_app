@@ -3,7 +3,10 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:discution_app/Controller/UserController.dart';
 import 'package:discution_app/Controller/UserC.dart';
+import 'package:discution_app/Model/FileCustom.dart';
 import 'package:discution_app/Model/UserListeModel.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
@@ -27,7 +30,8 @@ class _CreateUserVueState extends State<CreateUserVue> {
   final userName = TextEditingController();
   final email = TextEditingController();
   final mdp = TextEditingController();
-  File imageFile = File('');
+  final bio = TextEditingController();
+  FileCustom? imageFile;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -35,27 +39,30 @@ class _CreateUserVueState extends State<CreateUserVue> {
   UserC userCreate = UserC();
 
   Future<void> _pickImage() async {
-    final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+    FilePickerResult? pickedImage = await FilePicker.platform.pickFiles(type: FileType.custom,
+      allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'],);
 
     if (pickedImage != null) {
-      File imageTmp = File(pickedImage.path);
+      PlatformFile file = pickedImage.files.first;
+      late Uint8List? fileBytes;
+      late String fileName= file.name;
 
-      if (imageTmp.lengthSync() > 10 * 1024 * 1024) {
+      if(kIsWeb){
+        fileBytes = file.bytes;
+      }else{
+        File localFile = File(file.path!);
+        fileBytes = await localFile.readAsBytes();
+      }
+
+      if (fileBytes!.length > 10000000) {
         print('Veuillez sélectionner une image de moins de 10 Mo.');
         Constant.showAlertDialog(context, "Erreur", "Veuillez sélectionner une image de moins de 10 Mo.");
         return;
       }
 
-      if (imageTmp.path.toLowerCase().endsWith('.png')||imageTmp.path.toLowerCase().endsWith('.jpg')||imageTmp.path.toLowerCase().endsWith('.jpeg')||imageTmp.path.toLowerCase().endsWith('.gif')) {
-        imageFile = imageTmp;
-      } else {
-        print('Veuillez sélectionner une image au format PNG jpg jpeg ou gif.');
-        Constant.showAlertDialog(context, "erreur", "Veuillez sélectionner une image au format PNG jpg jpeg ou gif.");
-        return;
-      }
-
       setState(() {
-        // Mettre à jour l'interface utilisateur
+        imageFile = FileCustom(fileBytes, fileName);
+        widget.user.extantion=fileName.split('.').last;
       });
     }
   }
@@ -65,6 +72,11 @@ class _CreateUserVueState extends State<CreateUserVue> {
       widget.user.email=email.text;
       widget.user.uniquePseudo=userNameUnique.text;
       widget.user.pseudo=userName.text;
+      if(bio.text==""){
+        widget.user.bio=null;
+      }else{
+        widget.user.bio=bio.text;
+      }
       if(widget.created){
         userCreate.create(widget.user,imageFile, mdp.text, reponseCreateUser,reponseCreateUserError);
       }
@@ -76,6 +88,7 @@ class _CreateUserVueState extends State<CreateUserVue> {
   }
   void reponseCreateUser(User u){
     print(u.toJsonString());
+    imageFile=null;
     Navigator.pop(context);
   }
   void reponseCreateUserError(DioException ex){
@@ -93,6 +106,7 @@ class _CreateUserVueState extends State<CreateUserVue> {
     userName.dispose();
     email.dispose();
     mdp.dispose();
+    bio.dispose();
     super.dispose();
   }
   @override
@@ -102,20 +116,20 @@ class _CreateUserVueState extends State<CreateUserVue> {
       userNameUnique.text = widget.user.uniquePseudo;
       userName.text = widget.user.pseudo;
       email.text = widget.user.email;
+      if(widget.user.bio!=null){
+        bio.text=widget.user.bio!;
+      }
     }
   }
 
   Widget buildImageOrIcon() {
-    if (imageFile.existsSync()) {
-      return Image.file(
-        imageFile,
+    if (imageFile!=null) {
+      return Image.memory(
+        imageFile!.fileBytes!,
         fit: BoxFit.cover,
       );
     } else {
-      return Constant.buildImageOrIcon(
-          Constant.baseUrlAvatarUser+"/"+widget.user.uniquePseudo,
-          Icon(Icons.add_a_photo),false
-      );
+      return Constant.buildAvatarUser(widget.user,75,false);
     }
   }
 
@@ -131,44 +145,48 @@ class _CreateUserVueState extends State<CreateUserVue> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+            Container(
+              margin: EdgeInsets.only(top: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               child: TextFormField(
                 controller: userNameUnique,
+                maxLength: 80,
                 decoration: const InputDecoration(
-                  border: UnderlineInputBorder(),
+                  border: OutlineInputBorder(),
                   labelText: 'Entrée votre @',
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty|| value.length>=80) {
-                    return 'le champ @ est obligatoir et unique et < 80 caractères';
+                  if (value == null || value.isEmpty) {
+                    return 'le champ @ est obligatoir et unique';
                   }
                   return null; // Valide
                 },
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               child: TextFormField(
                 controller: userName,
+                maxLength: 80,
                 decoration: const InputDecoration(
-                  border: UnderlineInputBorder(),
+                  border: OutlineInputBorder(),
                   labelText: 'Entrée votre Pseudo',
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty|| value.length>=80) {
-                    return 'le champ Pseudo est obligatoir et doit etre < 80 caractères';
+                  if (value == null || value.isEmpty) {
+                    return 'le champ Pseudo est obligatoir ';
                   }
                   return null; // Valide
                 },
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               child: TextFormField(
                 controller: email,
+                maxLength: 255,
                 decoration: const InputDecoration(
-                  border: UnderlineInputBorder(),
+                  border: OutlineInputBorder(),
                   labelText: 'Entrée votre email',
                 ),
                 validator: (value) {
@@ -176,20 +194,34 @@ class _CreateUserVueState extends State<CreateUserVue> {
                     return 'Ce champ est requis';
                   }
                   RegExp emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
-                  if (!emailRegex.hasMatch(value) || value.length>=255) {
+                  if (!emailRegex.hasMatch(value)) {
                     return 'Veuillez entrer une adresse e-mail valide';
                   }
                   return null; // Valide
                 },
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8, vertical:2),
+              child: TextField(
+                controller: bio,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(), // Utilisez OutlineInputBorder pour un champ extensible
+                  labelText: 'Entrée votre bio',
+                ),
+                maxLines: null, // Permet un nombre illimité de lignes
+                maxLength: 200, // Limite le nombre de caractères à 200
+                keyboardType: TextInputType.multiline, // Permet de saisir sur plusieurs lignes
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
               child: TextFormField(
                 obscureText: true,
                 controller: mdp,
+                maxLength: 255,
                 decoration: const InputDecoration(
-                  border: UnderlineInputBorder(),
+                  border: OutlineInputBorder(),
                   labelText: 'Entrée votre mdp',
                 ),
                 validator: (value) {
