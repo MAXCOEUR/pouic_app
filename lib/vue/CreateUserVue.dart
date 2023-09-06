@@ -8,6 +8,7 @@ import 'package:discution_app/Model/UserListeModel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
 
@@ -54,9 +55,12 @@ class _CreateUserVueState extends State<CreateUserVue> {
         fileBytes = await localFile.readAsBytes();
       }
 
-      if (fileBytes!.length > 10000000) {
-        print('Veuillez sélectionner une image de moins de 10 Mo.');
-        Constant.showAlertDialog(context, "Erreur", "Veuillez sélectionner une image de moins de 10 Mo.");
+      if(fileBytes!=null&&fileName.split(".").last.toLowerCase()!="gif"){
+        fileBytes = await Constant.compressImage(fileBytes,20);
+      }
+      if (fileBytes!.length > 1000000) {
+        print('Veuillez sélectionner une image de moins de 1 Mo.');
+        Constant.showAlertDialog(context, "Erreur", "Veuillez sélectionner une image de moins de 1 Mo.");
         return;
       }
 
@@ -66,6 +70,7 @@ class _CreateUserVueState extends State<CreateUserVue> {
       });
     }
   }
+
 
   void createUser(){
     if (_formKey.currentState!.validate()) {

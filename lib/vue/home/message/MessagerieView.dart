@@ -57,6 +57,7 @@ class _MessagerieViewState extends State<MessagerieView> {
       parent = p;
     });
   }
+
   void nullParent() {
     setState(() {
       parent = null;
@@ -114,9 +115,7 @@ class _MessagerieViewState extends State<MessagerieView> {
               listeFile.add(FileCustom(fileBytes, file.uri.pathSegments.last));
             }
           }
-          setState(() {
-
-          });
+          setState(() {});
         }
       }
     }
@@ -193,7 +192,7 @@ class _MessagerieViewState extends State<MessagerieView> {
               color: Colors.grey[300],
             ),
             child: ClipOval(
-              child:Constant.buildImageConversation(widget.conv,30,true),
+              child: Constant.buildImageConversation(widget.conv, 30, true),
             ),
           ),
           SizedBox(width: SizeMarginPading.h3),
@@ -379,9 +378,14 @@ class _MessagerieViewState extends State<MessagerieView> {
           Container(
             constraints: BoxConstraints(
                 minHeight: 0,
-                maxHeight: listeFile.isNotEmpty ? parent!=null?300:150 : parent!=null?150:0
-            ),
-            child:ListView(
+                maxHeight: listeFile.isNotEmpty
+                    ? parent != null
+                        ? 300
+                        : 150
+                    : parent != null
+                        ? 150
+                        : 0),
+            child: ListView(
               children: [
                 if (listeFile.isNotEmpty)
                   Container(
@@ -396,17 +400,17 @@ class _MessagerieViewState extends State<MessagerieView> {
                     ),
                   ),
                 if (listeFile.isNotEmpty) SizedBox(height: SizeMarginPading.h3),
-                if (parent!=null) Dismissible(
-                  key: Key(parent!.id.toString()),
-                  child: Parent(parent),
-                  onDismissed: (DismissDirection direction){
-                    nullParent();
-                  },
-                ),
+                if (parent != null)
+                  Dismissible(
+                    key: Key(parent!.id.toString()),
+                    child: Parent(parent),
+                    onDismissed: (DismissDirection direction) {
+                      nullParent();
+                    },
+                  ),
               ],
             ),
           ),
-
           Container(
             margin: EdgeInsets.all(SizeMarginPading.h1),
             child: Row(
@@ -444,7 +448,8 @@ class _MessagerieViewState extends State<MessagerieView> {
                       padding: EdgeInsets.all(SizeMarginPading.h3),
                       decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.primary,
-                          borderRadius: BorderRadius.circular(SizeBorder.radius)),
+                          borderRadius:
+                              BorderRadius.circular(SizeBorder.radius)),
                       child: Text((isRecording) ? 'Enregistrement' : 'Envoyer',
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.background)),
@@ -452,7 +457,6 @@ class _MessagerieViewState extends State<MessagerieView> {
               ],
             ),
           )
-
         ],
       ),
     );
@@ -464,24 +468,25 @@ class _MessagerieViewState extends State<MessagerieView> {
       appBar: customAppBar(),
       body: Container(
         color: Theme.of(context).colorScheme.surface,
-        child:Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              controller: _scrollController,
-              itemCount: messageListe.messages.length,
-              reverse: true,
-              itemBuilder: (context, index) {
-                final ValueKey key = ValueKey(messageListe.messages[index].id);
-                final message = messageListe.messages[index];
-                Widget listItem = _buildMessageListTile(message, key);
-                return listItem;
-              },
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                controller: _scrollController,
+                itemCount: messageListe.messages.length,
+                reverse: true,
+                itemBuilder: (context, index) {
+                  final ValueKey key =
+                      ValueKey(messageListe.messages[index].id);
+                  final message = messageListe.messages[index];
+                  Widget listItem = _buildMessageListTile(message, key);
+                  return listItem;
+                },
+              ),
             ),
-          ),
-          SendMessageBar(),
-        ],
-      ),
+            SendMessageBar(),
+          ],
+        ),
       ),
     );
   }
@@ -493,48 +498,76 @@ class _MessagerieViewState extends State<MessagerieView> {
     if (pickedFiles != null) {
       for (PlatformFile file in pickedFiles.files) {
         late Uint8List? fileBytes;
-        late String fileName= file.name;
+        late String fileName = file.name;
 
-        if(kIsWeb){
+        if (kIsWeb) {
           fileBytes = file.bytes;
-        }else{
+        } else {
           File localFile = File(file.path!);
           fileBytes = await localFile.readAsBytes();
         }
 
         if (fileName.length >= 255) {
           print("le ficher ${fileName} a un nom de plus de 255 caractere");
-          Constant.showAlertDialog(context, "Erreur", "le ficher ${fileName} a un nom de plus de 255 caractere");
+          Constant.showAlertDialog(context, "Erreur",
+              "le ficher ${fileName} a un nom de plus de 255 caractere");
           return;
         }
 
-
-        if(fileName.toLowerCase().endsWith(".mp4")||fileName.toLowerCase().endsWith(".avi")){
-          if (fileBytes!.length < 75000000) {
+        if (fileName.toLowerCase().endsWith(".mp4") ||
+            fileName.toLowerCase().endsWith(".avi")) {
+          if (fileBytes!.length < 50000000) {
             setState(() {
               listeFile.add(FileCustom(fileBytes, fileName));
             });
           } else {
-            Constant.showAlertDialog(context, "Erreur",
-                "la video ${fileName} fait plus de 75Mo");
+            Constant.showAlertDialog(
+                context, "Erreur", "la video ${fileName} fait plus de 50Mo");
           }
-        }else if(fileName.toLowerCase().endsWith(".mp3")||fileName.toLowerCase().endsWith(".aac")){
-          if (fileBytes!.length < 20000000) {
+        } else if (fileName.toLowerCase().endsWith(".mp3") ||
+            fileName.toLowerCase().endsWith(".aac")) {
+          if (fileBytes!.length < 7000000) {
             setState(() {
               listeFile.add(FileCustom(fileBytes, fileName));
             });
           } else {
-            Constant.showAlertDialog(context, "Erreur",
-                "le audio ${fileName} fait plus de 20Mo");
+            Constant.showAlertDialog(
+                context, "Erreur", "le audio ${fileName} fait plus de 7Mo");
           }
-        }else{
-          if (fileBytes!.length < 10000000) {
+        } else if (fileName.toLowerCase().endsWith(".jpg") ||
+            fileName.toLowerCase().endsWith(".jpeg") ||
+            fileName.toLowerCase().endsWith(".png")) {
+          if (fileBytes != null) {
+            if (fileBytes.length > 200000) {
+              fileBytes = await Constant.compressImage(fileBytes, 90);
+              print(fileBytes.length);
+            }
+            if (fileBytes.length > 2000000) {
+              Constant.showAlertDialog(
+                  context, "Erreur", "l\'image ${fileName} fait plus de 1 Mo");
+              break;
+            }
             setState(() {
               listeFile.add(FileCustom(fileBytes, fileName));
             });
+          } else if (fileName.toLowerCase().endsWith(".gif")) {
+            if (fileBytes!.length < 1000000) {
+              setState(() {
+                listeFile.add(FileCustom(fileBytes, fileName));
+              });
+            } else {
+              Constant.showAlertDialog(
+                  context, "Erreur", "le gif ${fileName} fait plus de 1Mo");
+            }
           } else {
-            Constant.showAlertDialog(context, "Erreur",
-                "le fichier ${fileName} fait plus de 10Mo");
+            if (fileBytes!.length < 10000000) {
+              setState(() {
+                listeFile.add(FileCustom(fileBytes, fileName));
+              });
+            } else {
+              Constant.showAlertDialog(context, "Erreur",
+                  "le fichier ${fileName} fait plus de 10Mo");
+            }
           }
         }
       }

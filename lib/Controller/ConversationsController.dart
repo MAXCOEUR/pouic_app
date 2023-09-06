@@ -68,7 +68,7 @@ class ConversationController{
     Map<String,dynamic> messageMap = data["conversation"];
 
     Conversation conversation = Conversation(messageMap["id"], messageMap["name"], messageMap["uniquePseudo_admin"],messageMap["extension"], 0);
-    conversations.addConv(conversation);
+    conversations.addTopConv(conversation);
     SocketSingleton.instance.socket.emit('joinConversation', {'idConversation': conversation.id});
     callBack();
 
@@ -85,8 +85,10 @@ class ConversationController{
     User user = User(messageMap["email"], messageMap["uniquePseudo"], messageMap["pseudo"],messageMap["bio"],messageMap["extension"]);
     MessageModel message = MessageModel(messageMap["id"], user, messageMap["Message"], DateTime.parse(messageMap["date"]), messageMap["id_conversation"],true,[],parent);
     int idConv = messageMap["id_conversation"];
+    Conversation? convtmp;
     for(Conversation conv in conversations.conversations){
       if(conv.id==idConv){
+        convtmp=conv;
         conv.unRead++;
         if(message.user!=loginModel.user && idConvertationOpen!=idConv){
           if(flutterLocalNotificationsPlugin!=null){
@@ -95,6 +97,10 @@ class ConversationController{
         }
         callBack();
       }
+    }
+    if(convtmp!=null){
+      conversations.removeConv(convtmp);
+      conversations.addTopConv(convtmp);
     }
   }
 

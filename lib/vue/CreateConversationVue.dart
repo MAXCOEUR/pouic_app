@@ -56,15 +56,18 @@ class _CreateConversationVueState extends State<CreateConversationVue> {
         File localFile = File(file.path!);
         fileBytes = await localFile.readAsBytes();
       }
-      // Vérifier la taille de l'image avant de la télécharger
-      if (fileBytes!.length > 10000000) {
-        print('Veuillez sélectionner une image de moins de 10 Mo.');
-        Constant.showAlertDialog(context, "Erreur", "Veuillez sélectionner une image de moins de 10 Mo.");
+
+      if(fileBytes!=null&&fileName.split(".").last.toLowerCase()!="gif"){
+        fileBytes = await Constant.compressImage(fileBytes,20);
+      }
+      if (fileBytes!.length > 1000000) {
+        print('Veuillez sélectionner une image de moins de 1 Mo.');
+        Constant.showAlertDialog(context, "Erreur", "Veuillez sélectionner une image de moins de 1 Mo.");
         return;
       }
 
       setState(() {
-        widget.conversation.extension=fileName.split(".").last;
+        widget.conversation.extension=fileName.split(".").last.toLowerCase();
         imageFile = FileCustom(fileBytes, fileName);
       });
     }

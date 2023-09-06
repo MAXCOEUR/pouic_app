@@ -8,6 +8,7 @@ import 'package:discution_app/vue/widget/PhotoView.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:http/http.dart' as http;
 
 class Constant {
@@ -86,6 +87,14 @@ class Constant {
       progressIndicatorBuilder: (context, url, downloadProgress) =>
           CircularProgressIndicator(value: downloadProgress.progress),
       errorWidget: (context, url, error) => icon,
+    );
+  }
+  static Future<Uint8List> compressImage(Uint8List imageBytes,int quality) async {
+    return await FlutterImageCompress.compressWithList(
+      imageBytes,
+      minHeight: 500,
+      minWidth: 500,
+      quality: quality,
     );
   }
 

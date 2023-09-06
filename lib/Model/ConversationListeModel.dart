@@ -7,6 +7,9 @@ class ConversationListe{
   void addConv(Conversation conversation){
     conversations.add(conversation);
   }
+  void addTopConv(Conversation conversation){
+    conversations.insert(0,conversation);
+  }
   void addConvs(List<Conversation> conversation){
     conversations.addAll(conversation);
   }
