@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:discution_app/Model/FileModel.dart';
 import 'package:discution_app/outil/Constant.dart';
 import 'package:discution_app/outil/LaunchFile.dart';
 import 'package:discution_app/vue/home/message/AudioPlayerWidget.dart';
 import 'package:discution_app/vue/widget/PhotoView.dart';
+import 'package:discution_app/vue/widget/VideoView.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -14,6 +18,58 @@ class FileCustomMessage extends StatefulWidget {
 
   @override
   _FileCustomMessageState createState() => _FileCustomMessageState();
+
+  static Widget generateFileCustomMessages(List<FileModel> files,BuildContext context) {
+    if (files.length == 1) {
+      // Cas où il y a un seul élément
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(SizeBorder.radius), // Définissez le rayon de bordure souhaité
+        child: Container(
+          constraints: BoxConstraints(
+            maxWidth: 700,
+            maxHeight: 500,
+          ),
+          child: FileCustomMessage(files[0]),
+        ),
+      );
+    } else {
+
+      return Container(
+        padding: EdgeInsets.all(SizeMarginPading.h3),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(SizeBorder.radius),
+          color: Theme.of(context).colorScheme.surface,
+        ),
+        constraints: BoxConstraints(
+          maxWidth: 700,
+        ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final containerWidth = constraints.maxWidth;
+            final itemWidth = containerWidth / 2-10; // Moitié de la largeur du conteneur
+
+            return Wrap(
+              direction: Axis.horizontal,
+              alignment: WrapAlignment.center,
+              children: List.generate(files.length, (index) {
+                return Container(
+                  width: itemWidth,
+                  constraints: BoxConstraints(
+                    maxWidth: 300,
+                    maxHeight: 300,
+                  ),
+                  margin: EdgeInsets.all(SizeMarginPading.p1),
+                  child: FileCustomMessage(files[index]),
+                );
+
+              }),
+            );
+          },
+        ),
+      );
+
+    }
+  }
 }
 
 class _FileCustomMessageState extends State<FileCustomMessage> {
@@ -21,7 +77,7 @@ class _FileCustomMessageState extends State<FileCustomMessage> {
   late bool _isVideo;
   late bool _isaudio;
   late VideoPlayerController _controller;
-  bool isMute=true;
+  bool isMute = true;
 
   @override
   void initState() {
@@ -40,8 +96,8 @@ class _FileCustomMessageState extends State<FileCustomMessage> {
   }
 
   void _initializeVideo() {
-    _controller =
-    VideoPlayerController.network(Constant.baseUrlFilesMessages + "/" + widget.file.linkFile)
+    _controller = VideoPlayerController.network(
+        Constant.baseUrlFilesMessages + "/" + widget.file.linkFile)
       ..initialize().then((_) {
         if (mounted) {
           setState(() {});
@@ -61,29 +117,7 @@ class _FileCustomMessageState extends State<FileCustomMessage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(10),
-      child: InkWell(
-        onLongPress: () {
-          FileGestion.downloadFile(
-              Constant.baseUrlFilesMessages + "/" + widget.file.linkFile,
-              widget.file.name,
-              context);
-        },
-        onTap: () {
-          if (_isImage) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => PhotoViewCustom(
-                      Constant.baseUrlFilesMessages + "/" + widget.file.linkFile)),
-            );
-          } else {
-            FileGestion.Open(
-                Constant.baseUrlFilesMessages + "/" + widget.file.linkFile, widget.file.name);
-          }
-        },
-        child: viewFile(widget.file, _isImage, _isVideo, _isaudio),
-      ),
+      child: viewFile(widget.file, _isImage, _isVideo, _isaudio),
     );
   }
 
@@ -92,92 +126,160 @@ class _FileCustomMessageState extends State<FileCustomMessage> {
       return imageFileWidget(
           Constant.baseUrlFilesMessages + "/" + file.linkFile);
     } else if (isVideo) {
-      return buildVideoPlayer(Constant.baseUrlFilesMessages + "/" + file.linkFile);
+      return buildVideoPlayer(
+          Constant.baseUrlFilesMessages + "/" + file.linkFile);
     } else if (isAudio) {
       return audioFileWidget(file);
     } else {
       return genericFileWidget(file);
     }
   }
+
   Widget imageFileWidget(String url) {
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxHeight: 500,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                PhotoViewCustom(
+                  Constant.baseUrlFilesMessages + "/" + widget.file.linkFile,
+                ),
+          ),
+        );
+      },
+      child: CachedNetworkImage(
+        imageUrl: url,
+        key: Key(url),
+        fit: BoxFit.cover,
+        progressIndicatorBuilder: (context, url, downloadProgress) =>
+            CircularProgressIndicator(value: downloadProgress.progress),
+        errorWidget: (context, url, error) => Icon(Icons.error),
       ),
-      child: FractionallySizedBox(
-        widthFactor: 0.4, // Pour que l'image occupe la moitié de la largeur disponible
-        child: CachedNetworkImage(
-          imageUrl: url,
-          key: Key(url),
-          fit: BoxFit.contain,
-          progressIndicatorBuilder: (context, url, downloadProgress) =>
-              CircularProgressIndicator(value: downloadProgress.progress),
-          errorWidget: (context, url, error) => Icon(Icons.error),
-        ),
-      ),
+
     );
   }
+
   Widget audioFileWidget(FileModel file) {
-    return AudioPlayerWidget(
-      file: file,
+    return GestureDetector(
+      onLongPress: () {
+        FileGestion.Open(
+            Constant.baseUrlFilesMessages + "/" + widget.file.linkFile,
+            widget.file.name);
+      },
+      child: AudioPlayerWidget(
+        file: file,
+      ),
     );
   }
 
   Widget genericFileWidget(FileModel file) {
-    return Column(
-      children: [
-        Icon(
-          Icons.insert_drive_file,
-          size: 50,
-        ),
-        SizedBox(width: SizeMarginPading.h3),
-        Container(
-          child: Text(
-            file.name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
-    );
-  }
-  Widget buildVideoPlayer(String videoUrl) {
-    double videoAspectRatio = _controller.value.aspectRatio;
-
     return GestureDetector(
       onTap: () {
-        if (!_controller.value.isPlaying) {
-          _controller.play();
-          _controller.setVolume(100);
-          isMute = false;
-        }
-        else if (isMute) {
-          _controller.setVolume(100);
-          isMute = false;
-        } else {
-          _controller.setVolume(0);
-          isMute = true;
-        }
+        FileGestion.Open(
+            Constant.baseUrlFilesMessages + "/" + widget.file.linkFile,
+            widget.file.name);
+      },
+      child: Container(
+        height: 75,
+        child: Column(
+          children: [
+            Icon(
+              Icons.insert_drive_file,
+              size: 50,
+            ),
+            SizedBox(width: SizeMarginPading.h3),
+            Container(
+              child: Text(
+                file.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ),);
+  }
 
-      },
-      onLongPress: (){
-        if (_controller.value.isPlaying) {
-          _controller.pause();
-        } else {
-          _controller.play();
-        }
-      },
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxHeight: 500,
-          maxWidth: 500 * videoAspectRatio,
+  Widget buildVideoPlayer(String videoUrl) {
+    double videoAspectRatio = _controller.value.aspectRatio;
+    Icon mute = Icon(Icons.volume_off);
+    Icon unMute = Icon(Icons.volume_up);
+    if (!kIsWeb && Platform.isWindows) {
+      return GestureDetector(
+        onTapDown: (value) {
+          FileGestion.Open(
+            Constant.baseUrlFilesMessages + "/" + widget.file.linkFile,
+            widget.file.name,
+          );
+        },
+        onLongPress: () {
+          FileGestion.Open(
+            Constant.baseUrlFilesMessages + "/" + widget.file.linkFile,
+            widget.file.name,
+          );
+        },
+        child:genericFileWidget(widget.file));
+    } else {
+      return GestureDetector(
+        onTapDown: (value) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    VideoViewCustom(
+                      Constant.baseUrlFilesMessages + "/" +
+                          widget.file.linkFile,
+                    ),
+              ),
+            );
+
+        },
+        onLongPress: () {
+          FileGestion.Open(
+            Constant.baseUrlFilesMessages + "/" + widget.file.linkFile,
+            widget.file.name,
+          );
+        },
+        child: Stack(
+          children: [
+            AspectRatio(
+              aspectRatio: videoAspectRatio,
+              child: VideoPlayer(_controller),
+            ),
+
+            Positioned(
+              right: 0,
+              bottom: 0,
+              child: Container(
+                margin: EdgeInsets.all(SizeMarginPading.h3),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Theme
+                      .of(context)
+                      .colorScheme
+                      .background
+                      .withOpacity(0.5), // Couleur noire avec opacité de 50%
+                ),
+                child: IconButton(
+                  onPressed: () {
+                    if (isMute) {
+                      _controller.setVolume(100);
+                    } else {
+                      _controller.setVolume(0);
+                    }
+                    setState(() {
+                      isMute = !isMute;
+                    });
+                  },
+                  icon: (isMute) ? mute : unMute,
+                ),
+              ),
+            ),
+          ],
         ),
-        child: AspectRatio(
-          aspectRatio: videoAspectRatio,
-          child: VideoPlayer(_controller),
-        ),
-      ),
-    );
+      );
+    }
   }
 
   @override
@@ -187,4 +289,5 @@ class _FileCustomMessageState extends State<FileCustomMessage> {
     }
     super.dispose();
   }
+
 }

@@ -539,8 +539,14 @@ class _MessagerieViewState extends State<MessagerieView> {
             fileName.toLowerCase().endsWith(".png")) {
           if (fileBytes != null) {
             if (fileBytes.length > 200000) {
-              fileBytes = await Constant.compressImage(fileBytes, 90);
-              print(fileBytes.length);
+              if(kIsWeb){
+                fileBytes = await Constant.compressImage(fileBytes, 90);
+                print(fileBytes.length);
+              }
+              else if (!Platform.isWindows) {
+                fileBytes = await Constant.compressImage(fileBytes, 90);
+                print(fileBytes.length);
+              }
             }
             if (fileBytes.length > 2000000) {
               Constant.showAlertDialog(
@@ -550,6 +556,7 @@ class _MessagerieViewState extends State<MessagerieView> {
             setState(() {
               listeFile.add(FileCustom(fileBytes, fileName));
             });
+          }
           } else if (fileName.toLowerCase().endsWith(".gif")) {
             if (fileBytes!.length < 1000000) {
               setState(() {
@@ -571,7 +578,6 @@ class _MessagerieViewState extends State<MessagerieView> {
           }
         }
       }
-    }
   }
 
   Widget _buildMessageListTile(MessageModel message, ValueKey key) {

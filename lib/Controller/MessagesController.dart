@@ -49,7 +49,7 @@ class MessagesController {
     callBack();
   }
   void _handleDeleteMessage(data){
-    int id_message=int.parse(data["id_message"]);
+    int id_message=data["id_message"];
     int id_conversation=data["id_conversation"];
     if(id_conversation!=conversation.id){
       return ;
