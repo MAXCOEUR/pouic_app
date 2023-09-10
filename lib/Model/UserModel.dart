@@ -7,9 +7,9 @@ class User{
   String pseudo;
   bool? sont_amis =false;
   String? bio;
-  String? extantion;
+  String? extansion;
 
-  User(this.email, this.uniquePseudo, this.pseudo,this.bio,this.extantion,[this.sont_amis]);
+  User(this.email, this.uniquePseudo, this.pseudo,this.bio,this.extansion,[this.sont_amis]);
 
   @override
   bool operator ==(Object other) {
@@ -32,8 +32,8 @@ class User{
     return jsonEncode(toJson());
   }
   String? getNameImage(){
-    if(extantion!=null){
-      return uniquePseudo+"."+extantion!;
+    if(extansion!=null){
+      return uniquePseudo+"."+extansion!;
     }
     return null;
   }

@@ -2,12 +2,15 @@ import 'package:discution_app/Model/FileModel.dart';
 import 'package:discution_app/Model/MessageModel.dart';
 import 'dart:convert';
 
+import 'package:discution_app/Model/ReactionModel.dart';
+
 class MessageListe{
   List<MessageModel> messages = [];
 
   void newMessage(MessageModel message){
     messages.insert(0,message);
   }
+
   void addOldMessages(List<MessageModel> message){
     messages.addAll(message);
   }
@@ -44,5 +47,27 @@ class MessageListe{
         m.addfile(file);
       }
     }
+  }
+  void addReaction(int id_message,Reaction reaction){
+    for(MessageModel m in messages){
+      if(m.id==id_message){
+        m.addReaction(reaction);
+      }
+    }
+  }
+  void deleteReaction(int id_message,String uniquePseudo){
+    for(MessageModel m in messages){
+      if(m.id==id_message){
+        m.deleteReaction(uniquePseudo);
+      }
+    }
+  }
+  static MessageModel? isExiste(int idMessage,List<MessageModel> messagesTmp){
+    for(MessageModel m in messagesTmp){
+      if(m.id==idMessage){
+        return m;
+      }
+    }
+    return null;
   }
 }

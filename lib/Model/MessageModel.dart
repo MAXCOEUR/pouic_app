@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:discution_app/Model/FileModel.dart';
 import 'package:discution_app/Model/MessageParentModel.dart';
+import 'package:discution_app/Model/ReactionModel.dart';
 import 'package:discution_app/Model/UserModel.dart';
 
 class MessageModel{
@@ -14,6 +15,7 @@ class MessageModel{
   bool isread;
   List<FileModel> files;
   MessageParentModel? parent;
+  List<Reaction> reactions=[];
 
   MessageModel(this.id, this.user, this.message, this.date, this.id_conversation,this.isread,this.files,this.parent);
 
@@ -29,11 +31,12 @@ class MessageModel{
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'user': user,
+      'user': user.toJson(),
       'message': message,
       'date':date,
       'id_conversation':id_conversation,
-      'files':files.toString()
+      'files':files.toString(),
+      'reactions':reactions.toString()
     };
   }
   String toJsonString() {
@@ -41,5 +44,28 @@ class MessageModel{
   }
   void addfile(FileModel file){
     files.add(file);
+  }
+  void addReaction(Reaction reaction){
+    for(Reaction r in reactions){
+      if(r.user==reaction.user){
+        r.reaction=reaction.reaction;
+        return;
+      }
+    }
+    reactions.add(reaction);
+  }
+  void deleteReaction(String uniquePseudo){
+    Reaction? tmp;
+    for(Reaction r in reactions){
+      if(r.user.uniquePseudo==uniquePseudo){
+        tmp=r;
+      }
+    }
+    if(tmp!=null){
+      reactions.remove(tmp);
+    }
+  }
+  void removeReaction(Reaction reaction){
+    reactions.remove(reaction);
   }
 }

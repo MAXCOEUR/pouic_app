@@ -19,7 +19,7 @@ class UserC {
     try {
       final responseCreate = await Api.instance.postData(
         'user',
-        {'email': user.email, 'uniquePseudo': user.uniquePseudo,'pseudo':user.pseudo,'passWord':passWord,'extension':user.extantion,'bio':user.bio},
+        {'email': user.email, 'uniquePseudo': user.uniquePseudo,'pseudo':user.pseudo,'passWord':passWord,'extension':user.extansion,'bio':user.bio},
         null,
         null,
       );
@@ -58,7 +58,7 @@ class UserC {
     try {
       final responseCreate = await Api.instance.putData(
         'user',
-        {'email': user.email, 'uniquePseudo': user.uniquePseudo,'pseudo':user.pseudo,'passWord':passWord,'extension':user.extantion,'bio':user.bio},
+        {'email': user.email, 'uniquePseudo': user.uniquePseudo,'pseudo':user.pseudo,'passWord':passWord,'extension':user.extansion,'bio':user.bio},
         null,
         {'Authorization': AuthorizationToken},
       );

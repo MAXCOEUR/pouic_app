@@ -57,19 +57,28 @@ class _CreateConversationVueState extends State<CreateConversationVue> {
         fileBytes = await localFile.readAsBytes();
       }
 
-      if(fileBytes!=null&&fileName.split(".").last.toLowerCase()!="gif"){
-        fileBytes = await Constant.compressImage(fileBytes,20);
-      }
-      if (fileBytes!.length > 1000000) {
-        print('Veuillez sélectionner une image de moins de 1 Mo.');
-        Constant.showAlertDialog(context, "Erreur", "Veuillez sélectionner une image de moins de 1 Mo.");
-        return;
-      }
+      if(fileBytes!=null) {
+        if (fileName.split(".").last.toLowerCase() != "gif") {
+          if (fileBytes.length >= 1000000) {
+            if(kIsWeb){
+              fileBytes = await Constant.compressImage(fileBytes, 20);
+            }
+            else if (!Platform.isWindows) {
+              fileBytes = await Constant.compressImage(fileBytes, 20);
+            }
+          }
+        }
+        if (fileBytes!.length > 1000000) {
+          print('Veuillez sélectionner une image de moins de 1 Mo.');
+          Constant.showAlertDialog(context, "Erreur",
+              "Veuillez sélectionner une image de moins de 1 Mo.");
+          return;
+        }
 
-      setState(() {
-        widget.conversation.extension=fileName.split(".").last.toLowerCase();
-        imageFile = FileCustom(fileBytes, fileName);
-      });
+        setState(() {
+          imageFile = FileCustom(fileBytes, fileName);
+        });
+      }
     }
   }
 
@@ -77,6 +86,7 @@ class _CreateConversationVueState extends State<CreateConversationVue> {
   void createConversation() {
     if (_formKey.currentState!.validate()) {
       widget.conversation.name = name.text;
+      widget.conversation.extension=imageFile?.fileName.split('.').last.toLowerCase();
       if (widget.created) {
         conversationC.create(
             widget.conversation,imageFile, reponseCreateConversation, reponseError);

@@ -16,8 +16,10 @@ import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:discution_app/vue/CreateConversationVue.dart';
 import 'package:discution_app/vue/ItemListeView/MessageItemListeView.dart';
 import 'package:discution_app/vue/home/message/AddAmisConvView.dart';
+import 'package:discution_app/vue/home/message/ReactionView.dart';
 import 'package:discution_app/vue/home/message/RemoveUserConvView.dart';
 import 'package:discution_app/vue/home/message/parent.dart';
+import 'package:discution_app/vue/widget/EmojiListDialog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -377,15 +379,13 @@ class _MessagerieViewState extends State<MessagerieView> {
         children: [
           Container(
             constraints: BoxConstraints(
-                minHeight: 0,
-                maxHeight: listeFile.isNotEmpty
-                    ? parent != null
-                        ? 300
-                        : 150
-                    : parent != null
-                        ? 150
-                        : 0),
-            child: ListView(
+              minHeight: 0,
+              maxHeight: 400,
+            ),
+            child:SingleChildScrollView(
+              child:  Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (listeFile.isNotEmpty)
                   Container(
@@ -403,13 +403,19 @@ class _MessagerieViewState extends State<MessagerieView> {
                 if (parent != null)
                   Dismissible(
                     key: Key(parent!.id.toString()),
-                    child: Parent(parent),
+                    child: Row(
+                      children: [
+                        Flexible(
+                          child: Parent(parent),
+                        ),
+                      ],
+                    ),
                     onDismissed: (DismissDirection direction) {
                       nullParent();
                     },
                   ),
               ],
-            ),
+            ),),
           ),
           Container(
             margin: EdgeInsets.all(SizeMarginPading.h1),
@@ -538,17 +544,16 @@ class _MessagerieViewState extends State<MessagerieView> {
             fileName.toLowerCase().endsWith(".jpeg") ||
             fileName.toLowerCase().endsWith(".png")) {
           if (fileBytes != null) {
-            if (fileBytes.length > 200000) {
-              if(kIsWeb){
+            if (fileBytes.length >= 1000000) {
+              if (kIsWeb) {
                 fileBytes = await Constant.compressImage(fileBytes, 90);
                 print(fileBytes.length);
-              }
-              else if (!Platform.isWindows) {
+              } else if (!Platform.isWindows) {
                 fileBytes = await Constant.compressImage(fileBytes, 90);
                 print(fileBytes.length);
               }
             }
-            if (fileBytes.length > 2000000) {
+            if (fileBytes.length > 1000000) {
               Constant.showAlertDialog(
                   context, "Erreur", "l\'image ${fileName} fait plus de 1 Mo");
               break;
@@ -557,27 +562,27 @@ class _MessagerieViewState extends State<MessagerieView> {
               listeFile.add(FileCustom(fileBytes, fileName));
             });
           }
-          } else if (fileName.toLowerCase().endsWith(".gif")) {
-            if (fileBytes!.length < 1000000) {
-              setState(() {
-                listeFile.add(FileCustom(fileBytes, fileName));
-              });
-            } else {
-              Constant.showAlertDialog(
-                  context, "Erreur", "le gif ${fileName} fait plus de 1Mo");
-            }
+        } else if (fileName.toLowerCase().endsWith(".gif")) {
+          if (fileBytes!.length < 1000000) {
+            setState(() {
+              listeFile.add(FileCustom(fileBytes, fileName));
+            });
           } else {
-            if (fileBytes!.length < 10000000) {
-              setState(() {
-                listeFile.add(FileCustom(fileBytes, fileName));
-              });
-            } else {
-              Constant.showAlertDialog(context, "Erreur",
-                  "le fichier ${fileName} fait plus de 10Mo");
-            }
+            Constant.showAlertDialog(
+                context, "Erreur", "le gif ${fileName} fait plus de 1Mo");
+          }
+        } else {
+          if (fileBytes!.length < 10000000) {
+            setState(() {
+              listeFile.add(FileCustom(fileBytes, fileName));
+            });
+          } else {
+            Constant.showAlertDialog(
+                context, "Erreur", "le fichier ${fileName} fait plus de 10Mo");
           }
         }
       }
+    }
   }
 
   Widget _buildMessageListTile(MessageModel message, ValueKey key) {
@@ -588,6 +593,7 @@ class _MessagerieViewState extends State<MessagerieView> {
         context: context,
         key: key,
         setParent: setParent,
+        messagesController: messagesController,
       ),
     );
   }

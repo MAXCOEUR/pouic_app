@@ -55,19 +55,27 @@ class _CreateUserVueState extends State<CreateUserVue> {
         fileBytes = await localFile.readAsBytes();
       }
 
-      if(fileBytes!=null&&fileName.split(".").last.toLowerCase()!="gif"){
-        fileBytes = await Constant.compressImage(fileBytes,20);
-      }
-      if (fileBytes!.length > 1000000) {
-        print('Veuillez sélectionner une image de moins de 1 Mo.');
-        Constant.showAlertDialog(context, "Erreur", "Veuillez sélectionner une image de moins de 1 Mo.");
-        return;
-      }
+      if(fileBytes!=null){
+        if(fileName.split(".").last.toLowerCase()!="gif"){
+          if (fileBytes.length >= 1000000) {
+            if(kIsWeb){
+              fileBytes = await Constant.compressImage(fileBytes, 20);
+            }
+            else if (!Platform.isWindows) {
+              fileBytes = await Constant.compressImage(fileBytes, 20);
+            }
+          }
+        }
+        if (fileBytes.length > 1000000) {
+          print('Veuillez sélectionner une image de moins de 1 Mo.');
+          Constant.showAlertDialog(context, "Erreur", "Veuillez sélectionner une image de moins de 1 Mo.");
+          return;
+        }
 
-      setState(() {
-        imageFile = FileCustom(fileBytes, fileName);
-        widget.user.extantion=fileName.split('.').last;
-      });
+        setState(() {
+          imageFile = FileCustom(fileBytes, fileName);
+        });
+      }
     }
   }
 
@@ -77,6 +85,7 @@ class _CreateUserVueState extends State<CreateUserVue> {
       widget.user.email=email.text;
       widget.user.uniquePseudo=userNameUnique.text;
       widget.user.pseudo=userName.text;
+      widget.user.extansion=imageFile?.fileName.split('.').last.toLowerCase();
       if(bio.text==""){
         widget.user.bio=null;
       }else{

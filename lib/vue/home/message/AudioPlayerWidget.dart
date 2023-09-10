@@ -59,7 +59,9 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Container(
+      height: 75,
+      child:Column(
       children: [
         Row(
           children: <Widget>[
@@ -88,7 +90,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
             overflow: TextOverflow.ellipsis,
           ),
       ],
-    );
+    ),);
   }
 
   @override

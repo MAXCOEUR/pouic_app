@@ -99,20 +99,8 @@ class Parent extends StatelessWidget{
                 if (parent!.files.isNotEmpty)
                   Container(
                       //width: double.infinity,
-                      child: Wrap(
-                        direction: Axis.horizontal,
-                        // Orientation horizontale
-                        alignment: WrapAlignment.start,
-                        // Alignement des éléments à gauche
-                        spacing: 8,
-                        // Espacement horizontal entre les éléments
-                        runSpacing: 8,
-                        // Espacement vertical entre les lignes
-                        children:
-                        List.generate(parent!.files.length, (index) {
-                          return FileCustomMessage(parent!.files[index]);
-                        }),
-                      )),
+                    child: FileCustomMessage.generateFileCustomMessages(parent!.files,context),
+                  ),
               ],
             ),
           ),

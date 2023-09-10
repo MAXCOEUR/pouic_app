@@ -1,4 +1,5 @@
 import 'package:discution_app/Controller/ConversationsController.dart';
+import 'package:discution_app/Controller/Notification.dart';
 import 'package:discution_app/Model/ConversationListeModel.dart';
 import 'package:discution_app/Model/ConversationModel.dart';
 import 'package:discution_app/outil/LoginSingleton.dart';
@@ -94,13 +95,13 @@ class _ConversationListeViewState extends State<ConversationListeView> {
   }
 
   void OpenConversation(Conversation conversation) async {
-    conversationController!.setIdConvertationOpen(conversation.id);
+    conversationController?.setIdConvertationOpen(conversation.id);
     await Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) => MessagerieView(conv: conversation)),
     );
-    conversationController!.setNullIdConvertationOpen();
+    conversationController?.setNullIdConvertationOpen();
     _refreshData();
     SocketSingleton.instance.socket.emit("updateMessageNonLu",{'token':widget.lm.token});
   }

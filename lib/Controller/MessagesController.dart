@@ -9,6 +9,7 @@ import 'package:discution_app/Model/FileModel.dart';
 import 'package:discution_app/Model/MessageListeModel.dart';
 import 'package:discution_app/Model/ConversationModel.dart';
 import 'package:discution_app/Model/MessageParentModel.dart';
+import 'package:discution_app/Model/ReactionModel.dart';
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/Model/MessageModel.dart';
 import 'package:discution_app/outil/Api.dart';
@@ -28,13 +29,17 @@ class MessagesController {
 
   MessagesController(this.messages, this.conversation,this.callBack) {
     _socket.on("recevoirMessage", _handleReceivedMessage);
+    _socket.on("recevoirReaction", _handleRecevoirReaction);
     _socket.on("deleteMessage", _handleDeleteMessage);
+    _socket.on("recevoirdeleteReaction", _handleRecevoirDeleteMessage);
     _socket.on("editMessage", _handleEditMessage);
     _socket.on("EndFile", _handleEndFile);
   }
   void dispose() {
     _socket.off("recevoirMessage", _handleReceivedMessage);
+    _socket.off("recevoirReaction", _handleRecevoirReaction);
     _socket.off("deleteMessage", _handleDeleteMessage);
+    _socket.off("recevoirdeleteReaction", _handleRecevoirDeleteMessage);
     _socket.off("editMessage", _handleEditMessage);
     _socket.off("EndFile", _handleEndFile);
   }
@@ -69,8 +74,6 @@ class MessagesController {
     if(messageMap["id_conversation"]!=conversation.id){
       return ;
     }
-
-
     User user = User(messageMap["email"], messageMap["uniquePseudo"], messageMap["pseudo"],messageMap["bio"],messageMap["extension"]);
     List<String> listeLinkFile= [];
     List<String> listenameFile= [];
@@ -107,6 +110,18 @@ class MessagesController {
     callBack();
   }
 
+  void _handleRecevoirReaction(data){
+    Map<String,dynamic> messageMap = data["message"];
+    int message_id=messageMap["message_id"];
+    Reaction reaction = Reaction(User(messageMap["email"],messageMap["uniquePseudo"],messageMap["pseudo"],messageMap["bio"],messageMap["extension"]), messageMap["emoji"]);
+    messages.addReaction(message_id, reaction);
+    callBack();
+  }
+  void _handleRecevoirDeleteMessage(data){
+    messages.deleteReaction(data["messgaeId"],data["uniquePseudo"]);
+    callBack();
+  }
+
   void sendMessageToSocket(String messageText,List<FileCustom> listeFile,MessageParentModel? parent) {
     _listeFile.addAll(listeFile);
     if(listeFile.length>0 || messageText.isNotEmpty){
@@ -117,6 +132,21 @@ class MessagesController {
         'id_parent':(parent==null)?null:parent.id,
       });
     }
+  }
+  void sendReactionToSocket(int id_conversation,int message_id,String reaction) {
+    _socket.emit('setReaction', {
+      'token': lm.token,
+      'messgaeId': message_id,
+      'reaction':reaction,
+      'conversationId':id_conversation,
+    });
+  }
+  void deleteReactionToSocket(int id_conversation,int message_id) {
+    _socket.emit('deleteReaction', {
+      'token': lm.token,
+      'messgaeId': message_id,
+      'conversationId':id_conversation,
+    });
   }
 
   Future<void> sendFile(MessageModel message) async {
@@ -154,20 +184,39 @@ class MessagesController {
         .then(
             (response) {
 
+
+
           List<dynamic> jsonData = response.data;
           
           List<MessageModel> messagesTmp=[];
-          for(Map<String, dynamic> data in jsonData){
-            MessageParentModel? parent;
-            if(data["id_parent"]!=null){
-              List<FileModel> listeFileParent=splitGroupConcat(data["parent_linkfile"],data["parent_name"]);
-              User userParent= User("", data['parent_uniquePseudo'], data['parent_pseudo'],data["parent_bio"],data["parent_extension"]);
-              parent = MessageParentModel(data["id_parent"], userParent, data["parent_Message"], DateTime.parse(data["parent_date"]),listeFileParent);
-            }
 
-            List<FileModel> listeFile=splitGroupConcat(data["linkfile"],data["name"]);
-            User user= User(data['email'], data['uniquePseudo'], data['pseudo'],data["bio"],data["extension"]);
-            messagesTmp.add(MessageModel(data["id"], user, data["Message"], DateTime.parse(data["date"]), data["id_conversation"],(data["is_read"]==1)?true:false,listeFile,parent));
+
+          for(Map<String, dynamic> data in jsonData){
+
+            int idMessage=data["id"];
+            MessageModel? isEx=MessageListe.isExiste(idMessage,messagesTmp);
+
+            if(isEx!=null){
+              Reaction reaction = Reaction(User(data['reaction_email'], data['reaction_uniquePseudo'], data['reaction_pseudo'],data["reaction_bio"],data["reaction_extension"]), data["reaction"]);
+              isEx.addReaction(reaction);
+            }else{
+              MessageParentModel? parent;
+              if(data["id_parent"]!=null){
+                List<FileModel> listeFileParent=splitGroupConcat(data["parent_linkfile"],data["parent_name"]);
+                User userParent= User("", data['parent_uniquePseudo'], data['parent_pseudo'],data["parent_bio"],data["parent_extension"]);
+                parent = MessageParentModel(data["id_parent"], userParent, data["parent_Message"], DateTime.parse(data["parent_date"]),listeFileParent);
+              }
+
+              List<FileModel> listeFile=splitGroupConcat(data["linkfile"],data["name"]);
+              User user= User(data['email'], data['uniquePseudo'], data['pseudo'],data["bio"],data["extension"]);
+              MessageModel message = MessageModel(data["id"], user, data["Message"], DateTime.parse(data["date"]), data["id_conversation"],(data["is_read"]==1)?true:false,listeFile,parent);
+              if(data["reaction"]!=null){
+                Reaction reaction = Reaction(User(data['reaction_email'], data['reaction_uniquePseudo'], data['reaction_pseudo'],data["reaction_bio"],data["reaction_extension"]), data["reaction"]);
+                message.addReaction(reaction);
+              }
+
+              messagesTmp.add(message);
+            }
           }
           messages.addOldMessages(messagesTmp);
 

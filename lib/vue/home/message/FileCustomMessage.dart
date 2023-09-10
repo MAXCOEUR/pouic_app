@@ -93,6 +93,7 @@ class _FileCustomMessageState extends State<FileCustomMessage> {
     if (_isVideo) {
       _initializeVideo();
     }
+
   }
 
   void _initializeVideo() {
@@ -102,8 +103,8 @@ class _FileCustomMessageState extends State<FileCustomMessage> {
         if (mounted) {
           setState(() {});
         }
-        _controller.play();
         _controller.setVolume(0);
+        _controller.play();
         _controller.addListener(() {
           if (_controller.value.position >= _controller.value.duration) {
             // Rejouer la vidéo depuis le début à la fin
@@ -185,7 +186,7 @@ class _FileCustomMessageState extends State<FileCustomMessage> {
         child: Column(
           children: [
             Icon(
-              Icons.insert_drive_file,
+              Icons.file_open,
               size: 50,
             ),
             SizedBox(width: SizeMarginPading.h3),
