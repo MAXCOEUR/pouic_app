@@ -6,6 +6,7 @@ import 'package:discution_app/outil/Constant.dart';
 import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:discution_app/outil/SocketSingleton.dart';
 import 'package:discution_app/vue/home/ConversationListeView.dart';
+import 'package:discution_app/vue/home/post/PostListView.dart';
 import 'package:discution_app/vue/widget/CustomAppBar.dart';
 import 'package:discution_app/vue/home/RechercheListeView.dart';
 import 'package:discution_app/vue/home/amis/AmisView.dart';
@@ -34,6 +35,7 @@ class _HomeViewState extends State<HomeView> {
   int _selectedIndex = 0; // 0 pour convTest, 1 pour mesTest
   late HomeController homeController;
 
+  late final PostListview postview;
   late final ConversationListeView convView ;
   late final RechercheListeView rechercheView ;
   late final AmisView amisView;
@@ -41,6 +43,7 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     homeController = HomeController(update);
+    postview = PostListview();
     convView = ConversationListeView();
     rechercheView = RechercheListeView();
     amisView = AmisView();
@@ -59,12 +62,14 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    Widget selectedWidget = convView;
+    Widget selectedWidget = postview;
     if (_selectedIndex == 0) {
+      selectedWidget = postview;
+    }else if (_selectedIndex == 1) {
       selectedWidget = convView;
-    } else if (_selectedIndex == 1) {
-      selectedWidget = amisView;
     } else if (_selectedIndex == 2) {
+      selectedWidget = amisView;
+    } else if (_selectedIndex == 3) {
       selectedWidget = rechercheView;
     }
 
@@ -75,8 +80,11 @@ class _HomeViewState extends State<HomeView> {
       drawer: CustomDrawer(updateMain: widget.updateMain),
       body: selectedWidget,
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Theme.of(context).colorScheme.background,
         items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.send),
+            label: 'Post',
+          ),
           BottomNavigationBarItem(
             icon: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -92,8 +100,10 @@ class _HomeViewState extends State<HomeView> {
                     ),
                     child: Text(
                       homeController.nbrMessageNonLu.toString(),
-                      style:
-                          TextStyle(color: Colors.white, fontSize: SizeFont.p2),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: SizeFont.p2,
+                      ),
                     ),
                   ),
               ],
@@ -115,8 +125,10 @@ class _HomeViewState extends State<HomeView> {
                     ),
                     child: Text(
                       homeController.nbrDemande.toString(),
-                      style:
-                          TextStyle(color: Colors.white, fontSize: SizeFont.p2),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: SizeFont.p2,
+                      ),
                     ),
                   ),
               ],
@@ -130,6 +142,9 @@ class _HomeViewState extends State<HomeView> {
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+        backgroundColor: Theme.of(context).colorScheme.background, // Couleur d'arrière-plan
+        selectedItemColor: Theme.of(context).colorScheme.primary, // Couleur des éléments sélectionnés (icônes et texte)
+        unselectedItemColor: Theme.of(context).colorScheme.onBackground, // Couleur des éléments non sélectionnés (icônes et texte)
       ),
     );
   }

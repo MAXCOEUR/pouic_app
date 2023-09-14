@@ -12,7 +12,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:http/http.dart' as http;
 
 class Constant {
-  static const String ServeurApi = "http://46.227.18.31:3000";
+  static const String ServeurApi = "http://192.168.0.115:45713";
   static const String baseUrlAvatarUser = ServeurApi + "/uploads/AvatarUser";
   static const String baseUrlAvatarConversation =
       ServeurApi + "/uploads/ImageConversation";
@@ -114,6 +114,15 @@ class Constant {
     );
   }
 
+  static String formatNumber(int number) {
+    if (number >= 10000000) {
+      return (number ~/ 1000000).toString() + 'm';
+    } else if (number >= 10000) {
+      return (number ~/ 1000).toString() + 'k';
+    } else {
+      return number.toString();
+    }
+  }
 
 }
 
