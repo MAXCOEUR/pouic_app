@@ -1,4 +1,3 @@
-import 'package:discution_app/Controller/Notification.dart';
 import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Constant.dart';
 import 'package:discution_app/outil/LoginSingleton.dart';
@@ -22,7 +21,7 @@ class SocketSingleton {
   static SocketSingleton get instance => _instance;
 
   void _connect() {
-    socket = IO.io('http://46.227.18.31:3000', <String, dynamic>{
+    socket = IO.io(Constant.ServeurApi, <String, dynamic>{
       'transports': ['websocket'],
     });
 

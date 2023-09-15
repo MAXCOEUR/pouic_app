@@ -3,53 +3,59 @@ import 'package:discution_app/Model/PostListeModel.dart';
 import 'package:discution_app/Model/PostModel.dart';
 import 'package:discution_app/outil/Constant.dart';
 import 'package:discution_app/outil/LoginSingleton.dart';
-import 'package:discution_app/vue/ItemListeView/PostItemListeView.dart';
+import 'package:discution_app/vue/home/post/PostItemListeView.dart';
+import 'package:discution_app/vue/home/post/CreatePost.dart';
 import 'package:flutter/material.dart';
 
 class PostListview extends StatefulWidget {
   final LoginModel lm = LoginModelProvider.getInstance(() {}).loginModel!;
 
+  PostListview({super.key});
+
   final String title = "Conversations";
 
   @override
-  State<PostListview> createState() => _PostListviewState();
+  State<PostListview> createState() => PostListviewState();
 }
 
-class _PostListviewState extends State<PostListview> {
+class PostListviewState extends State<PostListview> {
   final ScrollController _scrollController = ScrollController();
   bool isLoadingMore = false;
   late PostController postsController;
   PostListe postListe = PostListe();
+
+  void up() {
+    _scrollController.jumpTo(0);
+    refreshData();
+  }
+  Future<void> refreshData() async {
+    postsController.removeAllPosts();
+    postsController.addGeneralPost_inListe(0, reponseUpdate, reponseError);
+  }
 
   @override
   void initState() {
     super.initState();
     postsController = PostController(postListe, reponseUpdate);
 
-    postsController.initListe(reponseUpdate, reponseError);
+    postsController.initListeGeneralPost(reponseUpdate, reponseError);
     _scrollController.addListener(_onScroll);
   }
   void _onScroll() {
-    if (_scrollController.position.atEdge &&
-        _scrollController.position.pixels != 0 &&
-        !isLoadingMore) {
+    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !isLoadingMore) {
       // Lorsque l'utilisateur atteint le bas de la liste
       setState(() {
         isLoadingMore =
         true; // Définir isLoadingMore à true pour indiquer le chargement
       });
 
-      postsController!.addOldMessage_inListe(postListe.posts[0].id,reponseUpdate, reponseError);
+      postsController.addGeneralPost_inListe(postListe.posts[postListe.posts.length-1].id,reponseUpdate, reponseError);
 
       // Après avoir chargé les données, définissez isLoadingMore à false
       setState(() {
         isLoadingMore = false;
       });
     }
-  }
-
-  Future<void> _refreshData() async {
-    print("_refreshData");
   }
 
   Widget _buildConversationListTile(PostModel post) {
@@ -72,7 +78,7 @@ class _PostListviewState extends State<PostListview> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: RefreshIndicator(
-        onRefresh: _refreshData,
+        onRefresh: refreshData,
         child: Container(
           color: Theme.of(context).colorScheme.surface,
           child: SingleChildScrollView(
@@ -94,7 +100,10 @@ class _PostListviewState extends State<PostListview> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          //
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CreatePost(null)),
+          );
         },
         child: Icon(Icons.add),
       ),

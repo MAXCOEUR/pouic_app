@@ -85,7 +85,7 @@ class _CreateUserVueState extends State<CreateUserVue> {
       widget.user.email=email.text;
       widget.user.uniquePseudo=userNameUnique.text;
       widget.user.pseudo=userName.text;
-      widget.user.extansion=imageFile?.fileName.split('.').last.toLowerCase();
+      widget.user.extension=imageFile?.fileName.split('.').last.toLowerCase();
       if(bio.text==""){
         widget.user.bio=null;
       }else{
@@ -143,7 +143,7 @@ class _CreateUserVueState extends State<CreateUserVue> {
         fit: BoxFit.cover,
       );
     } else {
-      return Constant.buildAvatarUser(widget.user,75,false);
+      return Constant.buildAvatarUser(widget.user,75,false,context);
     }
   }
 

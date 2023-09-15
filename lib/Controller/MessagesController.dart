@@ -74,7 +74,7 @@ class MessagesController {
     if(messageMap["id_conversation"]!=conversation.id){
       return ;
     }
-    User user = User(messageMap["email"], messageMap["uniquePseudo"], messageMap["pseudo"],messageMap["bio"],messageMap["extension"]);
+    User user = User( email:messageMap["email"], uniquePseudo:messageMap["uniquePseudo"], pseudo:messageMap["pseudo"],bio:messageMap["bio"],extension:messageMap["extension"]);
     List<String> listeLinkFile= [];
     List<String> listenameFile= [];
     if(messageMap["linkfile"]!=null && messageMap["name"]!=null){
@@ -90,7 +90,7 @@ class MessagesController {
     }
     MessageParentModel? parent;
     if(messageMap["id_parent"]!=null){
-      User userParent= User("", messageMap['parent_uniquePseudo'], messageMap['parent_pseudo'],messageMap["parent_bio"],messageMap["parent_extension"]);
+      User userParent= User(email: "", uniquePseudo:messageMap['parent_uniquePseudo'], pseudo:messageMap['parent_pseudo'],bio:messageMap["parent_bio"],extension:messageMap["parent_extension"]);
       List<FileModel> listeFileParent=splitGroupConcat(messageMap["parent_linkfile"],messageMap["parent_name"]);
       parent = MessageParentModel(messageMap["id_parent"], userParent, messageMap["parent_Message"], DateTime.parse(messageMap["parent_date"]),listeFileParent);
     }
@@ -113,7 +113,7 @@ class MessagesController {
   void _handleRecevoirReaction(data){
     Map<String,dynamic> messageMap = data["message"];
     int message_id=messageMap["message_id"];
-    Reaction reaction = Reaction(User(messageMap["email"],messageMap["uniquePseudo"],messageMap["pseudo"],messageMap["bio"],messageMap["extension"]), messageMap["emoji"]);
+    Reaction reaction = Reaction(User(email:messageMap["email"],uniquePseudo:messageMap["uniquePseudo"],pseudo:messageMap["pseudo"],bio:messageMap["bio"],extension:messageMap["extension"]), messageMap["emoji"]);
     messages.addReaction(message_id, reaction);
     callBack();
   }
@@ -197,21 +197,21 @@ class MessagesController {
             MessageModel? isEx=MessageListe.isExiste(idMessage,messagesTmp);
 
             if(isEx!=null){
-              Reaction reaction = Reaction(User(data['reaction_email'], data['reaction_uniquePseudo'], data['reaction_pseudo'],data["reaction_bio"],data["reaction_extension"]), data["reaction"]);
+              Reaction reaction = Reaction(User(email:data['reaction_email'], uniquePseudo:data['reaction_uniquePseudo'], pseudo:data['reaction_pseudo'],bio:data["reaction_bio"],extension:data["reaction_extension"]), data["reaction"]);
               isEx.addReaction(reaction);
             }else{
               MessageParentModel? parent;
               if(data["id_parent"]!=null){
                 List<FileModel> listeFileParent=splitGroupConcat(data["parent_linkfile"],data["parent_name"]);
-                User userParent= User("", data['parent_uniquePseudo'], data['parent_pseudo'],data["parent_bio"],data["parent_extension"]);
+                User userParent= User(email:"", uniquePseudo:data['parent_uniquePseudo'], pseudo:data['parent_pseudo'],bio:data["parent_bio"],extension:data["parent_extension"]);
                 parent = MessageParentModel(data["id_parent"], userParent, data["parent_Message"], DateTime.parse(data["parent_date"]),listeFileParent);
               }
 
               List<FileModel> listeFile=splitGroupConcat(data["linkfile"],data["name"]);
-              User user= User(data['email'], data['uniquePseudo'], data['pseudo'],data["bio"],data["extension"]);
+              User user= User(email:data['email'], uniquePseudo:data['uniquePseudo'], pseudo:data['pseudo'],bio:data["bio"],extension:data["extension"]);
               MessageModel message = MessageModel(data["id"], user, data["Message"], DateTime.parse(data["date"]), data["id_conversation"],(data["is_read"]==1)?true:false,listeFile,parent);
               if(data["reaction"]!=null){
-                Reaction reaction = Reaction(User(data['reaction_email'], data['reaction_uniquePseudo'], data['reaction_pseudo'],data["reaction_bio"],data["reaction_extension"]), data["reaction"]);
+                Reaction reaction = Reaction(User(email:data['reaction_email'], uniquePseudo:data['reaction_uniquePseudo'], pseudo:data['reaction_pseudo'],bio:data["reaction_bio"],extension:data["reaction_extension"]), data["reaction"]);
                 message.addReaction(reaction);
               }
 

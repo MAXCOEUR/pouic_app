@@ -5,11 +5,11 @@ class User{
   String email;
   String uniquePseudo;
   String pseudo;
-  bool? sont_amis =false;
+  bool? sont_amis;
   String? bio;
-  String? extansion;
+  String? extension;
 
-  User(this.email, this.uniquePseudo, this.pseudo,this.bio,this.extansion,[this.sont_amis]);
+  User({required this.email,required this.uniquePseudo,required this.pseudo,required this.bio,required this.extension,this.sont_amis});
 
   @override
   bool operator ==(Object other) {
@@ -32,8 +32,8 @@ class User{
     return jsonEncode(toJson());
   }
   String? getNameImage(){
-    if(extansion!=null){
-      return uniquePseudo+"."+extansion!;
+    if(extension!=null){
+      return uniquePseudo+"."+extension!;
     }
     return null;
   }

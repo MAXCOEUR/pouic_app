@@ -1,11 +1,10 @@
 import 'package:discution_app/Controller/ConversationsController.dart';
-import 'package:discution_app/Controller/Notification.dart';
 import 'package:discution_app/Model/ConversationListeModel.dart';
 import 'package:discution_app/Model/ConversationModel.dart';
 import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:discution_app/outil/SocketSingleton.dart';
 import 'package:discution_app/vue/CreateConversationVue.dart';
-import 'package:discution_app/vue/ItemListeView/ConversationItemListeView.dart';
+import 'package:discution_app/vue/home/ConversationItemListeView.dart';
 import 'package:discution_app/vue/home/message/MessagerieView.dart';
 import 'package:discution_app/vue/widget/SearchTextField.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +13,7 @@ import '../../Controller/UserController.dart';
 import '../../Model/UserListeModel.dart';
 import '../../Model/UserModel.dart';
 import '../../outil/Constant.dart';
-import '../ItemListeView/UserItemListeView.dart';
+import 'UserItemListeView.dart';
 import 'UserDetailView.dart';
 
 class ConversationListeView extends StatefulWidget {

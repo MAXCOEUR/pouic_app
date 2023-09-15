@@ -19,13 +19,13 @@ class UserC {
     try {
       final responseCreate = await Api.instance.postData(
         'user',
-        {'email': user.email, 'uniquePseudo': user.uniquePseudo,'pseudo':user.pseudo,'passWord':passWord,'extension':user.extansion,'bio':user.bio},
+        {'email': user.email, 'uniquePseudo': user.uniquePseudo,'pseudo':user.pseudo,'passWord':passWord,'extension':user.extension,'bio':user.bio},
         null,
         null,
       );
       if(responseCreate.statusCode==201){
         Map<String, dynamic> jsonData = responseCreate.data;
-        u = User(jsonData["email"], jsonData["uniquePseudo"], jsonData["pseudo"],jsonData["bio"],jsonData["extension"]);
+        u = User(email:jsonData['email'], uniquePseudo:jsonData['uniquePseudo'], pseudo:jsonData['pseudo'],bio:jsonData["bio"], extension:jsonData["extension"]);
       }else{
         throw Exception();
       }
@@ -58,14 +58,13 @@ class UserC {
     try {
       final responseCreate = await Api.instance.putData(
         'user',
-        {'email': user.email, 'uniquePseudo': user.uniquePseudo,'pseudo':user.pseudo,'passWord':passWord,'extension':user.extansion,'bio':user.bio},
+        {'email': user.email, 'uniquePseudo': user.uniquePseudo,'pseudo':user.pseudo,'passWord':passWord,'extension':user.extension,'bio':user.bio},
         null,
         {'Authorization': AuthorizationToken},
       );
       if(responseCreate.statusCode==201){
         Map<String, dynamic> jsonData = responseCreate.data;
-        u = User(
-            jsonData["email"], jsonData["uniquePseudo"], jsonData["pseudo"],jsonData["bio"],jsonData["extension"]);
+        u = User(email:jsonData['email'], uniquePseudo:jsonData['uniquePseudo'], pseudo:jsonData['pseudo'],bio:jsonData["bio"], extension:jsonData["extension"]);
       }else{
         throw Exception();
       }
@@ -146,6 +145,20 @@ class UserC {
           (response) {
 
         callBack(user);
+      },
+      onError: (error) {
+        callBackError(error);
+      },
+    );
+  }
+  void isFriend(User user,Function callBack,Function callBackError) {
+    String AuthorizationToken='Bearer ${loginModel!.token}';
+    Api.instance.getData(
+        "amis/isAmis", {'uniquePseudo_send': user.uniquePseudo}, {'Authorization': AuthorizationToken})
+        .then(
+          (response) {
+            Map<String, dynamic> jsonData = response.data;
+        callBack((jsonData["reponse"]==1?true:false));
       },
       onError: (error) {
         callBackError(error);

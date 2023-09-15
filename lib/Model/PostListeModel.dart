@@ -8,6 +8,10 @@ import 'package:discution_app/Model/ReactionModel.dart';
 class PostListe{
   List<PostModel> posts = [];
 
+  void removeAll(){
+    posts.clear();
+  }
+
   void newMessage(PostModel message){
     posts.insert(0,message);
   }

@@ -38,7 +38,7 @@ class Parent extends StatelessWidget{
               color: Colors.grey[300],
             ),
             child: ClipOval(
-              child: Constant.buildAvatarUser(parent!.user,30,true)
+              child: Constant.buildAvatarUser(parent!.user,30,true,context)
             ),
           ),
           SizedBox(width: SizeMarginPading.h3),

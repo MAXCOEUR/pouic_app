@@ -25,7 +25,7 @@ class UserController {
           List<dynamic> jsonData = response.data;
           
           for(Map<String, dynamic> user in jsonData){
-            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"],user["bio"],user["extension"],(user["sont_amis"])==0?false:true));
+            users.addUser(User(email:user['email'], uniquePseudo:user['uniquePseudo'], pseudo:user['pseudo'],bio:user["bio"], extension:user["extension"],sont_amis: (user["sont_amis"])==0?false:true));
           }
 
           callBack();
@@ -45,7 +45,7 @@ class UserController {
           List<dynamic> jsonData = response.data;
 
           for(Map<String, dynamic> user in jsonData){
-            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"],user["bio"],user["extension"],true));
+            users.addUser(User(email:user['email'], uniquePseudo:user['uniquePseudo'], pseudo:user['pseudo'],bio:user["bio"], extension:user["extension"],sont_amis: true));
           }
 
           callBack();
@@ -65,7 +65,7 @@ class UserController {
           List<dynamic> jsonData = response.data;
 
           for(Map<String, dynamic> user in jsonData){
-            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"],user["bio"],user["extension"]));
+            users.addUser(User(email:user['email'], uniquePseudo:user['uniquePseudo'], pseudo:user['pseudo'],bio:user["bio"], extension:user["extension"],sont_amis: false));
           }
 
           callBack();
@@ -85,7 +85,7 @@ class UserController {
           List<dynamic> jsonData = response.data;
 
           for(Map<String, dynamic> user in jsonData){
-            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"],user["bio"],user["extension"]));
+            users.addUser(User(email:user['email'], uniquePseudo:user['uniquePseudo'], pseudo:user['pseudo'],bio:user["bio"], extension:user["extension"],sont_amis: false));
           }
 
           callBack();
@@ -105,7 +105,7 @@ class UserController {
           List<dynamic> jsonData = response.data;
 
           for(Map<String, dynamic> user in jsonData){
-            users.addUser(User(user["email"], user["uniquePseudo"], user["pseudo"],user["bio"],user["extension"],(user["sont_amis"])==0?false:true));
+            users.addUser(User(email:user['email'], uniquePseudo:user['uniquePseudo'], pseudo:user['pseudo'],bio:user["bio"], extension:user["extension"],sont_amis: (user["sont_amis"])==0?false:true));
           }
 
           callBack();

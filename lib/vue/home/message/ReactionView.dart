@@ -58,7 +58,7 @@ class ReactionView extends StatelessWidget {
                       color: Colors.grey[300],
                     ),
                     child: ClipOval(
-                      child: Constant.buildAvatarUser(user.user, 10, false),
+                      child: Constant.buildAvatarUser(user.user, 10, false,context),
                     ),
                   ),
                 if (overflowCount > 0)
@@ -116,7 +116,7 @@ class ReactionView extends StatelessWidget {
                               color: Colors.grey[300],
                             ),
                             child: ClipOval(
-                              child: Constant.buildAvatarUser(reaction.user, 30, false),
+                              child: Constant.buildAvatarUser(reaction.user, 30, false,context),
                             ),
                           ),
                           Text("@" + reaction.user.uniquePseudo),

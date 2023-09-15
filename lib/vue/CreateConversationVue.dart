@@ -150,7 +150,7 @@ class _CreateConversationVueState extends State<CreateConversationVue> {
           fit: BoxFit.cover,
         );
       } else {
-        return Constant.buildImageConversation(widget.conversation,75,true);
+        return Constant.buildImageConversation(widget.conversation,75,false,context);
       }
   }
 

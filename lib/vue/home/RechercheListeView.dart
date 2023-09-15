@@ -6,7 +6,7 @@ import '../../Controller/UserController.dart';
 import '../../Model/UserListeModel.dart';
 import '../../Model/UserModel.dart';
 import '../../outil/Constant.dart';
-import '../ItemListeView/UserItemListeView.dart';
+import 'UserItemListeView.dart';
 import 'UserDetailView.dart';
 
 class RechercheListeView extends StatefulWidget{

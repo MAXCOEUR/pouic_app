@@ -18,8 +18,7 @@ class Login {
 
         String token = jsonData["token"];
 
-        User u = User(
-            userMap["email"], userMap["uniquePseudo"], userMap["pseudo"],userMap["bio"],userMap["extension"]);
+        User u = User(email: userMap["email"], uniquePseudo:userMap["uniquePseudo"], pseudo:userMap["pseudo"],bio:userMap["bio"],extension:userMap["extension"]);
         LoginModel lm = LoginModel(u, token);
         callBack(lm);
       }else{

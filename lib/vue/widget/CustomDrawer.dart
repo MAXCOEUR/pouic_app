@@ -4,6 +4,7 @@ import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Constant.dart';
 import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:discution_app/vue/CreateUserVue.dart';
+import 'package:discution_app/vue/home/UserDetailView.dart';
 import 'package:flutter/material.dart';
 
 class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
@@ -34,7 +35,7 @@ class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
                     color: Colors.grey[300],
                   ),
                   child: ClipOval(
-                    child: Constant.buildAvatarUser(lm.user,80,true),
+                    child: Constant.buildAvatarUser(lm.user,80,true,context),
                   ),
                 ),
                 SizedBox(height: SizeMarginPading.h3),
@@ -59,9 +60,7 @@ class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        CreateUserVue(created: false, user: lm.user)),
+                MaterialPageRoute(builder: (context) => UserDetailleView(lm.user)),
               );
             },
           ),

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:discution_app/Controller/HomeController.dart';
@@ -40,10 +41,13 @@ class _HomeViewState extends State<HomeView> {
   late final RechercheListeView rechercheView ;
   late final AmisView amisView;
 
+  late GlobalKey<PostListviewState> postListViewKey;
+
   @override
   void initState() {
     homeController = HomeController(update);
-    postview = PostListview();
+    postListViewKey = GlobalKey<PostListviewState>();
+    postview = PostListview(key: postListViewKey,);
     convView = ConversationListeView();
     rechercheView = RechercheListeView();
     amisView = AmisView();
@@ -63,7 +67,10 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     Widget selectedWidget = postview;
-    if (_selectedIndex == 0) {
+    if (_selectedIndex == -1) {
+      selectedWidget = Container();
+    }else if (_selectedIndex == 0) {
+      postListViewKey.currentState?.up();
       selectedWidget = postview;
     }else if (_selectedIndex == 1) {
       selectedWidget = convView;

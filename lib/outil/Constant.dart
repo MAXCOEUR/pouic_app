@@ -60,7 +60,7 @@ class Constant {
       },
     );
   }
-  static Widget buildAvatarUser(User u,double size, bool clicable){
+  static Widget buildAvatarUser(User u,double size, bool clicable,BuildContext context){
     Icon icon = Icon(Icons.account_circle,size: size,);
     String? avatar=u.getNameImage();
     if(avatar==null){
@@ -70,12 +70,13 @@ class Constant {
       return _buildImageOrIcon(
           Constant.baseUrlAvatarUser + "/" + avatar ,
           icon,
-          false
+          clicable,
+          context
       );
     }
 
   }
-  static Widget buildImageConversation(Conversation c,double size, bool clicable){
+  static Widget buildImageConversation(Conversation c,double size, bool clicable,BuildContext context){
     Icon icon = Icon(Icons.comment,size: size,);
     String? image=c.getNameImage();
     if(image==null){
@@ -85,25 +86,50 @@ class Constant {
       return _buildImageOrIcon(
           Constant.baseUrlAvatarConversation+"/"+image,
           icon,
-          true
+          clicable,
+          context
       );
     }
 
   }
 
-  static Widget _buildImageOrIcon(String imageUrl, Icon icon, bool clicable) {
+  static Widget _buildImageOrIcon(String imageUrl, Icon icon, bool clicable,BuildContext context) {
 
     if(imageUrl.split('/').last=="0"){
       return icon;
     }
-    return CachedNetworkImage(
-      key: Key(imageUrl),
-      imageUrl: imageUrl,
-      fit: BoxFit.cover,
-      progressIndicatorBuilder: (context, url, downloadProgress) =>
-          CircularProgressIndicator(value: downloadProgress.progress),
-      errorWidget: (context, url, error) => icon,
-    );
+    if (clicable) {
+      return InkWell(
+        child: CachedNetworkImage(
+          key: Key(imageUrl),
+          imageUrl: imageUrl,
+          fit: BoxFit.cover,
+          progressIndicatorBuilder: (context, url, downloadProgress) =>
+              CircularProgressIndicator(value: downloadProgress.progress),
+          errorWidget: (context, url, error) => icon,
+        ),
+        onTap: (){
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  PhotoViewCustom(
+                    imageUrl,
+                  ),
+            ),
+          );
+        },
+      );
+    } else{
+      return CachedNetworkImage(
+        key: Key(imageUrl),
+        imageUrl: imageUrl,
+        fit: BoxFit.cover,
+        progressIndicatorBuilder: (context, url, downloadProgress) =>
+            CircularProgressIndicator(value: downloadProgress.progress),
+        errorWidget: (context, url, error) => icon,
+      );
+    }
   }
   static Future<Uint8List> compressImage(Uint8List imageBytes,int quality) async {
     return await FlutterImageCompress.compressWithList(

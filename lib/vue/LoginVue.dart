@@ -27,7 +27,7 @@ class _LoginVueState extends State<LoginVue> {
   final userName_Email = TextEditingController();
   final mdp = TextEditingController();
 
-  User user = User("", "", "",null,null, null);
+  User user = User(email:"", uniquePseudo: "",pseudo:  "",bio: null,extension: null);
 
   final Login loginController=Login();
 

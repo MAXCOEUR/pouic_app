@@ -78,11 +78,11 @@ class ConversationController{
 
     MessageParentModel? parent;
     if(messageMap["id_parent"]!=null){
-      User userParent= User("", messageMap['parent_uniquePseudo'], messageMap['parent_pseudo'],messageMap["parent_bio"],messageMap["parent_extension"]);
+      User userParent= User(email:"" ,uniquePseudo:messageMap['parent_uniquePseudo'], pseudo:messageMap['parent_pseudo'],bio:messageMap["parent_bio"],extension:messageMap["parent_extension"]);
       parent = MessageParentModel(messageMap["id_parent"], userParent, messageMap["parent_Message"], DateTime.parse(messageMap["parent_date"]),[]);
     }
 
-    User user = User(messageMap["email"], messageMap["uniquePseudo"], messageMap["pseudo"],messageMap["bio"],messageMap["extension"]);
+    User user = User(email:messageMap["email"], uniquePseudo:messageMap["uniquePseudo"], pseudo:messageMap["pseudo"],bio:messageMap["bio"],extension:messageMap["extension"]);
     MessageModel message = MessageModel(messageMap["id"], user, messageMap["Message"], DateTime.parse(messageMap["date"]), messageMap["id_conversation"],true,[],parent);
     int idConv = messageMap["id_conversation"];
     Conversation? convtmp;

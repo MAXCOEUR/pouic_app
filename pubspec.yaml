@@ -83,6 +83,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
      - assets/logo.png
+
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -107,6 +108,10 @@ flutter:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
+  fonts:
+    - family: NotoColorEmoji
+      fonts:
+        - asset: fonts/NotoColorEmoji-Regular.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

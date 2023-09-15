@@ -14,7 +14,7 @@ import 'package:discution_app/Model/UserModel.dart';
 import 'package:discution_app/outil/Constant.dart';
 import 'package:discution_app/outil/LoginSingleton.dart';
 import 'package:discution_app/vue/CreateConversationVue.dart';
-import 'package:discution_app/vue/ItemListeView/MessageItemListeView.dart';
+import 'package:discution_app/vue/home/message/MessageItemListeView.dart';
 import 'package:discution_app/vue/home/message/AddAmisConvView.dart';
 import 'package:discution_app/vue/home/message/ReactionView.dart';
 import 'package:discution_app/vue/home/message/RemoveUserConvView.dart';
@@ -194,7 +194,7 @@ class _MessagerieViewState extends State<MessagerieView> {
               color: Colors.grey[300],
             ),
             child: ClipOval(
-              child: Constant.buildImageConversation(widget.conv, 30, true),
+              child: Constant.buildImageConversation(widget.conv, 30, true,context),
             ),
           ),
           SizedBox(width: SizeMarginPading.h3),
