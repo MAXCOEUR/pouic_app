@@ -1,14 +1,14 @@
 import 'dart:io';
 
-import 'package:discution_app/Controller/ConversationC.dart';
-import 'package:discution_app/Controller/UserController.dart';
-import 'package:discution_app/Controller/UserC.dart';
-import 'package:discution_app/Model/ConversationModel.dart';
-import 'package:discution_app/Model/FileCustom.dart';
-import 'package:discution_app/Model/UserListeModel.dart';
-import 'package:discution_app/outil/LoginSingleton.dart';
-import 'package:discution_app/outil/SocketSingleton.dart';
-import 'package:discution_app/vue/home/message/MessagerieView.dart';
+import 'package:Pouic/Controller/ConversationC.dart';
+import 'package:Pouic/Controller/UserController.dart';
+import 'package:Pouic/Controller/UserC.dart';
+import 'package:Pouic/Model/ConversationModel.dart';
+import 'package:Pouic/Model/FileCustom.dart';
+import 'package:Pouic/Model/UserListeModel.dart';
+import 'package:Pouic/outil/LoginSingleton.dart';
+import 'package:Pouic/outil/SocketSingleton.dart';
+import 'package:Pouic/vue/home/message/MessagerieView.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +24,7 @@ class CreateConversationVue extends StatefulWidget {
       {super.key, required this.conversation, required this.created});
 
   final LoginModel lm = LoginModelProvider.getInstance((){}).loginModel!;
-  final String title = "CreateConversation Vue";
+  final String title = "Conversation";
   Conversation conversation;
   bool created;
 

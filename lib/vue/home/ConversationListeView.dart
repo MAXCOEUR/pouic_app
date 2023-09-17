@@ -1,12 +1,12 @@
-import 'package:discution_app/Controller/ConversationsController.dart';
-import 'package:discution_app/Model/ConversationListeModel.dart';
-import 'package:discution_app/Model/ConversationModel.dart';
-import 'package:discution_app/outil/LoginSingleton.dart';
-import 'package:discution_app/outil/SocketSingleton.dart';
-import 'package:discution_app/vue/CreateConversationVue.dart';
-import 'package:discution_app/vue/home/ConversationItemListeView.dart';
-import 'package:discution_app/vue/home/message/MessagerieView.dart';
-import 'package:discution_app/vue/widget/SearchTextField.dart';
+import 'package:Pouic/Controller/ConversationsController.dart';
+import 'package:Pouic/Model/ConversationListeModel.dart';
+import 'package:Pouic/Model/ConversationModel.dart';
+import 'package:Pouic/outil/LoginSingleton.dart';
+import 'package:Pouic/outil/SocketSingleton.dart';
+import 'package:Pouic/vue/CreateConversationVue.dart';
+import 'package:Pouic/vue/home/ConversationItemListeView.dart';
+import 'package:Pouic/vue/home/message/MessagerieView.dart';
+import 'package:Pouic/vue/widget/SearchTextField.dart';
 import 'package:flutter/material.dart';
 
 import '../../Controller/UserController.dart';

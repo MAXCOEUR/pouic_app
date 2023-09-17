@@ -1,14 +1,14 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:discution_app/Controller/PostController.dart';
-import 'package:discution_app/Model/FileCustom.dart';
-import 'package:discution_app/Model/PostModel.dart';
-import 'package:discution_app/outil/Constant.dart';
-import 'package:discution_app/outil/LoginSingleton.dart';
-import 'package:discution_app/vue/home/post/PostItemListeView.dart';
-import 'package:discution_app/vue/home/message/FileCustomMessage.dart';
-import 'package:discution_app/vue/widget/CustomAppBar.dart';
+import 'package:Pouic/Controller/PostController.dart';
+import 'package:Pouic/Model/FileCustom.dart';
+import 'package:Pouic/Model/PostModel.dart';
+import 'package:Pouic/outil/Constant.dart';
+import 'package:Pouic/outil/LoginSingleton.dart';
+import 'package:Pouic/vue/home/post/PostItemListeView.dart';
+import 'package:Pouic/vue/home/message/FileCustomMessage.dart';
+import 'package:Pouic/vue/widget/CustomAppBar.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

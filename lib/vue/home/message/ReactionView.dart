@@ -1,6 +1,6 @@
-import 'package:discution_app/Model/ReactionModel.dart';
-import 'package:discution_app/outil/Constant.dart';
-import 'package:discution_app/outil/LoginSingleton.dart';
+import 'package:Pouic/Model/ReactionModel.dart';
+import 'package:Pouic/outil/Constant.dart';
+import 'package:Pouic/outil/LoginSingleton.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

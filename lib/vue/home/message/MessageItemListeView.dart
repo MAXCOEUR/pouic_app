@@ -3,26 +3,29 @@ import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
-import 'package:discution_app/Controller/MessagesController.dart';
-import 'package:discution_app/Model/ConversationModel.dart';
-import 'package:discution_app/Model/FileModel.dart';
-import 'package:discution_app/Model/MessageModel.dart';
-import 'package:discution_app/Model/MessageParentModel.dart';
-import 'package:discution_app/Model/UserModel.dart';
-import 'package:discution_app/outil/Api.dart';
-import 'package:discution_app/outil/Constant.dart';
-import 'package:discution_app/outil/LaunchFile.dart';
-import 'package:discution_app/outil/LoginSingleton.dart';
-import 'package:discution_app/vue/home/UserDetailView.dart';
-import 'package:discution_app/vue/home/message/AudioPlayerWidget.dart';
-import 'package:discution_app/vue/home/message/FileCustomMessage.dart';
-import 'package:discution_app/vue/home/message/ReactionView.dart';
-import 'package:discution_app/vue/widget/EmojiListDialog.dart';
-import 'package:discution_app/vue/widget/PhotoView.dart';
-import 'package:discution_app/vue/home/message/parent.dart';
+import 'package:Pouic/Controller/MessagesController.dart';
+import 'package:Pouic/Model/ConversationModel.dart';
+import 'package:Pouic/Model/FileModel.dart';
+import 'package:Pouic/Model/MessageModel.dart';
+import 'package:Pouic/Model/MessageParentModel.dart';
+import 'package:Pouic/Model/UserModel.dart';
+import 'package:Pouic/outil/Api.dart';
+import 'package:Pouic/outil/Constant.dart';
+import 'package:Pouic/outil/LaunchFile.dart';
+import 'package:Pouic/outil/LoginSingleton.dart';
+import 'package:Pouic/vue/home/UserDetailView.dart';
+import 'package:Pouic/vue/home/message/AudioPlayerWidget.dart';
+import 'package:Pouic/vue/home/message/FileCustomMessage.dart';
+import 'package:Pouic/vue/home/message/ReactionView.dart';
+import 'package:Pouic/vue/widget/EmojiListDialog.dart';
+import 'package:Pouic/vue/widget/PhotoView.dart';
+import 'package:Pouic/vue/home/message/parent.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:intl/intl.dart';
 import 'package:popup_menu/popup_menu.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MessageItemListeView extends StatelessWidget {
   final MessageModel message;
@@ -96,6 +99,9 @@ class MessageItemListeView extends StatelessWidget {
   void onEdit() {
     showEditDialog(context);
   }
+  void onCopie(){
+    Clipboard.setData(ClipboardData(text: message.message));
+  }
 
   void deleteCallBack() {}
 
@@ -137,7 +143,7 @@ class MessageItemListeView extends StatelessWidget {
 
 
   void showMenuSonMessage(BuildContext context, var _tapPosition,
-      VoidCallback onDelete, VoidCallback onEdit) {
+      VoidCallback onDelete, VoidCallback onEdit, VoidCallback onCopy) {
     final RenderBox overlay =
         Overlay.of(context).context.findRenderObject() as RenderBox;
     showMenu(
@@ -154,6 +160,16 @@ class MessageItemListeView extends StatelessWidget {
               Icon(Icons.reply),
               SizedBox(width: 8.0),
               Text("Repondre"),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: "copier",
+          child: Row(
+            children: [
+              Icon(Icons.copy),
+              SizedBox(width: 8.0),
+              Text("Copier"),
             ],
           ),
         ),
@@ -200,9 +216,8 @@ class MessageItemListeView extends StatelessWidget {
       } else if (selectedValue == "repondre") {
         setParent(MessageParentModel(message.id, message.user, message.message,
             message.date, message.files));
-      }else if (selectedValue == "emojis") {
-        // Afficher la boîte de dialogue EmojiListDialog lorsque l'utilisateur appuie sur "Emojis"
-
+      }else if (selectedValue == "copier") {
+        onCopy(); // Appeler la fonction onCopy
       }
     });
   }
@@ -289,11 +304,21 @@ class MessageItemListeView extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      message.message,
+                    Linkify(
+                      onOpen: (link) async {
+                        if (await canLaunch(link.url)) {
+                          await launch(link.url);
+                        } else {
+                          throw 'Impossible d\'ouvrir le lien : ${link.url}';
+                        }
+                      },
+                      text: message.message,
                       style: TextStyle(fontSize: 16),
-                      softWrap:
-                          true, // Permettre le wrapping automatique du texte
+                      linkStyle: TextStyle(
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                        fontSize: 16,
+                      ),
                     ),
                     if (message.files.isNotEmpty)
                       Container(
@@ -317,7 +342,7 @@ class MessageItemListeView extends StatelessWidget {
       GestureDetector(
           onLongPress: () {
             print("long");
-            showMenuSonMessage(context, _tapPosition, onDelete, onEdit);
+            showMenuSonMessage(context, _tapPosition, onDelete, onEdit,onCopie);
           },
           onDoubleTapDown: (TapDownDetails details) {
             _showPopupMenu(context, details);

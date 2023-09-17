@@ -1,14 +1,14 @@
 import 'package:dio/dio.dart';
-import 'package:discution_app/Model/FileCustom.dart';
-import 'package:discution_app/Model/FileModel.dart';
-import 'package:discution_app/Model/PostListeModel.dart';
-import 'package:discution_app/Model/MessageModel.dart';
-import 'package:discution_app/Model/PostModel.dart';
-import 'package:discution_app/Model/ReactionModel.dart';
-import 'package:discution_app/Model/UserModel.dart';
-import 'package:discution_app/outil/Api.dart';
-import 'package:discution_app/outil/LoginSingleton.dart';
-import 'package:discution_app/outil/SocketSingleton.dart';
+import 'package:Pouic/Model/FileCustom.dart';
+import 'package:Pouic/Model/FileModel.dart';
+import 'package:Pouic/Model/PostListeModel.dart';
+import 'package:Pouic/Model/MessageModel.dart';
+import 'package:Pouic/Model/PostModel.dart';
+import 'package:Pouic/Model/ReactionModel.dart';
+import 'package:Pouic/Model/UserModel.dart';
+import 'package:Pouic/outil/Api.dart';
+import 'package:Pouic/outil/LoginSingleton.dart';
+import 'package:Pouic/outil/SocketSingleton.dart';
 import 'package:socket_io_client/src/socket.dart';
 
 class PostController {

@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:discution_app/Controller/UserController.dart';
-import 'package:discution_app/Controller/UserC.dart';
-import 'package:discution_app/Model/FileCustom.dart';
-import 'package:discution_app/Model/UserListeModel.dart';
+import 'package:Pouic/Controller/UserController.dart';
+import 'package:Pouic/Controller/UserC.dart';
+import 'package:Pouic/Model/FileCustom.dart';
+import 'package:Pouic/Model/UserListeModel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +19,7 @@ class CreateUserVue extends StatefulWidget {
   CreateUserVue({super.key,required this.user,required this.created});
   final User user;
   final bool created;
-  final String title="CreateUser Vue";
+  final String title="User";
 
 
   @override

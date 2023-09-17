@@ -1,7 +1,7 @@
-import 'package:discution_app/Model/ConversationModel.dart';
-import 'package:discution_app/Model/UserModel.dart';
-import 'package:discution_app/outil/Constant.dart';
-import 'package:discution_app/outil/LoginSingleton.dart';
+import 'package:Pouic/Model/ConversationModel.dart';
+import 'package:Pouic/Model/UserModel.dart';
+import 'package:Pouic/outil/Constant.dart';
+import 'package:Pouic/outil/LoginSingleton.dart';
 import 'package:flutter/material.dart';
 
 class ConversationItemListeView extends StatelessWidget {

@@ -1,10 +1,10 @@
 import 'dart:typed_data';
 
-import 'package:discution_app/Model/UserModel.dart';
-import 'package:discution_app/outil/Constant.dart';
-import 'package:discution_app/outil/LoginSingleton.dart';
-import 'package:discution_app/vue/CreateUserVue.dart';
-import 'package:discution_app/vue/home/UserDetailView.dart';
+import 'package:Pouic/Model/UserModel.dart';
+import 'package:Pouic/outil/Constant.dart';
+import 'package:Pouic/outil/LoginSingleton.dart';
+import 'package:Pouic/vue/CreateUserVue.dart';
+import 'package:Pouic/vue/home/UserDetailView.dart';
 import 'package:flutter/material.dart';
 
 class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {

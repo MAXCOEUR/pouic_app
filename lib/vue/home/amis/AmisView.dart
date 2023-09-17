@@ -1,10 +1,10 @@
-import 'package:discution_app/Controller/HomeController.dart';
-import 'package:discution_app/Model/UserModel.dart';
-import 'package:discution_app/outil/Constant.dart';
-import 'package:discution_app/outil/LoginSingleton.dart';
-import 'package:discution_app/vue/home/amis/AmisListeView.dart';
-import 'package:discution_app/vue/home/amis/DemandeAmisListeView.dart';
-import 'package:discution_app/vue/home/amis/DemandeEnvoyeAmisListeView.dart';
+import 'package:Pouic/Controller/HomeController.dart';
+import 'package:Pouic/Model/UserModel.dart';
+import 'package:Pouic/outil/Constant.dart';
+import 'package:Pouic/outil/LoginSingleton.dart';
+import 'package:Pouic/vue/home/amis/AmisListeView.dart';
+import 'package:Pouic/vue/home/amis/DemandeAmisListeView.dart';
+import 'package:Pouic/vue/home/amis/DemandeEnvoyeAmisListeView.dart';
 import 'package:flutter/material.dart';
 
 
@@ -44,7 +44,6 @@ class _AmisViewState extends State<AmisView> {
     return Scaffold(
       body: selectedWidget,
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Theme.of(context).colorScheme.background,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.supervised_user_circle),
@@ -60,6 +59,8 @@ class _AmisViewState extends State<AmisView> {
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+        selectedItemColor: Theme.of(context).colorScheme.primary, // Couleur des éléments sélectionnés (icônes et texte)
+        unselectedItemColor: Theme.of(context).colorScheme.onBackground,
       ),
     );
   }

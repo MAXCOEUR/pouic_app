@@ -1,4 +1,4 @@
-name: discution_app
+name: Pouic
 description: it's a chat box
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -56,6 +56,7 @@ dependencies:
   chewie: ^1.7.0
   flutter_image_compress: ^2.0.4
   flutter_isolate: ^2.0.4
+  flutter_linkify: ^6.0.0
 
 
 dev_dependencies:

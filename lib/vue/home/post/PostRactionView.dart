@@ -1,9 +1,9 @@
-import 'package:discution_app/Controller/PostController.dart';
-import 'package:discution_app/Model/PostModel.dart';
-import 'package:discution_app/Model/ReactionModel.dart';
-import 'package:discution_app/outil/Constant.dart';
-import 'package:discution_app/vue/home/UserDetailView.dart';
-import 'package:discution_app/vue/widget/CustomAppBar.dart';
+import 'package:Pouic/Controller/PostController.dart';
+import 'package:Pouic/Model/PostModel.dart';
+import 'package:Pouic/Model/ReactionModel.dart';
+import 'package:Pouic/outil/Constant.dart';
+import 'package:Pouic/vue/home/UserDetailView.dart';
+import 'package:Pouic/vue/widget/CustomAppBar.dart';
 import 'package:flutter/material.dart';
 
 class PostRactionView extends StatefulWidget {

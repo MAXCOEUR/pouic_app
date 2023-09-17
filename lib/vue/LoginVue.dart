@@ -1,10 +1,10 @@
 
 import 'package:dio/dio.dart';
-import 'package:discution_app/Model/UserModel.dart';
-import 'package:discution_app/outil/LoginSingleton.dart';
-import 'package:discution_app/vue/CreateUserVue.dart';
+import 'package:Pouic/Model/UserModel.dart';
+import 'package:Pouic/outil/LoginSingleton.dart';
+import 'package:Pouic/vue/CreateUserVue.dart';
 import 'package:flutter/material.dart';
-import 'package:discution_app/vue/home/HomeView.dart';
+import 'package:Pouic/vue/home/HomeView.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -45,10 +45,23 @@ class _LoginVueState extends State<LoginVue> {
         //backgroundColor: Theme.of(context).colorScheme.background,
         title: Text(widget.title),
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Container(
+              width: 150,
+              height: 150,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+              ),
+              child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                  child: Image.asset(
+                    'assets/logo.png',
+                  )),
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               child: TextFormField(
@@ -70,21 +83,33 @@ class _LoginVueState extends State<LoginVue> {
                 ),
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                // Code à exécuter lorsque le bouton est pressé
-                print('le username ou email est : '+userName_Email.text+" | le mdp est : "+mdp.text);
-                loginUser();
-              },
-              child: Text('validé'),
-            ),ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CreateUserVue(created: true,user:user)),
-                );
-              },
-              child: Text('créer sont compte'),
+            Container(
+              margin: EdgeInsets.all(SizeMarginPading.h3),
+              child: ElevatedButton(
+                onPressed: () {
+                  // Code à exécuter lorsque le bouton est pressé
+                  print('le username ou email est : ' +
+                      userName_Email.text +
+                      " | le mdp est : " +
+                      mdp.text);
+                  loginUser();
+                },
+                child: Text('valider'),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.all(SizeMarginPading.h3),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            CreateUserVue(created: true, user: user)),
+                  );
+                },
+                child: Text('créer sont compte'),
+              ),
             ),
           ],
         ),

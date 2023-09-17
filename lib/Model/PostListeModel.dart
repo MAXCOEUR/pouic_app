@@ -1,9 +1,9 @@
-import 'package:discution_app/Model/FileModel.dart';
-import 'package:discution_app/Model/MessageModel.dart';
-import 'package:discution_app/Model/PostModel.dart';
+import 'package:Pouic/Model/FileModel.dart';
+import 'package:Pouic/Model/MessageModel.dart';
+import 'package:Pouic/Model/PostModel.dart';
 import 'dart:convert';
 
-import 'package:discution_app/Model/ReactionModel.dart';
+import 'package:Pouic/Model/ReactionModel.dart';
 
 class PostListe{
   List<PostModel> posts = [];

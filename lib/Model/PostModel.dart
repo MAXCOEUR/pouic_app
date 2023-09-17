@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:discution_app/Model/FileModel.dart';
-import 'package:discution_app/Model/MessageParentModel.dart';
-import 'package:discution_app/Model/ReactionModel.dart';
-import 'package:discution_app/Model/UserModel.dart';
+import 'package:Pouic/Model/FileModel.dart';
+import 'package:Pouic/Model/MessageParentModel.dart';
+import 'package:Pouic/Model/ReactionModel.dart';
+import 'package:Pouic/Model/UserModel.dart';
 
 class PostModel{
   int id;

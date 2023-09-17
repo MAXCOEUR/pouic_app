@@ -1,6 +1,6 @@
-import 'package:discution_app/Model/MessageParentModel.dart';
-import 'package:discution_app/outil/Constant.dart';
-import 'package:discution_app/vue/home/message/FileCustomMessage.dart';
+import 'package:Pouic/Model/MessageParentModel.dart';
+import 'package:Pouic/outil/Constant.dart';
+import 'package:Pouic/vue/home/message/FileCustomMessage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 

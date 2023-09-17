@@ -1,5 +1,5 @@
-import 'package:discution_app/outil/LoginSingleton.dart';
-import 'package:discution_app/vue/widget/SearchTextField.dart';
+import 'package:Pouic/outil/LoginSingleton.dart';
+import 'package:Pouic/vue/widget/SearchTextField.dart';
 import 'package:flutter/material.dart';
 
 import '../../Controller/UserController.dart';

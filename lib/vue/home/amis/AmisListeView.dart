@@ -1,12 +1,12 @@
-import 'package:discution_app/Controller/UserC.dart';
-import 'package:discution_app/Controller/UserController.dart';
-import 'package:discution_app/Model/UserListeModel.dart';
-import 'package:discution_app/Model/UserModel.dart';
-import 'package:discution_app/outil/Constant.dart';
-import 'package:discution_app/outil/LoginSingleton.dart';
-import 'package:discution_app/vue/home/UserItemListeView.dart';
-import 'package:discution_app/vue/home/UserDetailView.dart';
-import 'package:discution_app/vue/widget/SearchTextField.dart';
+import 'package:Pouic/Controller/UserC.dart';
+import 'package:Pouic/Controller/UserController.dart';
+import 'package:Pouic/Model/UserListeModel.dart';
+import 'package:Pouic/Model/UserModel.dart';
+import 'package:Pouic/outil/Constant.dart';
+import 'package:Pouic/outil/LoginSingleton.dart';
+import 'package:Pouic/vue/home/UserItemListeView.dart';
+import 'package:Pouic/vue/home/UserDetailView.dart';
+import 'package:Pouic/vue/widget/SearchTextField.dart';
 import 'package:flutter/material.dart';
 
 class AmisListeView extends StatefulWidget{

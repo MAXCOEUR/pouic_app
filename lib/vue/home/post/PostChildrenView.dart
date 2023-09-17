@@ -1,11 +1,11 @@
-import 'package:discution_app/Controller/PostController.dart';
-import 'package:discution_app/Model/PostListeModel.dart';
-import 'package:discution_app/Model/PostModel.dart';
-import 'package:discution_app/outil/Constant.dart';
-import 'package:discution_app/vue/home/post/CreatePost.dart';
-import 'package:discution_app/vue/home/post/PostItemListeView.dart';
-import 'package:discution_app/vue/home/post/PostRactionView.dart';
-import 'package:discution_app/vue/widget/CustomAppBar.dart';
+import 'package:Pouic/Controller/PostController.dart';
+import 'package:Pouic/Model/PostListeModel.dart';
+import 'package:Pouic/Model/PostModel.dart';
+import 'package:Pouic/outil/Constant.dart';
+import 'package:Pouic/vue/home/post/CreatePost.dart';
+import 'package:Pouic/vue/home/post/PostItemListeView.dart';
+import 'package:Pouic/vue/home/post/PostRactionView.dart';
+import 'package:Pouic/vue/widget/CustomAppBar.dart';
 import 'package:flutter/material.dart';
 
 class PostChildrenView extends StatefulWidget {

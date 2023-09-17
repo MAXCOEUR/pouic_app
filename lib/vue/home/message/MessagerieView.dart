@@ -2,24 +2,25 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:audioplayers/audioplayers.dart';
-import 'package:discution_app/Controller/ConversationC.dart';
-import 'package:discution_app/Controller/MessagesController.dart';
-import 'package:discution_app/Model/ConversationModel.dart';
-import 'package:discution_app/Model/FileCustom.dart';
-import 'package:discution_app/Model/FileModel.dart';
-import 'package:discution_app/Model/MessageListeModel.dart';
-import 'package:discution_app/Model/MessageModel.dart';
-import 'package:discution_app/Model/MessageParentModel.dart';
-import 'package:discution_app/Model/UserModel.dart';
-import 'package:discution_app/outil/Constant.dart';
-import 'package:discution_app/outil/LoginSingleton.dart';
-import 'package:discution_app/vue/CreateConversationVue.dart';
-import 'package:discution_app/vue/home/message/MessageItemListeView.dart';
-import 'package:discution_app/vue/home/message/AddAmisConvView.dart';
-import 'package:discution_app/vue/home/message/ReactionView.dart';
-import 'package:discution_app/vue/home/message/RemoveUserConvView.dart';
-import 'package:discution_app/vue/home/message/parent.dart';
-import 'package:discution_app/vue/widget/EmojiListDialog.dart';
+import 'package:Pouic/Controller/ConversationC.dart';
+import 'package:Pouic/Controller/MessagesController.dart';
+import 'package:Pouic/Model/ConversationModel.dart';
+import 'package:Pouic/Model/FileCustom.dart';
+import 'package:Pouic/Model/FileModel.dart';
+import 'package:Pouic/Model/MessageListeModel.dart';
+import 'package:Pouic/Model/MessageModel.dart';
+import 'package:Pouic/Model/MessageParentModel.dart';
+import 'package:Pouic/Model/UserModel.dart';
+import 'package:Pouic/outil/Constant.dart';
+import 'package:Pouic/outil/LoginSingleton.dart';
+import 'package:Pouic/vue/CreateConversationVue.dart';
+import 'package:Pouic/vue/home/ConvDetailView.dart';
+import 'package:Pouic/vue/home/message/MessageItemListeView.dart';
+import 'package:Pouic/vue/home/message/AddAmisConvView.dart';
+import 'package:Pouic/vue/home/message/ReactionView.dart';
+import 'package:Pouic/vue/home/message/RemoveUserConvView.dart';
+import 'package:Pouic/vue/home/message/parent.dart';
+import 'package:Pouic/vue/widget/EmojiListDialog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -199,7 +200,15 @@ class _MessagerieViewState extends State<MessagerieView> {
           ),
           SizedBox(width: SizeMarginPading.h3),
           Expanded(
-            child: Center(child: Text(widget.conv.name)),
+            child:GestureDetector(
+              child:Center(child: Text(widget.conv.name)),
+              onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>ConvDetailView(conversation: widget.conv,)),
+                );
+              },
+            ),
           ),
           SizedBox(width: SizeMarginPading.h3),
           if (widget.conv.uniquePseudo_admin == widget.lm.user.uniquePseudo)

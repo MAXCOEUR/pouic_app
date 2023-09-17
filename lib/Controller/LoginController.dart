@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:discution_app/Model/UserModel.dart';
-import 'package:discution_app/outil/LoginSingleton.dart';
+import 'package:Pouic/Model/UserModel.dart';
+import 'package:Pouic/outil/LoginSingleton.dart';
 
 import '../outil/Api.dart';
 

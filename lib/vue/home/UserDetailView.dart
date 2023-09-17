@@ -1,19 +1,21 @@
 import 'dart:io';
 
-import 'package:discution_app/Controller/ConversationC.dart';
-import 'package:discution_app/Controller/PostController.dart';
-import 'package:discution_app/Controller/UserC.dart';
-import 'package:discution_app/Model/ConversationModel.dart';
-import 'package:discution_app/Model/PostListeModel.dart';
-import 'package:discution_app/Model/PostModel.dart';
-import 'package:discution_app/Model/UserModel.dart';
-import 'package:discution_app/outil/Constant.dart';
-import 'package:discution_app/outil/LoginSingleton.dart';
-import 'package:discution_app/outil/SocketSingleton.dart';
-import 'package:discution_app/vue/CreateUserVue.dart';
-import 'package:discution_app/vue/home/message/MessagerieView.dart';
-import 'package:discution_app/vue/home/post/PostItemListeView.dart';
+import 'package:Pouic/Controller/ConversationC.dart';
+import 'package:Pouic/Controller/PostController.dart';
+import 'package:Pouic/Controller/UserC.dart';
+import 'package:Pouic/Model/ConversationModel.dart';
+import 'package:Pouic/Model/PostListeModel.dart';
+import 'package:Pouic/Model/PostModel.dart';
+import 'package:Pouic/Model/UserModel.dart';
+import 'package:Pouic/outil/Constant.dart';
+import 'package:Pouic/outil/LoginSingleton.dart';
+import 'package:Pouic/outil/SocketSingleton.dart';
+import 'package:Pouic/vue/CreateUserVue.dart';
+import 'package:Pouic/vue/home/message/MessagerieView.dart';
+import 'package:Pouic/vue/home/post/PostItemListeView.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../widget/CustomAppBar.dart';
 
@@ -159,10 +161,21 @@ class _UserListeViewState extends State<UserDetailleView> {
                               fontSize: SizeFont.p1,
                               fontWeight: FontWeight.bold),
                         ),
-                        Text(
-                          widget.user.bio!,
+                        Linkify(
+                          onOpen: (link) async {
+                            if (await canLaunch(link.url)) {
+                              await launch(link.url);
+                            } else {
+                              throw 'Impossible d\'ouvrir le lien : ${link.url}';
+                            }
+                          },
+                          text: widget.user.bio!,
                           style: TextStyle(fontSize: SizeFont.p1),
-                          softWrap: true,
+                          linkStyle: TextStyle(
+                            color: Colors.blue,
+                            decoration: TextDecoration.underline,
+                            fontSize: SizeFont.p1,
+                          ),
                         ),
                       ],
                     ),

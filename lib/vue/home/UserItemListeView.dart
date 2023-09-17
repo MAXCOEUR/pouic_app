@@ -1,6 +1,6 @@
-import 'package:discution_app/Model/ConversationModel.dart';
-import 'package:discution_app/outil/Constant.dart';
-import 'package:discution_app/outil/LoginSingleton.dart';
+import 'package:Pouic/Model/ConversationModel.dart';
+import 'package:Pouic/outil/Constant.dart';
+import 'package:Pouic/outil/LoginSingleton.dart';
 import 'package:flutter/material.dart';
 
 import '../../Model/UserModel.dart';
@@ -21,12 +21,12 @@ class UserItemListeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Padding(
+    return Container(
+      child: Padding(
         padding: EdgeInsets.all(SizeMarginPading.p1),
         child: GestureDetector(
           onTap: () {
-            if (user != lm.user) onTap(user);
+            onTap(user);
           },
           child: Container(
             decoration: BoxDecoration(
@@ -69,6 +69,8 @@ class UserItemListeView extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),),
                   SizedBox(width: SizeMarginPading.h3),
+                  if (type == 0)
+
                   if (type == 1)
                     Icon((user.sont_amis == true)
                         ? Icons.check_box_outlined

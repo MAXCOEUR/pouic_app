@@ -1,6 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:discution_app/Model/FileModel.dart';
-import 'package:discution_app/outil/Constant.dart';
+import 'package:Pouic/Model/FileModel.dart';
+import 'package:Pouic/outil/Constant.dart';
 import 'package:flutter/material.dart';
 
 class AudioPlayerWidget extends StatefulWidget {

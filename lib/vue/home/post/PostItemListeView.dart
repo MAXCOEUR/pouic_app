@@ -3,31 +3,34 @@ import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
-import 'package:discution_app/Controller/MessagesController.dart';
-import 'package:discution_app/Controller/PostController.dart';
-import 'package:discution_app/Model/ConversationModel.dart';
-import 'package:discution_app/Model/FileModel.dart';
-import 'package:discution_app/Model/MessageModel.dart';
-import 'package:discution_app/Model/MessageParentModel.dart';
-import 'package:discution_app/Model/PostModel.dart';
-import 'package:discution_app/Model/ReactionModel.dart';
-import 'package:discution_app/Model/UserModel.dart';
-import 'package:discution_app/outil/Api.dart';
-import 'package:discution_app/outil/Constant.dart';
-import 'package:discution_app/outil/LaunchFile.dart';
-import 'package:discution_app/outil/LoginSingleton.dart';
-import 'package:discution_app/vue/home/UserDetailView.dart';
-import 'package:discution_app/vue/home/message/AudioPlayerWidget.dart';
-import 'package:discution_app/vue/home/message/FileCustomMessage.dart';
-import 'package:discution_app/vue/home/message/ReactionView.dart';
-import 'package:discution_app/vue/home/post/CreatePost.dart';
-import 'package:discution_app/vue/home/post/PostChildrenView.dart';
-import 'package:discution_app/vue/widget/EmojiListDialog.dart';
-import 'package:discution_app/vue/widget/PhotoView.dart';
-import 'package:discution_app/vue/home/message/parent.dart';
+import 'package:Pouic/Controller/MessagesController.dart';
+import 'package:Pouic/Controller/PostController.dart';
+import 'package:Pouic/Model/ConversationModel.dart';
+import 'package:Pouic/Model/FileModel.dart';
+import 'package:Pouic/Model/MessageModel.dart';
+import 'package:Pouic/Model/MessageParentModel.dart';
+import 'package:Pouic/Model/PostModel.dart';
+import 'package:Pouic/Model/ReactionModel.dart';
+import 'package:Pouic/Model/UserModel.dart';
+import 'package:Pouic/outil/Api.dart';
+import 'package:Pouic/outil/Constant.dart';
+import 'package:Pouic/outil/LaunchFile.dart';
+import 'package:Pouic/outil/LoginSingleton.dart';
+import 'package:Pouic/vue/home/UserDetailView.dart';
+import 'package:Pouic/vue/home/message/AudioPlayerWidget.dart';
+import 'package:Pouic/vue/home/message/FileCustomMessage.dart';
+import 'package:Pouic/vue/home/message/ReactionView.dart';
+import 'package:Pouic/vue/home/post/CreatePost.dart';
+import 'package:Pouic/vue/home/post/PostChildrenView.dart';
+import 'package:Pouic/vue/widget/EmojiListDialog.dart';
+import 'package:Pouic/vue/widget/PhotoView.dart';
+import 'package:Pouic/vue/home/message/parent.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:intl/intl.dart';
 import 'package:popup_menu/popup_menu.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PostItemListeView extends StatefulWidget {
   final PostModel post;
@@ -102,6 +105,9 @@ class _PostItemListeViewState extends State<PostItemListeView> {
   void onEdit() {
     showEditDialog(context);
   }
+  void onCopie(){
+    Clipboard.setData(ClipboardData(text: widget.post.message));
+  }
 
   void deleteCallBack(PostModel post) {
     widget.DeleteCallBack(post);
@@ -139,15 +145,25 @@ class _PostItemListeViewState extends State<PostItemListeView> {
   }*/
 
   void showMenuSonMessage(BuildContext context, var _tapPosition,
-      VoidCallback onDelete, VoidCallback onEdit) {
+      VoidCallback onDelete, VoidCallback onEdit, VoidCallback onCopy) {
     final RenderBox overlay = context.findRenderObject() as RenderBox;
     showMenu(
       context: context,
       position: RelativeRect.fromRect(
           _tapPosition & const Size(40, 40), // smaller rect, the touch area
           Offset.zero & overlay.size // Bigger rect, the entire screen
-          ),
+      ),
       items: <PopupMenuEntry>[
+        PopupMenuItem(
+          value: "copier",
+          child: Row(
+            children: [
+              Icon(Icons.copy),
+              SizedBox(width: 8.0),
+              Text("Copier"),
+            ],
+          ),
+        ),
         if (widget.post.user == lm.user)
           const PopupMenuItem(
             value: "supprimer",
@@ -180,9 +196,12 @@ class _PostItemListeViewState extends State<PostItemListeView> {
         onDelete(); // Appeler la fonction onDelete
       } else if (selectedValue == "modifier") {
         onEdit(); // Appeler la fonction onEdit
+      } else if (selectedValue == "copier") {
+        onCopy(); // Appeler la fonction onCopy
       }
     });
   }
+
 
   void _storePosition(TapDownDetails details) {
     _tapPosition = details.globalPosition;
@@ -281,11 +300,21 @@ class _PostItemListeViewState extends State<PostItemListeView> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      post.message,
+                    Linkify(
+                      onOpen: (link) async {
+                        if (await canLaunch(link.url)) {
+                          await launch(link.url);
+                        } else {
+                          throw 'Impossible d\'ouvrir le lien : ${link.url}';
+                        }
+                      },
+                      text: post.message,
                       style: TextStyle(fontSize: 16),
-                      softWrap:
-                          true, // Permettre le wrapping automatique du texte
+                      linkStyle: TextStyle(
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                          fontSize: 16,
+                      ),
                     ),
                     if (post.files.isNotEmpty)
                       Container(
@@ -354,7 +383,7 @@ class _PostItemListeViewState extends State<PostItemListeView> {
       GestureDetector(
         onLongPress: () {
           print("long");
-          showMenuSonMessage(context, _tapPosition, onDelete, onEdit);
+          showMenuSonMessage(context, _tapPosition, onDelete, onEdit,onCopie);
         },
         onTapDown: _storePosition,
         onTap: (){Navigator.push(

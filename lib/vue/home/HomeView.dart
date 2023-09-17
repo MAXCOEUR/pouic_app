@@ -1,17 +1,17 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:discution_app/Controller/HomeController.dart';
-import 'package:discution_app/Model/UserModel.dart';
-import 'package:discution_app/outil/Constant.dart';
-import 'package:discution_app/outil/LoginSingleton.dart';
-import 'package:discution_app/outil/SocketSingleton.dart';
-import 'package:discution_app/vue/home/ConversationListeView.dart';
-import 'package:discution_app/vue/home/post/PostListView.dart';
-import 'package:discution_app/vue/widget/CustomAppBar.dart';
-import 'package:discution_app/vue/home/RechercheListeView.dart';
-import 'package:discution_app/vue/home/amis/AmisView.dart';
-import 'package:discution_app/vue/widget/CustomDrawer.dart';
+import 'package:Pouic/Controller/HomeController.dart';
+import 'package:Pouic/Model/UserModel.dart';
+import 'package:Pouic/outil/Constant.dart';
+import 'package:Pouic/outil/LoginSingleton.dart';
+import 'package:Pouic/outil/SocketSingleton.dart';
+import 'package:Pouic/vue/home/ConversationListeView.dart';
+import 'package:Pouic/vue/home/post/PostListView.dart';
+import 'package:Pouic/vue/widget/CustomAppBar.dart';
+import 'package:Pouic/vue/home/RechercheListeView.dart';
+import 'package:Pouic/vue/home/amis/AmisView.dart';
+import 'package:Pouic/vue/widget/CustomDrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
