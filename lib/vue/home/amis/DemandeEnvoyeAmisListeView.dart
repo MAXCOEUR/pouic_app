@@ -120,6 +120,9 @@ class _DemandeEnvoyeAmisListeViewState extends State<DemandeEnvoyeAmisListeView>
                 recherche(value);
               },
             ),
+            if (users.users.length==0)
+              Text("Vous n'avez envoyé aucune demande d'amis."),
+            if (users.users.length>0)
             Expanded(
               child: SingleChildScrollView(
                 physics: AlwaysScrollableScrollPhysics(),

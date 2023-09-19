@@ -61,6 +61,9 @@ class _HomeViewState extends State<HomeView> {
     print(index);
     setState(() {
       _selectedIndex = index;
+      if(index==0){
+        postListViewKey.currentState?.up();
+      }
     });
   }
 
@@ -70,7 +73,6 @@ class _HomeViewState extends State<HomeView> {
     if (_selectedIndex == -1) {
       selectedWidget = Container();
     }else if (_selectedIndex == 0) {
-      postListViewKey.currentState?.up();
       selectedWidget = postview;
     }else if (_selectedIndex == 1) {
       selectedWidget = convView;

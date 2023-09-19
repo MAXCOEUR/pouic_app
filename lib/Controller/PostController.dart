@@ -24,10 +24,6 @@ class PostController {
     posts.remove(post);
   }
 
-  void removeAllPosts(){
-    posts.removeAll();
-  }
-
   List<FileModel> splitGroupConcat(String? linkfile, String? name) {
     List<FileModel> listeFile = [];
     List<String> listeLinkFile = [];
@@ -48,7 +44,7 @@ class PostController {
 
   void addGeneralPost_inListe(
       int id_lastMessage, Function callBack, Function callBackError) {
-    print("getPost Api");
+    print("addGeneralPost_inListe");
     String AuthorizationToken = 'Bearer ' + lm.token;
     Api.instance.getData("post", {'id_lastMessage': id_lastMessage},
         {'Authorization': AuthorizationToken}).then((response) async {
@@ -77,6 +73,9 @@ class PostController {
             parent);
 
         postsTmp.add(post);
+      }
+      if(id_lastMessage==0){
+        posts.removeAll();
       }
       posts.addOldMessages(postsTmp);
 
@@ -119,6 +118,9 @@ class PostController {
             parent);
 
         postsTmp.add(post);
+      }
+      if(id_lastMessage==0){
+        posts.removeAll();
       }
       posts.addOldMessages(postsTmp);
 
@@ -204,7 +206,7 @@ class PostController {
           null,
           {'Authorization': AuthorizationToken});
       if (response.statusCode == 201) {
-        callBack(Reaction(message.user, reaction));
+        callBack(Reaction(loginModel.user, reaction));
       } else {
         throw Exception();
       }
@@ -272,7 +274,7 @@ class PostController {
     String AuthorizationToken = 'Bearer ${lm.token}';
     try {
       final response = await Api.instance.getData("post/one",
-          {'id_message': id_Post}, {'Authorization': AuthorizationToken});
+          {'id_message': id_Post,"pseudoUnique":lm.user.uniquePseudo}, {'Authorization': AuthorizationToken});
       if (response.statusCode == 201) {
         Map<String, dynamic> jsonData = response.data;
 

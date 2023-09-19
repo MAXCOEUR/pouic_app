@@ -117,6 +117,9 @@ class _AmisListeViewState extends State<AmisListeView> {
                 recherche(value);
               },
             ),
+            if (users.users.length==0)
+              Text("Vous n'avez pas d'amis."),
+            if (users.users.length>0)
             Expanded(
               child: SingleChildScrollView(
                 physics: AlwaysScrollableScrollPhysics(),

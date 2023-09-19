@@ -127,6 +127,11 @@ class _ConversationListeViewState extends State<ConversationListeView> {
                   recherche(value);
                 },
               ),
+              if (conversations.conversations.length==0)
+                Expanded(child:
+                Text("Vous n'êtes dans aucune conversation."),
+                ),
+              if (conversations.conversations.length>0)
               Expanded(
                 child: SingleChildScrollView(
                   physics: AlwaysScrollableScrollPhysics(),

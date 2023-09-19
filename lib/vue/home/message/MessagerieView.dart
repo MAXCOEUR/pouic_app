@@ -485,6 +485,11 @@ class _MessagerieViewState extends State<MessagerieView> {
         color: Theme.of(context).colorScheme.surface,
         child: Column(
           children: [
+            if (messageListe.messages.length==0)
+              Expanded(child:
+              Text("La conversation n'a pas de message."),
+              ),
+            if (messageListe.messages.length>0)
             Expanded(
               child: ListView.builder(
                 controller: _scrollController,

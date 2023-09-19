@@ -129,6 +129,9 @@ class _DemandeAmisListeViewState extends State<DemandeAmisListeView> {
                 recherche(value);
               },
             ),
+            if (users.users.length==0)
+              Text("Vous n'avez pas de demande d'amis."),
+            if (users.users.length>0)
             Expanded(
               child: SingleChildScrollView(
                 physics: AlwaysScrollableScrollPhysics(),

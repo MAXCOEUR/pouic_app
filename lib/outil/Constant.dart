@@ -12,7 +12,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:http/http.dart' as http;
 
 class Constant {
-  static const String ServeurApi = "http://192.168.0.115:45713";
+  static const String ServeurApi = "http://46.227.18.31:45713";
   static const String baseUrlAvatarUser = ServeurApi + "/uploads/AvatarUser";
   static const String baseUrlAvatarConversation =
       ServeurApi + "/uploads/ImageConversation";

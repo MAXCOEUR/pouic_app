@@ -29,16 +29,14 @@ class PostListviewState extends State<PostListview> {
     refreshData();
   }
   Future<void> refreshData() async {
-    postsController.removeAllPosts();
-    postsController.addGeneralPost_inListe(0, reponseUpdate, reponseError);
+    postsController.initListeGeneralPost(reponseUpdate, reponseError);
   }
 
   @override
   void initState() {
     super.initState();
     postsController = PostController(postListe, reponseUpdate);
-
-    postsController.initListeGeneralPost(reponseUpdate, reponseError);
+    refreshData();
     _scrollController.addListener(_onScroll);
   }
   void _onScroll() {
@@ -49,13 +47,13 @@ class PostListviewState extends State<PostListview> {
         true; // Définir isLoadingMore à true pour indiquer le chargement
       });
 
-      postsController.addGeneralPost_inListe(postListe.posts[postListe.posts.length-1].id,reponseUpdate, reponseError);
-
-      // Après avoir chargé les données, définissez isLoadingMore à false
-      setState(() {
-        isLoadingMore = false;
-      });
+      postsController.addGeneralPost_inListe(postListe.posts[postListe.posts.length-1].id,reponseScroll, reponseError);
     }
+  }
+  void reponseScroll(){
+    setState(() {
+      isLoadingMore = false;
+    });
   }
 
   Widget _buildConversationListTile(PostModel post) {
@@ -82,20 +80,23 @@ class PostListviewState extends State<PostListview> {
         child: Container(
           color: Theme.of(context).colorScheme.surface,
           child: SingleChildScrollView(
-              physics: AlwaysScrollableScrollPhysics(),
-              controller: _scrollController,
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                // Disable inner ListView's scrolling
-                itemCount: postListe.posts.length,
-                itemBuilder: (context, index) {
-                  PostModel post = postListe.posts[index];
-                  return _buildConversationListTile(post);
-                },
-              ),
+            physics: AlwaysScrollableScrollPhysics(),
+            controller: _scrollController,
+            child: Column(
+              children: [
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  // Disable inner ListView's scrolling
+                  itemCount: postListe.posts.length,
+                  itemBuilder: (context, index) {
+                    PostModel post = postListe.posts[index];
+                    return _buildConversationListTile(post);
+                  },
+                ),
+              ],
             ),
-
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(

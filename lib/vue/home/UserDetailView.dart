@@ -74,13 +74,13 @@ class _UserListeViewState extends State<UserDetailleView> {
       postsController.addUserPost_inListe(
           postListe.posts[postListe.posts.length - 1].id,
           widget.user,
-          reponseUpdate,
+          reponseScroll,
           reponseError);
-
-      // Après avoir chargé les données, définissez isLoadingMore à false
-      setState(() {
-        isLoadingMore = false;
-      });
+    }
+  }
+  reponseScroll() {
+    if (mounted) {
+      setState(() {isLoadingMore = false;});
     }
   }
 
@@ -210,6 +210,13 @@ class _UserListeViewState extends State<UserDetailleView> {
               UserView(),
             ]),
           ),
+          if (postListe.posts.length==0)
+            SliverList(
+              delegate: SliverChildListDelegate([
+                Text("L'utilisateur n'a fait aucun post."),
+              ]),
+            ),
+          if (postListe.posts.length>0)
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {

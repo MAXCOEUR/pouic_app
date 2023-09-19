@@ -29,6 +29,8 @@ class _LoginVueState extends State<LoginVue> {
 
   User user = User(email:"", uniquePseudo: "",pseudo:  "",bio: null,extension: null);
 
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   final Login loginController=Login();
 
   @override
@@ -62,39 +64,69 @@ class _LoginVueState extends State<LoginVue> {
                     'assets/logo.png',
                   )),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              child: TextFormField(
-                controller: userName_Email,
-                decoration: const InputDecoration(
-                  border: UnderlineInputBorder(),
-                  labelText: 'Entrée votre username ou mail',
+            Form(
+              key: _formKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    // Champ de texte pour l'username ou l'email
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                      child: TextFormField(
+                        controller: userName_Email,
+                        decoration: const InputDecoration(
+                          border: UnderlineInputBorder(),
+                          labelText: 'Entrée votre username ou mail',
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Ce champ est obligatoire.';
+                          }
+                          return null; // Retourne null s'il n'y a pas d'erreur
+                        },
+                      ),
+                    ),
+
+                    // Champ de texte pour le mot de passe
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                      child: TextFormField(
+                        obscureText: true,
+                        controller: mdp,
+                        decoration: const InputDecoration(
+                          border: UnderlineInputBorder(),
+                          labelText: 'Entrée votre mdp',
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Ce champ est obligatoire.';
+                          }
+                          return null; // Retourne null s'il n'y a pas d'erreur
+                        },
+                      ),
+                    ),
+
+                    // Bouton "Valider"
+                    Container(
+                      margin: EdgeInsets.all(SizeMarginPading.h3),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // Valide le formulaire avant d'exécuter le code
+                          if (_formKey.currentState!.validate()) {
+                            // Code à exécuter lorsque le bouton est pressé
+                            print('le username ou email est : ' +
+                                userName_Email.text +
+                                " | le mdp est : " +
+                                mdp.text);
+                            loginUser();
+                          }
+                        },
+                        child: Text('Valider'),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              child: TextFormField(
-                obscureText: true,
-                controller: mdp,
-                decoration: const InputDecoration(
-                  border: UnderlineInputBorder(),
-                  labelText: 'Entrée votre mdp',
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.all(SizeMarginPading.h3),
-              child: ElevatedButton(
-                onPressed: () {
-                  // Code à exécuter lorsque le bouton est pressé
-                  print('le username ou email est : ' +
-                      userName_Email.text +
-                      " | le mdp est : " +
-                      mdp.text);
-                  loginUser();
-                },
-                child: Text('valider'),
               ),
             ),
             Container(

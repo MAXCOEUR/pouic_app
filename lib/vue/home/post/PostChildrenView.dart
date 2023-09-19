@@ -34,6 +34,11 @@ class _PostChildrenViewState extends State<PostChildrenView> {
     postsController.initListeChildPost(widget.post, reponseUpdate, reponseError);
     _scrollController.addListener(_onScroll);
   }
+  void reponseScroll(){
+    setState(() {
+      isLoadingMore = false;
+    });
+  }
   reponseError(Exception ex) {
     Constant.showAlertDialog(context, "Erreur",
         "erreur lors de la requette a l'api : " + ex.toString());
@@ -58,13 +63,8 @@ class _PostChildrenViewState extends State<PostChildrenView> {
       postsController.addChildPost_inListe(
           postListe.posts[postListe.posts.length - 1].id,
           widget.post,
-          reponseUpdate,
+          reponseScroll,
           reponseError);
-
-      // Après avoir chargé les données, définissez isLoadingMore à false
-      setState(() {
-        isLoadingMore = false;
-      });
     }
   }
 
@@ -143,6 +143,13 @@ class _PostChildrenViewState extends State<PostChildrenView> {
                   sendBar(),
                 ]),
               ),
+              if (postListe.posts.length==0)
+                SliverList(
+                  delegate: SliverChildListDelegate([
+                    Text("Le post n'a reçu aucune réponse."),
+                  ]),
+                ),
+              if (postListe.posts.length>0)
               SliverList(
                 delegate: SliverChildBuilderDelegate(
                       (context, index) {

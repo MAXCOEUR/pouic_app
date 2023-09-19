@@ -1,6 +1,6 @@
 {
-    "name": "discution_app",
-    "short_name": "discution_app",
+    "name": "Pouic",
+    "short_name": "Pouic",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
