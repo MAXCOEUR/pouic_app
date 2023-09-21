@@ -1,7 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:Pouic/Model/UserModel.dart';
+import 'package:Pouic/fireBase/fireBase_api.dart';
 import 'package:Pouic/outil/Api.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -53,7 +57,22 @@ class LoginModelProvider {
         User u = User(email:userMap['email'], uniquePseudo:userMap['uniquePseudo'], pseudo:userMap['pseudo'],bio:userMap["bio"], extension:userMap["extension"]);
         LoginModel lm = LoginModel(u, token);
         LoginModelProvider._storeTokenInCache(token);
+
+        if(!kIsWeb &&!Platform.isWindows){
+          String AuthorizationToken='Bearer '+lm.token;
+          WidgetsFlutterBinding.ensureInitialized();
+          await Firebase.initializeApp();
+          String? tokenNotification = await FireBaseApi().initNotification();
+          print(tokenNotification);
+          final reposeToken = await Api.instance.putData("user/tokenNotification", {'token': tokenNotification}, null, {'Authorization': AuthorizationToken});
+          if(reposeToken.statusCode==201){
+            print("tokenNotification reussie");
+          }else{
+            throw Exception();
+          }
+        }
         return lm;
+
         //callBack(lm);
       }else{
         throw Exception();

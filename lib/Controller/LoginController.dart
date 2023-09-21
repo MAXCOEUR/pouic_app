@@ -1,8 +1,13 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:Pouic/Model/UserModel.dart';
+import 'package:Pouic/fireBase/fireBase_api.dart';
 import 'package:Pouic/outil/LoginSingleton.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 import '../outil/Api.dart';
 
@@ -13,6 +18,7 @@ class Login {
     try{
       final response = await Api.instance.postData("user/login", {'emailOrPseudo': userOrEmail, 'passWord': mdp}, null, null);
       if(response.statusCode==200){
+        print("connection reussie");
         Map<String, dynamic> jsonData = response.data;
         Map<String, dynamic> userMap = jsonData["user"];
 
@@ -20,6 +26,19 @@ class Login {
 
         User u = User(email: userMap["email"], uniquePseudo:userMap["uniquePseudo"], pseudo:userMap["pseudo"],bio:userMap["bio"],extension:userMap["extension"]);
         LoginModel lm = LoginModel(u, token);
+
+        if(!kIsWeb && !Platform.isWindows){
+          String AuthorizationToken='Bearer '+lm.token;
+          WidgetsFlutterBinding.ensureInitialized();
+          await Firebase.initializeApp();
+          String? tokenNotification = await FireBaseApi().initNotification();
+          final reposeToken = await Api.instance.putData("user/tokenNotification", {'token': tokenNotification}, null, {'Authorization': AuthorizationToken});
+          if(reposeToken.statusCode==201){
+            print("tokenNotification reussie");
+          }else{
+            throw Exception();
+          }
+        }
         callBack(lm);
       }else{
         throw Exception();

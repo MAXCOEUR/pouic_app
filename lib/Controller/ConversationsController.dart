@@ -92,7 +92,10 @@ class ConversationController{
         conv.unRead++;
         if(message.user!=loginModel.user && idConvertationOpen!=idConv){
           if(flutterLocalNotificationsPlugin!=null){
-            showCustomNotification(message,conv);
+            final isAppInBackground = WidgetsBinding.instance.lifecycleState == AppLifecycleState.paused;
+            if(!isAppInBackground){
+              showCustomNotification(message,conv);
+            }
           }
         }
         callBack();
@@ -145,7 +148,7 @@ class ConversationController{
     await flutterLocalNotificationsPlugin!.show(
       message.id, // Id de la notification
       conv.name, // Titre de la notification
-      message.user.pseudo+" : "+ message.message, // Corps de la notification
+      message.user.pseudo+": "+ message.message, // Corps de la notification
       platformChannelSpecifics,
     );
   }

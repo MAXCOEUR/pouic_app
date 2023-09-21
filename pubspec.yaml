@@ -57,6 +57,8 @@ dependencies:
   flutter_image_compress: ^2.0.4
   flutter_isolate: ^2.0.4
   flutter_linkify: ^6.0.0
+  firebase_core: ^2.16.0
+  firebase_messaging: ^14.6.8
 
 
 dev_dependencies:
@@ -109,10 +111,6 @@ flutter:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
-  fonts:
-    - family: NotoColorEmoji
-      fonts:
-        - asset: fonts/NotoColorEmoji-Regular.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

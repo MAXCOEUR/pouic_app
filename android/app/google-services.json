@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "831045967901",
+    "project_id": "pouic-327c3",
+    "storage_bucket": "pouic-327c3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:831045967901:android:9bfb0486b557dee866a6f4",
+        "android_client_info": {
+          "package_name": "discution.com.discution_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByQENblAVlRFK4hiXqcRA-rz6_d5WODHw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

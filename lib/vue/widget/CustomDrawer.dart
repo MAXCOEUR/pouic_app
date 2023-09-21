@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:Pouic/Model/UserModel.dart';
+import 'package:Pouic/outil/Api.dart';
 import 'package:Pouic/outil/Constant.dart';
 import 'package:Pouic/outil/LoginSingleton.dart';
 import 'package:Pouic/vue/CreateUserVue.dart';
@@ -68,6 +69,7 @@ class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
             leading: Icon(Icons.logout),
             title: Text("Deconexion", style: TextStyle(fontSize: SizeFont.p1)),
             onTap: () {
+              setNullTokenNotification();
               LoginModelProvider.getInstance(() {}).setLoginModel(null);
               updateMain();
             },
@@ -75,6 +77,17 @@ class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
         ],
       ),
     );
+  }
+
+  setNullTokenNotification() async {
+    LoginModel loginModel = LoginModelProvider.getInstance((){}).loginModel!;
+    String AuthorizationToken='Bearer '+loginModel.token;
+    final reposeToken = await Api.instance.putData("user/tokenNotification", {'token': null}, null, {'Authorization': AuthorizationToken});
+    if(reposeToken.statusCode==201){
+      print("tokenNotification reussie");
+    }else{
+      print("tokenNotification error");
+    }
   }
 
   @override
