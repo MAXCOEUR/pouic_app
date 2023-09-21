@@ -140,7 +140,7 @@ class _LoginVueState extends State<LoginVue> {
                             CreateUserVue(created: true, user: user)),
                   );
                 },
-                child: Text('créer sont compte'),
+                child: Text('Créer son compte'),
               ),
             ),
           ],

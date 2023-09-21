@@ -309,16 +309,22 @@ class _UserListeViewState extends State<UserDetailleView> {
     return Container(
       margin: EdgeInsets.all(SizeMarginPading.p1),
       child: ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
+        onPressed: () async {
+          // Utilisez await pour attendre la fermeture de la page CreateUserVue
+          await Navigator.of(context).push(
             MaterialPageRoute(
-                builder: (context) =>
-                    CreateUserVue(created: false, user: widget.lm.user)),
+              builder: (context) => CreateUserVue(created: false, user: widget.lm.user),
+            ),
           );
+
+          // Après la fermeture de CreateUserVue, rafraîchissez la page parente avec setState
+          setState(() {
+            // Placez ici le code de rafraîchissement que vous souhaitez effectuer
+          });
         },
         child: Icon(Icons.person),
       ),
+
     );
   }
 

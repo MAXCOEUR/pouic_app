@@ -52,13 +52,13 @@ class UserC {
       callBackError(error);
     }
   }
-  Future<void> modify(User user,FileCustom? imageFile,String passWord,Function callBack,Function callBackError) async {
+  Future<void> modify(User user,FileCustom? imageFile,Function callBack,Function callBackError) async {
     User u;
     String AuthorizationToken='Bearer ${loginModel!.token}';
     try {
       final responseCreate = await Api.instance.putData(
         'user',
-        {'email': user.email, 'uniquePseudo': user.uniquePseudo,'pseudo':user.pseudo,'passWord':passWord,'extension':user.extension,'bio':user.bio},
+        {'email': user.email, 'uniquePseudo': user.uniquePseudo,'pseudo':user.pseudo,'extension':user.extension,'bio':user.bio},
         null,
         {'Authorization': AuthorizationToken},
       );
@@ -88,6 +88,21 @@ class UserC {
       } else {
         throw Exception();
       }
+    } catch (error) {
+      print('Une erreur s\'est produite : $error');
+      callBackError(error);
+    }
+  }
+  Future<void> modifyMdp(String oldMdp,String newMdp,Function callBack,Function callBackError) async {
+    String AuthorizationToken='Bearer ${loginModel!.token}';
+    try {
+      final responseCreate = await Api.instance.putData(
+        'user/mdp',
+        {'oldMdp': oldMdp, 'newMdp': newMdp},
+        null,
+        {'Authorization': AuthorizationToken},
+      );
+      callBack();
     } catch (error) {
       print('Une erreur s\'est produite : $error');
       callBackError(error);

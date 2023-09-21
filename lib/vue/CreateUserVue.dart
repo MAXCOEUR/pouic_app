@@ -30,8 +30,12 @@ class _CreateUserVueState extends State<CreateUserVue> {
   final userNameUnique = TextEditingController();
   final userName = TextEditingController();
   final email = TextEditingController();
+  final oldMdp = TextEditingController();
   final mdp = TextEditingController();
+  final confMdp = TextEditingController();
   final bio = TextEditingController();
+
+  late bool displayMdp;
   FileCustom? imageFile;
 
   final _formKey = GlobalKey<FormState>();
@@ -91,21 +95,43 @@ class _CreateUserVueState extends State<CreateUserVue> {
       }else{
         widget.user.bio=bio.text;
       }
-      if(widget.created){
-        userCreate.create(widget.user,imageFile, mdp.text, reponseCreateUser,reponseCreateUserError);
+      userCreate.create(widget.user,imageFile, mdp.text, reponseCreateUser,reponseCreateUserError);
+    }
+
+  }
+  void modifyUser(){
+    if (_formKey.currentState!.validate()) {
+      widget.user.email=email.text;
+      widget.user.uniquePseudo=userNameUnique.text;
+      widget.user.pseudo=userName.text;
+      widget.user.extension=imageFile?.fileName.split('.').last.toLowerCase();
+      if(bio.text==""){
+        widget.user.bio=null;
+      }else{
+        widget.user.bio=bio.text;
       }
-      else{
-        userCreate.modify(widget.user,imageFile, mdp.text, reponseCreateUser,reponseCreateUserError);
+      userCreate.modify(widget.user,imageFile,reponseCreateUser,reponseCreateUserError);
+
+      if(displayMdp){
+        userCreate.modifyMdp(oldMdp.text, mdp.text, reponseMoifyMdp, reponseCreateUserError);
       }
+
     }
 
   }
   void reponseCreateUser(User u){
-    print(u.toJsonString());
-    imageFile=null;
+    if(widget.created||!displayMdp){
+      print(u.toJsonString());
+      imageFile=null;
+      Navigator.pop(context);
+    }
+
+  }
+  void reponseMoifyMdp(){
     Navigator.pop(context);
   }
   void reponseCreateUserError(DioException ex){
+
     if(ex.response!=null && ex.response!.data["message"] != null){
       Constant.showAlertDialog(context,"Erreur",ex.response!.data["message"]);
     }
@@ -133,6 +159,10 @@ class _CreateUserVueState extends State<CreateUserVue> {
       if(widget.user.bio!=null){
         bio.text=widget.user.bio!;
       }
+      displayMdp=false;
+    }
+    else{
+      displayMdp=true;
     }
   }
 
@@ -228,29 +258,85 @@ class _CreateUserVueState extends State<CreateUserVue> {
                 keyboardType: TextInputType.multiline, // Permet de saisir sur plusieurs lignes
               ),
             ),
+            if(!widget.created&&displayMdp==true)
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                child: TextFormField(
+                  obscureText: true,
+                  controller: oldMdp,
+                  maxLength: 255,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Ancien mdp',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Ce champ est requis';
+                    }
+                    return null; // Valide
+                  },
+                ),
+              ),
+            if(displayMdp)
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               child: TextFormField(
                 obscureText: true,
                 controller: mdp,
                 maxLength: 255,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'Entrée votre mdp',
+                  labelText: 'Entrée votre nouveau mdp',
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Ce champ est requis';
                   }
-                  RegExp passwordRegex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,255}$');
+                  RegExp passwordRegex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#+_\-()\[\]{}|:;"<>,.?/`=^!&*~§])(?!.*[\\s])[A-Za-z\d@$!%*?&#+_\-()\[\]{}|:;"<>,.?\/`=^!&*~§]{8,255}$');
 
                   if (!passwordRegex.hasMatch(value)|| value.length>=255) {
-                    return 'Le mot de passe doit contenir entre 8 et 255 caractères, dont une majuscule, une minuscule, un chiffre et un caractère spécial (@\$!%*?&)';
+                    return 'entre 8 et 255 caractère,\n'+
+                        'une majuscule, une minuscule,\n'+
+                        'un chiffre et\n'+
+                        'un caractère spécial (@\$!%*?&#+_\-()\[\]{}|:;"<>,.?/`=^!&*~§)';
                   }
                   return null; // Valide
                 },
               ),
             ),
+            if(displayMdp)
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                child: TextFormField(
+                  obscureText: true,
+                  controller: confMdp,
+                  maxLength: 255,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Confirmation du nouveau mdp',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Ce champ est requis';
+                    }
+
+                    if (value!=mdp.text) {
+                      return 'les deux messages ne sont pas égaux';
+                    }
+                    return null; // Valide
+                  },
+                ),
+              ),
+            if(!widget.created&&displayMdp==false)
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    displayMdp=true;
+                  });
+                },
+                child: Text('modifier sont mdp'),
+              ),
+            SizedBox(height: 16),
             InkWell(
               onTap: _pickImage,
               child: Container(
@@ -266,12 +352,20 @@ class _CreateUserVueState extends State<CreateUserVue> {
               ),
             ),
             SizedBox(height: 16),
+            if(widget.created)
             ElevatedButton(
               onPressed: () {
                 createUser();
                 },
-              child: Text((widget.created==true)?'Créer sont compte':'modifier sont compte'),
+              child: Text('Créer sont compte'),
             ),
+            if(!widget.created)
+              ElevatedButton(
+                onPressed: () {
+                  modifyUser();
+                },
+                child: Text('modifier sont compte'),
+              ),
           ],
         ),
       ),

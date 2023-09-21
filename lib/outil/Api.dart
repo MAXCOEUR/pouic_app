@@ -36,7 +36,7 @@ class Api {
       );
       return response;
     } catch (error) {
-      throw error;
+      rethrow;
     }
   }
 
@@ -65,7 +65,7 @@ class Api {
       print(response);
       return response;
     } catch (error) {
-      throw error;
+      rethrow;
     }
   }
 
@@ -89,7 +89,7 @@ class Api {
       );
       return response;
     } catch (error) {
-      throw Exception('Erreur lors de la requête : $error');
+      rethrow;
     }
   }
 
@@ -115,7 +115,7 @@ class Api {
       );
       return response;
     } catch (error) {
-      throw Exception('Erreur lors de la requête : $error');
+      rethrow;
     }
   }
 
@@ -141,7 +141,7 @@ class Api {
       );
       return response;
     } catch (error) {
-      throw Exception('Erreur lors de la requête : $error');
+      rethrow;
     }
   }
 }
