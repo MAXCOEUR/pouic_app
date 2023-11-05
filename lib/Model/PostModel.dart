@@ -56,4 +56,17 @@ class PostModel{
   void removeReaction(Reaction reaction){
     reactions.remove(reaction);
   }
+  bool isParent(PostModel pm){
+    if(this.parent!=null){
+      if(this.parent==pm){
+        return true;
+      }
+      else{
+        return parent!.isParent(pm);
+      }
+    }
+    else{
+      return false;
+    }
+  }
 }

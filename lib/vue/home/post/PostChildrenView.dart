@@ -30,8 +30,8 @@ class _PostChildrenViewState extends State<PostChildrenView> {
     super.initState();
 
     postsController = PostController(postListe, reponseUpdate);
-
     postsController.initListeChildPost(widget.post, reponseUpdate, reponseError);
+    postsController.fillParent(widget.post);
     _scrollController.addListener(_onScroll);
   }
   void reponseScroll(){

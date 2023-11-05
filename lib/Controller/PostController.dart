@@ -313,6 +313,12 @@ class PostController {
     }
   }
 
+  void fillParent(PostModel pm) async {
+    PostModel? post =await getPostOne(pm.id);
+    pm.parent = post?.parent;
+    callBack();
+  }
+
   static Future<void> sendPost(String messageText, List<FileCustom> listeFile, PostModel? parent) async {
     LoginModel loginModel = LoginModelProvider.getInstance(() {}).loginModel!;
     String AuthorizationToken = 'Bearer ' + loginModel.token;

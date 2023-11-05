@@ -16,9 +16,24 @@ class PostListe{
     posts.insert(0,message);
   }
 
-  void addOldMessages(List<PostModel> message){
-    posts.addAll(message);
+  void addOldMessages(List<PostModel> messages){
+    for (PostModel p in messages){
+      if(!isParent(p)){
+        posts.add(p);
+      }
+    }
+    //posts.addAll(messages);
   }
+
+  bool isParent(PostModel pm){
+    for (PostModel p in posts){
+      if(p.isParent(pm)){
+       return true;
+      }
+    }
+    return false;
+  }
+
   void remove(PostModel message){
     posts.remove(message);
   }

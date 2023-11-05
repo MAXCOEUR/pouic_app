@@ -20,7 +20,6 @@ class _EmojiListState extends State<EmojiList> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 500,
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Wrap(
@@ -28,7 +27,7 @@ class _EmojiListState extends State<EmojiList> {
           spacing: 10,
           runSpacing: 10,
           children: [
-            for (int i = 0; i < (showMoreEmojis ? widget.popularEmojis.length : 4); i++)
+            for (int i = 0; i < (showMoreEmojis ? widget.popularEmojis.length : 7); i++)
               Container(
                 padding: EdgeInsets.all(4.0),
                 decoration: BoxDecoration(
@@ -40,7 +39,7 @@ class _EmojiListState extends State<EmojiList> {
                     widget.onEmojiSelected(widget.popularEmojis[i]);
                     Navigator.of(context).pop();
                   },
-                  child: Text(widget.popularEmojis[i],style: TextStyle(fontSize: SizeFont.h1)),
+                  child: Text(widget.popularEmojis[i],style: TextStyle(fontSize: 33)),
                 ),
               ),
             if (!showMoreEmojis)
@@ -52,7 +51,7 @@ class _EmojiListState extends State<EmojiList> {
                       showMoreEmojis = true;
                     });
                   },
-                  child: Text("+",style: TextStyle(fontSize: SizeFont.h1)),
+                  child: Text("+",style: TextStyle(fontSize: 33)),
                 ),
               ),
           ],

@@ -334,10 +334,10 @@ class _PostItemListeViewState extends State<PostItemListeView> {
                       },
                       child: Row(
                         children: [
-                          Icon(Icons.reply, size: 16.0), // Icône plus petite
+                          Icon(Icons.reply), // Icône plus petite
                           SizedBox(width: 2.0), // Espace réduit
                           Text(Constant.formatNumber(widget.post.nbr_reponse),
-                              style: TextStyle(fontSize: 12.0)), // Texte plus petit
+                              ), // Texte plus petit
                         ],
                       ),
                     ),
@@ -358,12 +358,12 @@ class _PostItemListeViewState extends State<PostItemListeView> {
                             widget.post.amIlike
                                 ? Icons.favorite
                                 : Icons.favorite_border,
-                            size: 16.0, // Icône plus petite
+                             // Icône plus petite
                             color: widget.post.amIlike ? Colors.red : null,
                           ),
                           SizedBox(width: 2.0), // Espace réduit
                           Text(Constant.formatNumber(widget.post.nbr_reaction),
-                              style: TextStyle(fontSize: 12.0)), // Texte plus petit
+                              ), // Texte plus petit
                         ],
                       ),
                     ),
