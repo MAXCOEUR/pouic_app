@@ -56,11 +56,9 @@ class MessageItemListeView extends StatelessWidget {
               TextField(
                 controller: edit,
                 decoration: InputDecoration(labelText: "Nouveau texte"),
-                onSubmitted: (String value) {
-                  MessagesController.edit(
-                      message, edit.text, deleteCallBack, callBackError);
-                  Navigator.of(context).pop();
-                },
+                textInputAction: TextInputAction.newline,
+                minLines: 1,
+                maxLines: 10,
               ),
             ],
           ),

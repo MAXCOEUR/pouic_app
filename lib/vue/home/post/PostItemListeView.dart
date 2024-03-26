@@ -61,12 +61,9 @@ class _PostItemListeViewState extends State<PostItemListeView> {
               TextField(
                 controller: edit,
                 decoration: InputDecoration(labelText: "Nouveau texte"),
-                onSubmitted: (String value) {
-                  PostController.edit(
-                      widget.post, edit.text, editCallBack, callBackError);
-                  Navigator.of(context).pop();
-
-                },
+                textInputAction: TextInputAction.newline,
+                minLines: 1,
+                maxLines: 10,
               ),
             ],
           ),

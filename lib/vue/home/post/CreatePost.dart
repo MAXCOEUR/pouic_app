@@ -296,10 +296,7 @@ class _CreatePostState extends State<CreatePost> {
                     decoration: InputDecoration(
                       hintText: 'Votre message',
                     ),
-                    onSubmitted: (String messageText) {
-                      sendMessage();
-                    },
-                    textInputAction: TextInputAction.done,
+                    textInputAction: TextInputAction.newline,
                     minLines: 1,
                     maxLines: 10000,
                   ),

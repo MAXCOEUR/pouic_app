@@ -76,6 +76,8 @@ class _MessagerieViewState extends State<MessagerieView> {
     messagesController.initListe(widget.conv.id, reponseInit, reponseError);
 
     _scrollController.addListener(_onScroll);
+
+    Permission.microphone.request();
   }
 
   @override
@@ -444,10 +446,7 @@ class _MessagerieViewState extends State<MessagerieView> {
                     decoration: InputDecoration(
                       hintText: 'Votre message',
                     ),
-                    onSubmitted: (String messageText) {
-                      sendMessage();
-                    },
-                    textInputAction: TextInputAction.done,
+                    textInputAction: TextInputAction.newline,
                     minLines: 1,
                     maxLines: 10,
                   ),

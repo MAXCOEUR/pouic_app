@@ -42,8 +42,7 @@ class PostController {
     return listeFile;
   }
 
-  void addGeneralPost_inListe(
-      int id_lastMessage, Function callBack, Function callBackError) {
+  void addGeneralPost_inListe(int id_lastMessage, Function callBack, Function callBackError) {
     print("addGeneralPost_inListe");
     String AuthorizationToken = 'Bearer ' + lm.token;
     Api.instance.getData("post", {'id_lastMessage': id_lastMessage},
