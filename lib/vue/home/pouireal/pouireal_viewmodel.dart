@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:Pouic/Model/ReactionModel.dart';
 import 'package:Pouic/Model/pouireal_model.dart';
 import 'package:Pouic/repository/pouireal_repository.dart';
 import 'package:camera/camera.dart';
@@ -50,6 +51,17 @@ class PouirealViewModel{
     StreamController<PouirealModel> streamController = StreamController<PouirealModel>();
 
     _postPouireal(streamController,pouireal);
+
+    return streamController.stream;
+  }
+  void _postPouirealReaction(StreamController<Reaction> streamController,PouirealModel pouirealpost,String emoji)async{
+    Reaction pouireal = await pouirealRepository.postPouirealReaction(pouirealpost,emoji);
+    streamController.add(pouireal);
+  }
+  Stream<Reaction> postPouirealReaction(PouirealModel pouireal,String emoji){
+    StreamController<Reaction> streamController = StreamController<Reaction>();
+
+    _postPouirealReaction(streamController,pouireal,emoji);
 
     return streamController.stream;
   }

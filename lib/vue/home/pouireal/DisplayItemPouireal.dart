@@ -1,9 +1,11 @@
 import 'package:Pouic/Model/pouireal_model.dart';
+import 'package:Pouic/vue/home/pouireal/pouireal_viewmodel.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../Model/ReactionModel.dart';
 import '../../../Model/UserModel.dart';
 import '../../../outil/Constant.dart';
 import '../../../outil/LoginSingleton.dart';
@@ -26,7 +28,8 @@ class DisplayItemPouirealView extends StatefulWidget {
 class DisplayItemPouirealViewState extends State<DisplayItemPouirealView> {
 
   final LoginModel lm = LoginModelProvider.getInstance(() {}).loginModel!;
-  late Offset _tapPosition;
+  PouirealViewModel pouirealViewModel = PouirealViewModel();
+  Offset _tapPosition = Offset(0, 0);
 
   String image1 = Constant.baseUrlPouireal + "/";
   String image2 = Constant.baseUrlPouireal + "/";
@@ -69,8 +72,24 @@ class DisplayItemPouirealViewState extends State<DisplayItemPouirealView> {
           child: EmojiList(
             popularEmojis: Constant.popularEmojis,
             // Liste d'exemple d'emojis populaires
-            onEmojiSelected: (p0) {
-              print(p0);
+            onEmojiSelected: (emoji) {
+              Stream<Reaction> stream = pouirealViewModel.postPouirealReaction(widget.pouirealModel,emoji);
+              stream.listen((reaction) {
+                List<Reaction> reacRemove =[];
+                for(Reaction reac in widget.pouirealModel.reactions){
+                  if(reac.user==reaction.user){
+                    reacRemove.add(reac);
+                  }
+                }
+                for(Reaction reac in reacRemove){
+                  widget.pouirealModel.reactions.remove(reac);
+                }
+                setState(() {
+                  widget.pouirealModel.reactions.add(reaction);
+                });
+              }, onError: (error) {
+                print("Erreur : $error");
+              });
             },
           ),
         ),
@@ -87,6 +106,39 @@ class DisplayItemPouirealViewState extends State<DisplayItemPouirealView> {
     _tapPosition = details.globalPosition;
   }
 
+  Widget createCardReaction(BuildContext context, int index) {
+    return Stack(
+        children: [
+          Container(
+          margin: EdgeInsets.only(right: 8,top: 8),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.grey[300],
+          ),
+          child:
+              ClipOval(
+                child: Constant.buildAvatarUser(widget.pouirealModel.reactions[index].user, 50 , false, context),
+              ),
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: Container(
+              padding: EdgeInsets.all(5.0), // Padding autour du texte
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withOpacity(0.5), // Couleur blanc semi-transparente
+              ),
+              child: Text(
+                widget.pouirealModel.reactions[index].reaction,
+                style: TextStyle(fontSize: 16), // Ajustez la taille du texte ici
+              ),
+            ),
+          ),
+        ],
+      );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -96,6 +148,7 @@ class DisplayItemPouirealViewState extends State<DisplayItemPouirealView> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onDoubleTapDown: _storePosition,
         onDoubleTap: () {
           showMenuSonMessage();
         },
@@ -200,6 +253,20 @@ class DisplayItemPouirealViewState extends State<DisplayItemPouirealView> {
                     ),
                   ),
                 ],
+              ),
+              Container(
+                height: 60,
+                child: CustomScrollView(
+                  scrollDirection: Axis.horizontal,
+                  slivers: [
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        createCardReaction,
+                        childCount: widget.pouirealModel.reactions.length,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               Container(
                 margin: EdgeInsets.only(top: 8),

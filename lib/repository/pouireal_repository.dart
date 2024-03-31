@@ -1,3 +1,4 @@
+import 'package:Pouic/Model/ReactionModel.dart';
 import 'package:Pouic/Model/pouireal_model.dart';
 import 'package:Pouic/data_source/api_data_source.dart';
 import 'package:camera/camera.dart';
@@ -12,10 +13,23 @@ class PouirealRepository{
     final List<PouirealModel> listPouirealModel=[];
 
     for (var res in result){
-      listPouirealModel.add(PouirealModel.fromJson(res));
+      PouirealModel tmp = PouirealModel.fromJson(res);
+      tmp.reactions = await getPouirealReaction(tmp.id);
+      listPouirealModel.add(tmp);
     }
 
     return listPouirealModel;
+  }
+  Future<List<Reaction>> getPouirealReaction(int pouireal_id) async{
+    final Map<String, dynamic> jsonData = await _apiDataSource.getapi(["pouireal","reaction"], queryParameters:{'pouireal_id': pouireal_id.toString()});
+    final List<dynamic> result = jsonData['result'];
+    final List<Reaction> listReaction=[];
+
+    for (var res in result){
+      listReaction.add(Reaction.fromJson(res));
+    }
+
+    return listReaction;
   }
   Future<int> deletePouireal(int id_pouireal) async{
     final Map<String, dynamic> jsonData = await _apiDataSource.deleteapi(["pouireal"], queryParameters:{'id_pouireal': id_pouireal.toString()});
@@ -35,6 +49,12 @@ class PouirealRepository{
     final Map<String, dynamic> jsonData = await _apiDataSource.postapi(["pouireal"],bodyParameters: pouireal.toPostJson());
     PouirealModel pouirealModel = PouirealModel.fromJson(jsonData['result']);
     return pouirealModel;
+  }
+  Future<Reaction> postPouirealReaction(PouirealModel pouireal,String emoji) async{
+    final Map<String, dynamic> jsonData = await _apiDataSource.postapi(["pouireal","reaction"],bodyParameters: {"pouireal_id":pouireal.id,"emoji":emoji});
+
+    Reaction reaction = Reaction.fromJson(jsonData["result"][0]);
+    return reaction;
   }
   Future<PouirealModel> postPouirealFile(int idPouireal, int nbImage, XFile image) async {
     try {

@@ -14,4 +14,13 @@ class Reaction{
 
   @override
   int get hashCode => user.hashCode;
+  factory Reaction.fromJson(Map<String, dynamic> json) {
+
+    User user = User(email: json['email'], uniquePseudo: json['uniquePseudo'], pseudo: json['pseudo'], bio: json['bio'], extension: json['extension']);
+
+    return Reaction(
+        user,
+        json['emoji']
+    );
+  }
 }
