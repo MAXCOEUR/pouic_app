@@ -217,8 +217,8 @@ class _DisplayPicturePouirealLocalState extends State<DisplayPicturePouirealLoca
                 padding: EdgeInsets.all(16.0),
                 child: TextField(
                   decoration: InputDecoration(
-                    labelText: 'Desciption',
-                    hintText: 'Entrez votre Desciption',
+                    labelText: 'Description',
+                    hintText: 'Entrez votre Description',
                     border: OutlineInputBorder(),
                   ),
                   textInputAction: TextInputAction.newline,

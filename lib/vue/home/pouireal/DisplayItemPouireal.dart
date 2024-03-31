@@ -224,8 +224,8 @@ class DisplayItemPouirealViewState extends State<DisplayItemPouirealView> {
               Stack(
                 children: [
                   CachedNetworkImage(
-                    imageUrl: isFlipped ? image1 : image2,
-                    key: Key(isFlipped ? image1 : image2),
+                    imageUrl: isFlipped ? image2 : image1,
+                    key: Key(isFlipped ? image2 : image1),
                     fit: BoxFit.contain,
                     progressIndicatorBuilder: (context, url, downloadProgress) =>
                         CircularProgressIndicator(value: downloadProgress.progress),
@@ -242,8 +242,8 @@ class DisplayItemPouirealViewState extends State<DisplayItemPouirealView> {
                         });
                       },
                       child: CachedNetworkImage(
-                        imageUrl: isFlipped ? image2 : image1,
-                        key: Key(isFlipped ? image2 : image1),
+                        imageUrl: isFlipped ? image1 : image2,
+                        key: Key(isFlipped ? image1 : image2),
                         width: 100.0,
                         fit: BoxFit.contain,
                         progressIndicatorBuilder: (context, url, downloadProgress) =>
