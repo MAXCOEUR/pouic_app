@@ -6,9 +6,11 @@ import 'package:Pouic/Model/FileCustom.dart';
 import 'package:Pouic/Model/PostModel.dart';
 import 'package:Pouic/outil/Constant.dart';
 import 'package:Pouic/outil/LoginSingleton.dart';
+import 'package:Pouic/vue/home/TakePhoto.dart';
 import 'package:Pouic/vue/home/post/PostItemListeView.dart';
 import 'package:Pouic/vue/home/message/FileCustomMessage.dart';
 import 'package:Pouic/vue/widget/CustomAppBar.dart';
+import 'package:camera/camera.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -282,13 +284,38 @@ class _CreatePostState extends State<CreatePost> {
             margin: EdgeInsets.all(SizeMarginPading.h1),
             child: Row(
               children: [
-                IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () {
-                    // Appeler une fonction pour ajouter des fichiers à la liste listeFile
-                    pickAndAddFilesToList();
+                PopupMenuButton<String>(
+                  itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                    const PopupMenuItem<String>(
+                      value: 'camera',
+                      child: ListTile(
+                        leading: Icon(Icons.camera),
+                        title: Text('Prendre une photo'),
+                      ),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'gallery',
+                      child: ListTile(
+                        leading: Icon(Icons.photo_library),
+                        title: Text('Choisir dans la galerie'),
+                      ),
+                    ),
+                  ],
+                  onSelected: (String choice) {
+                    if (choice == 'camera') {
+                      // Appeler une fonction pour prendre une photo
+                      takePhoto();
+                    } else if (choice == 'gallery') {
+                      // Appeler une fonction pour choisir dans la galerie
+                      pickAndAddFilesToList();
+                    }
                   },
+                  child: const IconButton(
+                    icon: Icon(Icons.add),
+                    onPressed: null, // Laissez onPressed null pour désactiver le bouton, car il ne déclenche pas d'action directe
+                  ),
                 ),
+
                 SizedBox(width: SizeMarginPading.h3),
                 Expanded(
                   child: TextField(
@@ -341,6 +368,25 @@ class _CreatePostState extends State<CreatePost> {
         ],
       ),
       )
+    );
+  }
+
+  void reseptionTakePhoto(FileCustom file){
+    setState(() {
+      listeFile.add(file);
+    });
+  }
+
+  void takePhoto() async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    final cameras = await availableCameras();
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TakePicture(cameras: cameras,callback: reseptionTakePhoto ),
+      ),
     );
   }
 

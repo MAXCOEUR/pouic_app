@@ -6,12 +6,16 @@ import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../Model/FileCustom.dart';
+
 class TakePicture extends StatefulWidget {
   const TakePicture({
     super.key,
     required this.cameras,
+    required this.callback,
   });
 
+  final Function callback;
   final List<CameraDescription> cameras;
 
   @override
@@ -64,11 +68,11 @@ class TakePictureState extends State<TakePicture> {
       final image = await _controller.takePicture();
 
       if (!context.mounted) return;
-
+      Navigator.of(context).pop(context);
       await Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => DisplayPictureScreen(
-            imagePath: image.path,
+            image: image, callback: widget.callback,
           ),
         ),
       );
@@ -110,15 +114,24 @@ class TakePictureState extends State<TakePicture> {
 
 
 class DisplayPictureScreen extends StatelessWidget {
-  final String imagePath;
+  final XFile image;
+  final Function callback;
 
-  const DisplayPictureScreen({super.key, required this.imagePath});
+  const DisplayPictureScreen({super.key, required this.image,required this.callback,});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Display the Picture')),
-      body: Image.file(File(imagePath)),
+      body: Image.file(File(image.path)),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          FileCustom file = FileCustom(await image.readAsBytes(), image.name);
+          Navigator.of(context).pop(context);
+          callback(file);
+        },
+        child: const Icon(Icons.check),
+      ),
     );
   }
 }

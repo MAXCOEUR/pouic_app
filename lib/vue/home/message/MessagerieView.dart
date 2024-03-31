@@ -21,6 +21,7 @@ import 'package:Pouic/vue/home/message/ReactionView.dart';
 import 'package:Pouic/vue/home/message/RemoveUserConvView.dart';
 import 'package:Pouic/vue/home/message/parent.dart';
 import 'package:Pouic/vue/widget/EmojiListDialog.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,8 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record_mp3/record_mp3.dart';
+
+import '../TakePhoto.dart';
 
 class MessagerieView extends StatefulWidget {
   MessagerieView({super.key, required this.conv});
@@ -432,12 +435,36 @@ class _MessagerieViewState extends State<MessagerieView> {
             margin: EdgeInsets.all(SizeMarginPading.h1),
             child: Row(
               children: [
-                IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () {
-                    // Appeler une fonction pour ajouter des fichiers à la liste listeFile
-                    pickAndAddFilesToList();
+                PopupMenuButton<String>(
+                  itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                    const PopupMenuItem<String>(
+                      value: 'camera',
+                      child: ListTile(
+                        leading: Icon(Icons.camera),
+                        title: Text('Prendre une photo'),
+                      ),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'gallery',
+                      child: ListTile(
+                        leading: Icon(Icons.photo_library),
+                        title: Text('Choisir dans la galerie'),
+                      ),
+                    ),
+                  ],
+                  onSelected: (String choice) {
+                    if (choice == 'camera') {
+                      // Appeler une fonction pour prendre une photo
+                      takePhoto();
+                    } else if (choice == 'gallery') {
+                      // Appeler une fonction pour choisir dans la galerie
+                      pickAndAddFilesToList();
+                    }
                   },
+                  child: const IconButton(
+                    icon: Icon(Icons.add),
+                    onPressed: null, // Laissez onPressed null pour désactiver le bouton, car il ne déclenche pas d'action directe
+                  ),
                 ),
                 SizedBox(width: SizeMarginPading.h3),
                 Expanded(
@@ -643,5 +670,23 @@ class _MessagerieViewState extends State<MessagerieView> {
       messagesController.luAllMessage(widget.conv.id);
     }
     reponseUpdate();
+  }
+  void reseptionTakePhoto(FileCustom file){
+    setState(() {
+      listeFile.add(file);
+    });
+  }
+
+  void takePhoto() async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    final cameras = await availableCameras();
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TakePicture(cameras: cameras,callback: reseptionTakePhoto ),
+      ),
+    );
   }
 }
