@@ -12,11 +12,15 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:http/http.dart' as http;
 
 class Constant {
-  static const String ServeurApi = "http://46.227.18.31:45713";
+  static const String schemeApi = "http";
+  static const String ipApi = "46.227.18.31";
+  static const int portApi = 45713;
+  static const String ServeurApi = "$schemeApi://$ipApi:$portApi";
   static const String baseUrlAvatarUser = ServeurApi + "/uploads/AvatarUser";
   static const String baseUrlAvatarConversation =
       ServeurApi + "/uploads/ImageConversation";
   static const String baseUrlFilesMessages = ServeurApi + "/uploads/messages";
+  static const String baseUrlPouireal = ServeurApi + "/uploads/pouireal";
 
   static List<String> popularEmojis = [
     "❤️", "👍", "👎", "😀", "😂", "😊", "😍", "😢", "🤔", "😭",

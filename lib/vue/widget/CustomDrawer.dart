@@ -18,10 +18,12 @@ class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: Theme.of(context).colorScheme.background,
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
+            padding: EdgeInsets.all( 8),
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.primary,
             ),

@@ -8,6 +8,7 @@ import 'package:Pouic/outil/LoginSingleton.dart';
 import 'package:Pouic/outil/SocketSingleton.dart';
 import 'package:Pouic/vue/home/ConversationListeView.dart';
 import 'package:Pouic/vue/home/post/PostListView.dart';
+import 'package:Pouic/vue/home/pouireal/pouireal_view.dart';
 import 'package:Pouic/vue/widget/CustomAppBar.dart';
 import 'package:Pouic/vue/home/RechercheListeView.dart';
 import 'package:Pouic/vue/home/amis/AmisView.dart';
@@ -37,6 +38,7 @@ class _HomeViewState extends State<HomeView> {
   late HomeController homeController;
 
   late final PostListview postview;
+  late final PouirealView pouirealView;
   late final ConversationListeView convView ;
   late final RechercheListeView rechercheView ;
   late final AmisView amisView;
@@ -51,6 +53,7 @@ class _HomeViewState extends State<HomeView> {
     convView = ConversationListeView();
     rechercheView = RechercheListeView();
     amisView = AmisView();
+    pouirealView= PouirealView();
   }
 
   void update() {
@@ -75,10 +78,12 @@ class _HomeViewState extends State<HomeView> {
     }else if (_selectedIndex == 0) {
       selectedWidget = postview;
     }else if (_selectedIndex == 1) {
+      selectedWidget = pouirealView;
+    }else if (_selectedIndex == 2) {
       selectedWidget = convView;
-    } else if (_selectedIndex == 2) {
-      selectedWidget = amisView;
     } else if (_selectedIndex == 3) {
+      selectedWidget = amisView;
+    } else if (_selectedIndex == 4) {
       selectedWidget = rechercheView;
     }
 
@@ -93,6 +98,10 @@ class _HomeViewState extends State<HomeView> {
           BottomNavigationBarItem(
             icon: Icon(Icons.send),
             label: 'Post',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.camera_alt),
+            label: 'pouireal',
           ),
           BottomNavigationBarItem(
             icon: Row(

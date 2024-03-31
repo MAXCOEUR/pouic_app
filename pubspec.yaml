@@ -51,14 +51,15 @@ dependencies:
   provider: ^6.0.5
   shared_preferences: ^2.2.1
   popup_menu: ^2.0.0
-  cached_network_image: ^3.2.3
-  video_player: ^2.7.1
-  chewie: ^1.7.0
+  cached_network_image: ^3.3.1
+  video_player: ^2.8.3
+  chewie: ^1.7.5
   flutter_image_compress: ^2.0.4
   flutter_isolate: ^2.0.4
   flutter_linkify: ^6.0.0
   firebase_core: ^2.16.0
   firebase_messaging: ^14.6.8
+  camera: ^0.10.5+9
 
 
 dev_dependencies:
