@@ -36,15 +36,16 @@ class _SearchTextFieldState extends State<SearchTextField> {
         onChanged: _onTextChanged,
         decoration: InputDecoration(
           labelText: 'Rechercher',
-          labelStyle: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-          prefixIcon: Icon(Icons.search),
+          floatingLabelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
+          labelStyle: TextStyle(color: Theme.of(context).colorScheme.onBackground),
+          prefixIcon: Icon(Icons.search,color: Theme.of(context).colorScheme.primary,),
           border: OutlineInputBorder(
-            borderSide: BorderSide(color: Theme.of(context).colorScheme.background),
+            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
           ),
           filled: true,
           fillColor: Theme.of(context).colorScheme.background,
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Theme.of(context).colorScheme.onPrimary),
+            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
           ),
         ),
       ),

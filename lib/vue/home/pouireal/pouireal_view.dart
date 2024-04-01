@@ -16,7 +16,7 @@ class PouirealViewState extends State<PouirealView> {
   PouirealViewModel pouirealViewModel = PouirealViewModel();
   List<PouirealModel> _pouicreals = [];
 
-  bool isPosted = false;
+  bool isPosted = true;
 
   void _recupPouicreal(){
     int lastid =0;
@@ -75,30 +75,38 @@ class PouirealViewState extends State<PouirealView> {
     return DisplayItemPouirealView(pouirealModel: _pouicreals[index], onDelete: onDelete,);
   }
 
+  Future<void> onRefresh() async {
+    resetPouireal();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: NotificationListener<ScrollNotification>(
-        onNotification: (notification) {
-          if(notification is ScrollEndNotification && notification.metrics.extentAfter==0){
-            _recupPouicreal();
-          }
-          return false;
-        },
-        child: Container(
-          color: Theme.of(context).colorScheme.surface,
-          child: CustomScrollView(
-            slivers: [
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  createCardPouireal,
-                  childCount: _pouicreals.length,
-                ),
+      body:RefreshIndicator(
+          onRefresh: onRefresh,
+          child: NotificationListener<ScrollNotification>(
+            onNotification: (notification) {
+              if(notification is ScrollEndNotification && notification.metrics.extentAfter==0){
+                _recupPouicreal();
+              }
+              return false;
+            },
+            child: Container(
+              color: Theme.of(context).colorScheme.surface,
+              child: CustomScrollView(
+                slivers: [
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      createCardPouireal,
+                      childCount: _pouicreals.length,
+                    ),
+                  ),
+                ],
               ),
-            ],
+            )
           ),
-        )
-      ),
+        ),
+      
       floatingActionButton: Visibility(
         visible: !isPosted, // Afficher le bouton uniquement si isPosted est false
         child: FloatingActionButton(
