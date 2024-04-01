@@ -68,12 +68,15 @@ class TakePictureState extends State<TakePicture> {
       await _initializeControllerFuture;
       final image = await _controller.takePicture();
 
+      var compresseImage = await Constant.compressImage(await image.readAsBytes(), 90);
+      FileCustom file = FileCustom(compresseImage, image.name);
+
       if (!context.mounted) return;
       Navigator.of(context).pop(context);
       await Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => DisplayPictureScreen(
-            image: image, callback: widget.callback,
+            image: file, callback: widget.callback,
           ),
         ),
       );
@@ -86,15 +89,21 @@ class TakePictureState extends State<TakePicture> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<void>(
-        future: _initializeControllerFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return CameraPreview(_controller);
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
+      body: Column(
+        children: [
+          Expanded(
+              child: FutureBuilder<void>(
+                future: _initializeControllerFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return CameraPreview(_controller);
+                  } else {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                },
+              ),
+          )
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _takePhoto, // Appeler la méthode _takePhoto lorsqu'on appuie sur le bouton
@@ -115,7 +124,7 @@ class TakePictureState extends State<TakePicture> {
 
 
 class DisplayPictureScreen extends StatelessWidget {
-  final XFile image;
+  final FileCustom image;
   final Function callback;
 
   const DisplayPictureScreen({super.key, required this.image,required this.callback,});
@@ -124,16 +133,27 @@ class DisplayPictureScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Display the Picture')),
-      body: Image.file(File(image.path)),
+      body: Column(
+        children: [
+          Expanded(
+            child: Container(
+              color: Colors.amber,
+              child: Image.memory(
+                image.fileBytes!,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          var compresseImage = await Constant.compressImage(await image.readAsBytes(), 90);
-          FileCustom file = FileCustom(compresseImage, image.name);
           Navigator.of(context).pop(context);
-          callback(file);
+          callback(image);
         },
         child: const Icon(Icons.check),
       ),
     );
   }
+
 }

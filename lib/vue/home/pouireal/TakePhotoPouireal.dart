@@ -90,6 +90,10 @@ class TakePicturePouirealState extends State<TakePicturePouireal> {
       // Prendre la deuxième photo
       final XFile image2 = await _controller.takePicture();
 
+
+      FileCustom imageCompresse1 =  FileCustom(await Constant.compressImage(await image.readAsBytes(),90),image.name);
+      FileCustom imageCompresse2 =  FileCustom(await Constant.compressImage(await image2.readAsBytes(),90),image2.name);
+
       if (!context.mounted) return;
 
 
@@ -99,8 +103,8 @@ class TakePicturePouirealState extends State<TakePicturePouireal> {
       await Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => DisplayPicturePouirealLocal(
-            image1: image,
-            image2: image2,
+            image1: imageCompresse1,
+            image2: imageCompresse2,
             callback: widget.callback,
           ),
         ),
@@ -155,8 +159,8 @@ class TakePicturePouirealState extends State<TakePicturePouireal> {
 
 
 class DisplayPicturePouirealLocal extends StatefulWidget {
-  final XFile image1;
-  final XFile image2;
+  final FileCustom image1;
+  final FileCustom image2;
 
   final Function callback;
 
@@ -186,97 +190,102 @@ class _DisplayPicturePouirealLocalState extends State<DisplayPicturePouirealLoca
       appBar: AppBar(title: const Text('Display the Picture')),
       body: Padding(
         padding: EdgeInsets.all(16.0),
-        child:SingleChildScrollView(
-          child: Column(
-            children: [
-              Stack(
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                shrinkWrap: true, // Réduire le ListView pour qu'il s'adapte à son contenu
                 children: [
-                  // Image1 ou Image2 en arrière-plan en fonction de l'état isFlipped
-                  Image.file(
-                    File(isFlipped ? widget.image2.path : widget.image1.path),
-                    fit: BoxFit.contain,
-                  ),
-                  // Bouton pour inverser les images
-                  Positioned(
-                    left: 16.0,
-                    top: 16.0,
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          isFlipped = !isFlipped; // Inverser l'état isFlipped
-                        });
-                      },
-                      child: Image.file(
-                        File(isFlipped ? widget.image1.path : widget.image2.path),
-                        width: 100.0,
-                        fit: BoxFit.contain,
+                  Stack(
+                    children: [
+                      // Container pour occuper tout l'espace avec la première image
+                      Container(
+                        width: double.infinity,
+                        child: Image.memory(
+                          widget.image1.fileBytes!,
+                          fit: BoxFit.fitWidth,
+                        ),
                       ),
-                    ),
+                      // Bouton pour inverser les images
+                      Positioned(
+                        left: 16.0,
+                        top: 16.0,
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              isFlipped = !isFlipped; // Inverser l'état isFlipped
+                            });
+                          },
+                          child: Image.memory(
+                            isFlipped ? widget.image1.fileBytes! : widget.image2.fileBytes!,
+                            width: 100.0,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
+                  Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        labelText: 'Description',
+                        hintText: 'Entrez votre Description',
+                        border: OutlineInputBorder(),
+                      ),
+                      textInputAction: TextInputAction.newline,
+                      minLines: 1,
+                      maxLines: 100,
+                      onChanged: (value) {
+                        description = value;
+                      },
+                    ),
+                  )
                 ],
               ),
-              Padding(
-                padding: EdgeInsets.all(16.0),
-                child: TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Description',
-                    hintText: 'Entrez votre Description',
-                    border: OutlineInputBorder(),
-                  ),
-                  textInputAction: TextInputAction.newline,
-                  minLines: 1,
-                  maxLines: 100,
-                  onChanged: (value) {
-                    description = value;
-                  },
-                ),
-              )
-            ],
-          ),
-        )
+            ),
+
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          FileCustom imageCompresse1 =  FileCustom(await Constant.compressImage(await widget.image1.readAsBytes(),90),widget.image1.name);
-          FileCustom imageCompresse2 =  FileCustom(await Constant.compressImage(await widget.image2.readAsBytes(),90),widget.image2.name);
-
-
-          Stream<PouirealModel> stream = pouirealViewModel.postPouireal(PouirealPostModel(lm.user, description, DateTime.now()));
-          stream.listen((pouirealModelTmp) {
-
-            compteur=2;
-
-            Stream<PouirealModel> streamImage1 = pouirealViewModel.postPouirealFile(pouirealModelTmp.id, 1,imageCompresse1 );
-            streamImage1.listen((pouirealModelTmp) {
-
-              afterTwoPostImage();
-
-            }, onError: (error) {
-              print("Erreur : $error");
-            });
-
-
-
-            Stream<PouirealModel> streamImage2 = pouirealViewModel.postPouirealFile(pouirealModelTmp.id, 2,imageCompresse2);
-            streamImage2.listen((pouirealModelTmp) {
-
-              afterTwoPostImage();
-
-            }, onError: (error) {
-              print("Erreur : $error");
-            });
-
-          }, onError: (error) {
-            print("Erreur : $error");
-          });
-
-
-        }, // Appeler la méthode _takePhoto lorsqu'on appuie sur le bouton
-        child: const Icon(Icons.check), // Utiliser une icône pour le bouton
+        onPressed: _onPress,
+        child: const Icon(Icons.check),
       ),
     );
   }
 
+
+  void _onPress() async{
+    Stream<PouirealModel> stream = pouirealViewModel.postPouireal(PouirealPostModel(lm.user, description, DateTime.now()));
+    stream.listen((pouirealModelTmp) {
+
+      compteur=2;
+
+      Stream<PouirealModel> streamImage1 = pouirealViewModel.postPouirealFile(pouirealModelTmp.id, 1,widget.image1 );
+      streamImage1.listen((pouirealModelTmp) {
+
+        afterTwoPostImage();
+
+      }, onError: (error) {
+        print("Erreur : $error");
+      });
+
+
+
+      Stream<PouirealModel> streamImage2 = pouirealViewModel.postPouirealFile(pouirealModelTmp.id, 2,widget.image2);
+      streamImage2.listen((pouirealModelTmp) {
+
+        afterTwoPostImage();
+
+      }, onError: (error) {
+        print("Erreur : $error");
+      });
+
+    }, onError: (error) {
+      print("Erreur : $error");
+    });
+  }
 
   void afterTwoPostImage(){
     compteur--;
