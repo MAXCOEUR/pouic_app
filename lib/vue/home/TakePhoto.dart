@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../Model/FileCustom.dart';
+import '../../outil/Constant.dart';
 
 class TakePicture extends StatefulWidget {
   const TakePicture({
@@ -126,7 +127,8 @@ class DisplayPictureScreen extends StatelessWidget {
       body: Image.file(File(image.path)),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          FileCustom file = FileCustom(await image.readAsBytes(), image.name);
+          var compresseImage = await Constant.compressImage(await image.readAsBytes(), 90);
+          FileCustom file = FileCustom(compresseImage, image.name);
           Navigator.of(context).pop(context);
           callback(file);
         },

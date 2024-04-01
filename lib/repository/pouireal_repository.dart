@@ -1,3 +1,4 @@
+import 'package:Pouic/Model/FileCustom.dart';
 import 'package:Pouic/Model/ReactionModel.dart';
 import 'package:Pouic/Model/pouireal_model.dart';
 import 'package:Pouic/data_source/api_data_source.dart';
@@ -56,15 +57,15 @@ class PouirealRepository{
     Reaction reaction = Reaction.fromJson(jsonData["result"][0]);
     return reaction;
   }
-  Future<PouirealModel> postPouirealFile(int idPouireal, int nbImage, XFile image) async {
+  Future<PouirealModel> postPouirealFile(int idPouireal, int nbImage, FileCustom image) async {
     try {
       // Appel de la fonction postapiDataMultipart pour envoyer l'image
       final Map<String, dynamic> jsonData = await _apiDataSource.postapiDataMultipart(
         ["pouireal", "upload"],
         {
           "file": MultipartFile.fromBytes(
-            await image.readAsBytes(),
-            filename: image.name,
+            image.fileBytes!.toList(),
+            filename: image.fileName,
           ),
           "nbr_picture": nbImage,
           "id_pouireal": idPouireal,

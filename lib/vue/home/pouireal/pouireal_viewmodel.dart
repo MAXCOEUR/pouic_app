@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:Pouic/Model/FileCustom.dart';
 import 'package:Pouic/Model/ReactionModel.dart';
 import 'package:Pouic/Model/pouireal_model.dart';
 import 'package:Pouic/repository/pouireal_repository.dart';
@@ -65,11 +66,11 @@ class PouirealViewModel{
 
     return streamController.stream;
   }
-  void _postPouirealFile(StreamController<PouirealModel> streamController,int idPouireal, int nbImage, XFile image)async{
+  void _postPouirealFile(StreamController<PouirealModel> streamController,int idPouireal, int nbImage, FileCustom image)async{
     PouirealModel pouireal = await pouirealRepository.postPouirealFile(idPouireal,nbImage,image);
     streamController.add(pouireal);
   }
-  Stream<PouirealModel> postPouirealFile(int idPouireal, int nbImage, XFile image){
+  Stream<PouirealModel> postPouirealFile(int idPouireal, int nbImage, FileCustom image){
     StreamController<PouirealModel> streamController = StreamController<PouirealModel>();
 
     _postPouirealFile(streamController,idPouireal,nbImage,image);

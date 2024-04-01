@@ -2,6 +2,7 @@
 import 'dart:collection';
 import 'dart:io';
 
+import 'package:Pouic/Model/FileCustom.dart';
 import 'package:Pouic/Model/pouireal_model.dart';
 import 'package:Pouic/vue/home/pouireal/pouireal_viewmodel.dart';
 import 'package:camera/camera.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../outil/Constant.dart';
 import '../../../outil/LoginSingleton.dart';
 
 class TakePicturePouireal extends StatefulWidget {
@@ -234,7 +236,9 @@ class _DisplayPicturePouirealLocalState extends State<DisplayPicturePouirealLoca
         )
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async {
+          FileCustom imageCompresse1 =  FileCustom(await Constant.compressImage(await widget.image1.readAsBytes(),90),widget.image1.name);
+          FileCustom imageCompresse2 =  FileCustom(await Constant.compressImage(await widget.image2.readAsBytes(),90),widget.image2.name);
 
 
           Stream<PouirealModel> stream = pouirealViewModel.postPouireal(PouirealPostModel(lm.user, description, DateTime.now()));
@@ -242,7 +246,7 @@ class _DisplayPicturePouirealLocalState extends State<DisplayPicturePouirealLoca
 
             compteur=2;
 
-            Stream<PouirealModel> streamImage1 = pouirealViewModel.postPouirealFile(pouirealModelTmp.id, 1,widget.image1 );
+            Stream<PouirealModel> streamImage1 = pouirealViewModel.postPouirealFile(pouirealModelTmp.id, 1,imageCompresse1 );
             streamImage1.listen((pouirealModelTmp) {
 
               afterTwoPostImage();
@@ -253,7 +257,7 @@ class _DisplayPicturePouirealLocalState extends State<DisplayPicturePouirealLoca
 
 
 
-            Stream<PouirealModel> streamImage2 = pouirealViewModel.postPouirealFile(pouirealModelTmp.id, 2,widget.image2);
+            Stream<PouirealModel> streamImage2 = pouirealViewModel.postPouirealFile(pouirealModelTmp.id, 2,imageCompresse2);
             streamImage2.listen((pouirealModelTmp) {
 
               afterTwoPostImage();
