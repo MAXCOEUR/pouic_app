@@ -97,11 +97,11 @@ class _HomeViewState extends State<HomeView> {
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.send),
-            label: 'Post',
+            label: 'Pouic',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.camera_alt),
-            label: 'pouireal',
+            label: 'Pouireal',
           ),
           BottomNavigationBarItem(
             icon: Row(

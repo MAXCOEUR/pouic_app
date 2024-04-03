@@ -69,7 +69,7 @@ class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
           ),
           ListTile(
             leading: Icon(Icons.logout),
-            title: Text("Deconexion", style: TextStyle(fontSize: SizeFont.p1)),
+            title: Text("Déconnexion", style: TextStyle(fontSize: SizeFont.p1)),
             onTap: () {
               setNullTokenNotification();
               LoginModelProvider.getInstance(() {}).setLoginModel(null);

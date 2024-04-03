@@ -77,7 +77,7 @@ class _LoginVueState extends State<LoginVue> {
                         controller: userName_Email,
                         decoration: const InputDecoration(
                           border: UnderlineInputBorder(),
-                          labelText: 'Entrée votre username ou mail',
+                          labelText: 'Entrez votre username ou mail',
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -96,7 +96,7 @@ class _LoginVueState extends State<LoginVue> {
                         controller: mdp,
                         decoration: const InputDecoration(
                           border: UnderlineInputBorder(),
-                          labelText: 'Entrée votre mdp',
+                          labelText: 'Entrez votre mdp',
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -160,7 +160,7 @@ class _LoginVueState extends State<LoginVue> {
       Constant.showAlertDialog(context,"Erreur",ex.response!.data["message"]);
     }
     else{
-      Constant.showAlertDialog(context, "Erreur", "Une erreur s'est produite lors de la connextion");
+      Constant.showAlertDialog(context, "Erreur", "Une erreur s'est produite lors de la connexion");
     }
   }
 }

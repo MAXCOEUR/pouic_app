@@ -197,7 +197,7 @@ class _CreateUserVueState extends State<CreateUserVue> {
                 maxLength: 80,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'Entrée votre @',
+                  labelText: '@',
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -214,7 +214,7 @@ class _CreateUserVueState extends State<CreateUserVue> {
                 maxLength: 80,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'Entrée votre Pseudo',
+                  labelText: 'Pseudonyme',
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -231,7 +231,7 @@ class _CreateUserVueState extends State<CreateUserVue> {
                 maxLength: 255,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'Entrée votre email',
+                  labelText: 'Email',
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -251,7 +251,7 @@ class _CreateUserVueState extends State<CreateUserVue> {
                 controller: bio,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(), // Utilisez OutlineInputBorder pour un champ extensible
-                  labelText: 'Entrée votre bio',
+                  labelText: 'Bio',
                 ),
                 maxLines: null, // Permet un nombre illimité de lignes
                 maxLength: 200, // Limite le nombre de caractères à 200
@@ -286,7 +286,7 @@ class _CreateUserVueState extends State<CreateUserVue> {
                 maxLength: 255,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'Entrée votre nouveau mdp',
+                  labelText: 'Nouveau mdp',
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -334,7 +334,7 @@ class _CreateUserVueState extends State<CreateUserVue> {
                     displayMdp=true;
                   });
                 },
-                child: Text('modifier sont mdp'),
+                child: Text('Modifier le mot de passe'),
               ),
             SizedBox(height: 16),
             InkWell(
@@ -364,7 +364,7 @@ class _CreateUserVueState extends State<CreateUserVue> {
                 onPressed: () {
                   modifyUser();
                 },
-                child: Text('modifier sont compte'),
+                child: Text('Modifier le compte'),
               ),
           ],
         ),

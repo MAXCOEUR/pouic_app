@@ -173,7 +173,7 @@ class _CreateConversationVueState extends State<CreateConversationVue> {
                   controller: name,
                   decoration: const InputDecoration(
                     border: UnderlineInputBorder(),
-                    labelText: 'Entrée le nom de la conversation',
+                    labelText: 'Nom de la conversation',
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty || value.length>=255) {
