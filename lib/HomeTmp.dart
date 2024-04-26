@@ -4,21 +4,27 @@ import 'package:Pouic/vue/home/HomeView.dart';
 import 'package:flutter/material.dart';
 
 class HomeTmp extends StatefulWidget {
+  static void update(BuildContext context) {
+    final state = context.findAncestorStateOfType<_HomeTmpState>();
+    state?._update();
+  }
+
   @override
-  State<HomeTmp> createState() => HomeTmpState();
+  State<HomeTmp> createState() => _HomeTmpState();
 }
 
-class HomeTmpState extends State<HomeTmp> {
-
-  void update(){
-    print(LoginModelProvider.getInstance(update).loginModel);
+class _HomeTmpState extends State<HomeTmp> {
+  void _update() {
+    print(LoginModelProvider.getInstance(() {}).loginModel);
     setState(() {});
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: LoginModelProvider.getInstance(update).loginModel != null ? HomeView(updateMain: update,) : LoginVue(updateMain: update,),
+      body: LoginModelProvider.getInstance(() {}).loginModel != null
+          ? HomeView()
+          : LoginVue(),
     );
   }
-
 }

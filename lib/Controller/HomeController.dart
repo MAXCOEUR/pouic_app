@@ -29,19 +29,24 @@ class HomeController{
 
   void askApiNbrMessageNonLu() async {
     String AuthorizationToken='Bearer '+loginModel.token;
-    final response = await Api.instance.getData(
-      'user/unread',
-      null,
-      {'Authorization': AuthorizationToken},
-    );
+    try{
+      final response = await Api.instance.getData(
+        'user/unread',
+        null,
+        {'Authorization': AuthorizationToken},
+      );
 
-    if (response.statusCode == 200) {
-      String unreadAsString = response.data["unread"];
-      nbrMessageNonLu = int.parse(unreadAsString);
-      callBack();
-    } else {
-      throw Exception();
+      if (response.statusCode == 200) {
+        String unreadAsString = response.data["unread"];
+        nbrMessageNonLu = int.parse(unreadAsString);
+        callBack();
+      } else {
+        throw Exception();
+      }
+    }catch(ex){
+      print(ex);
     }
+
   }
   void askApiNbrDemande() async {
     String AuthorizationToken='Bearer '+loginModel.token;

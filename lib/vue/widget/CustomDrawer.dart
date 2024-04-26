@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:Pouic/HomeTmp.dart';
 import 'package:Pouic/Model/UserModel.dart';
 import 'package:Pouic/outil/Api.dart';
 import 'package:Pouic/outil/Constant.dart';
@@ -9,9 +10,8 @@ import 'package:Pouic/vue/home/UserDetailView.dart';
 import 'package:flutter/material.dart';
 
 class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
-  Function updateMain;
 
-  CustomDrawer({required this.updateMain});
+  CustomDrawer();
 
   LoginModel lm = LoginModelProvider.getInstance(() {}).loginModel!;
 
@@ -73,7 +73,7 @@ class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
             onTap: () {
               setNullTokenNotification();
               LoginModelProvider.getInstance(() {}).setLoginModel(null);
-              updateMain();
+              HomeTmp.update(context);
             },
           ),
         ],

@@ -137,6 +137,20 @@ class UserC {
       },
     );
   }
+  void delete(Function callBack,Function callBackError) {
+    String AuthorizationToken='Bearer ${loginModel!.token}';
+    Api.instance.deleteData(
+        "user", null, null, {'Authorization': AuthorizationToken})
+        .then(
+          (response) {
+
+        callBack();
+      },
+      onError: (error) {
+        callBackError(error);
+      },
+    );
+  }
   void refuseDemandeAmis(User user,Function callBack,Function callBackError) {
     String AuthorizationToken='Bearer ${loginModel!.token}';
     Api.instance.deleteData(

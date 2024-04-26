@@ -17,9 +17,8 @@ import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
 class HomeView extends StatefulWidget {
-  Function updateMain;
 
-  HomeView({super.key, required this.updateMain}) {
+  HomeView({super.key}) {
     SocketSingleton.instance.reconnect();
   }
 
@@ -91,7 +90,7 @@ class _HomeViewState extends State<HomeView> {
       appBar: CustomAppBar(
         arrowReturn: false,
       ),
-      drawer: CustomDrawer(updateMain: widget.updateMain),
+      drawer: CustomDrawer(),
       body: selectedWidget,
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[

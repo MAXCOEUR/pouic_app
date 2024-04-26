@@ -10,13 +10,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Controller/LoginController.dart';
 
+import '../HomeTmp.dart';
 import '../outil/Constant.dart';
 
 
 
 class LoginVue extends StatefulWidget {
-  Function updateMain;
-  LoginVue({super.key,required this.updateMain});
+  LoginVue({super.key});
   final String title="Login";
 
   @override
@@ -153,7 +153,7 @@ class _LoginVueState extends State<LoginVue> {
   }
   void reponseLoginUser(LoginModel lm){
     LoginModelProvider.getInstance((){}).setLoginModel(lm);
-    widget.updateMain();
+    HomeTmp.update(context);
   }
   void reponseLoginUserErreur(DioException ex){
     if(ex.response!=null && ex.response!.data["message"] != null){
