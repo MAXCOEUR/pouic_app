@@ -9,6 +9,8 @@ import 'package:Pouic/vue/widget/SearchTextField.dart';
 import 'package:Pouic/vue/home/UserDetailView.dart';
 import 'package:flutter/material.dart';
 
+import '../../widget/LoadingDialog.dart';
+
 
 
 class DemandeAmisListeView extends StatefulWidget{
@@ -22,6 +24,7 @@ class _DemandeAmisListeViewState extends State<DemandeAmisListeView> {
   UserC userCreate = UserC();
   UserListe users=UserListe();
   UserController? userController;
+  bool _isLoading = false;
 
   String rechercheInput="";
 
@@ -29,23 +32,23 @@ class _DemandeAmisListeViewState extends State<DemandeAmisListeView> {
   int page=0;
   bool isLoadingMore = false;
 
-  _DemandeAmisListeViewState(){
-    userController = UserController(users);
-
-  }
-
   @override
   void initState() {
     super.initState();
+    userController = UserController(users);
     _scrollController.addListener(_onScroll); // Ajoute un écouteur pour le défilement
     recherche(rechercheInput);
   }
 
   void reponseUpdate(){
     setState(() {
+      _isLoading=false;
     });
   }
   void reponseError(Exception ex){
+    setState(() {
+      _isLoading=false;
+    });
     Constant.showAlertDialog(context,"Erreur","erreur lors de la requette a l'api : "+ex.toString());
   }
 
@@ -57,6 +60,9 @@ class _DemandeAmisListeViewState extends State<DemandeAmisListeView> {
     page=0;
     userController!.removeAllUser_inListe();
     userController!.addDemande_inListe(page, recherche, reponseUpdate,reponseError);
+    setState(() {
+      _isLoading=true;
+    });
   }
 
   void _onScroll() {
@@ -117,7 +123,8 @@ class _DemandeAmisListeViewState extends State<DemandeAmisListeView> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
+    return Scaffold(
+      body:(_isLoading)?LoadingDialog(): RefreshIndicator(
       onRefresh: _refreshData,
       child: Container(
         color: Theme.of(context).colorScheme.surface,
@@ -150,7 +157,7 @@ class _DemandeAmisListeViewState extends State<DemandeAmisListeView> {
           ],
         ),
       ),
-    );
+    ));
   }
 
 }

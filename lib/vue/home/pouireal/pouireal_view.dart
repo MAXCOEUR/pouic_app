@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../Model/pouireal_model.dart';
+import '../../widget/LoadingDialog.dart';
 import 'TakePhotoPouireal.dart';
 
 class PouirealView extends StatefulWidget {
@@ -18,6 +19,8 @@ class PouirealViewState extends State<PouirealView> {
 
   bool isPosted = true;
 
+  bool _isLoading = false;
+
   void _recupPouicreal(){
     int lastid =0;
     if(_pouicreals.length>0){
@@ -27,6 +30,7 @@ class PouirealViewState extends State<PouirealView> {
     stream.listen((pouirealModelTmp) {
       setState(() {
         _pouicreals.addAll(pouirealModelTmp);
+        _isLoading=false;
       });
     }, onError: (error) {
       print("Erreur : $error");
@@ -44,8 +48,7 @@ class PouirealViewState extends State<PouirealView> {
   @override
   void initState() {
     super.initState();
-    _recupisPosted();
-    _recupPouicreal();
+    resetPouireal();
   }
 
   @override
@@ -55,6 +58,7 @@ class PouirealViewState extends State<PouirealView> {
 
   void resetPouireal(){
     setState(() {
+      _isLoading=true;
       _pouicreals.clear();
     });
     _recupisPosted();
@@ -62,8 +66,14 @@ class PouirealViewState extends State<PouirealView> {
   }
 
   void onDelete(PouirealModel poui){
+    setState(() {
+      _isLoading=true;
+    });
     Stream<int> stream = pouirealViewModel.deletePouireal(poui.id);
     stream.listen((isPostedRecup) {
+      setState(() {
+        _isLoading=false;
+      });
       resetPouireal();
     }, onError: (error) {
       print("Erreur : $error");
@@ -82,7 +92,7 @@ class PouirealViewState extends State<PouirealView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:RefreshIndicator(
+      body: (_isLoading)?LoadingDialog():RefreshIndicator(
           onRefresh: onRefresh,
           child: NotificationListener<ScrollNotification>(
             onNotification: (notification) {

@@ -13,6 +13,7 @@ import '../../Controller/UserController.dart';
 import '../../Model/UserListeModel.dart';
 import '../../Model/UserModel.dart';
 import '../../outil/Constant.dart';
+import '../widget/LoadingDialog.dart';
 import 'UserItemListeView.dart';
 import 'UserDetailView.dart';
 
@@ -35,15 +36,14 @@ class _ConversationListeViewState extends State<ConversationListeView> {
   int page = 0;
   bool isLoadingMore = false;
 
-  _ConversationListeViewState() {
-    conversationController =
-        ConversationController(conversations, reponseUpdate);
-    recherche(rechercheInput);
-  }
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
+    conversationController =
+        ConversationController(conversations, reponseUpdate);
+    recherche(rechercheInput);
     _scrollController
         .addListener(_onScroll); // Ajoute un écouteur pour le défilement
   }
@@ -51,12 +51,15 @@ class _ConversationListeViewState extends State<ConversationListeView> {
   void reponseUpdate() {
     if (mounted) {
       setState(() {
-        // Votre code de mise à jour de l'état ici
+        _isLoading=false;
       });
     }
   }
 
   void reponseUpdateError(Exception ex) {
+    setState(() {
+      _isLoading=false;
+    });
     Constant.showAlertDialog(context, "Erreur",
         "erreur lors de la requette a l'api : " + ex.toString());
   }
@@ -70,6 +73,9 @@ class _ConversationListeViewState extends State<ConversationListeView> {
     conversationController!.removeAllConversation_inListe();
     conversationController!.addConversation_inListe(
         page, recherche, reponseUpdate, reponseUpdateError);
+    setState(() {
+      _isLoading=true;
+    });
   }
 
   void _onScroll() {
@@ -115,7 +121,7 @@ class _ConversationListeViewState extends State<ConversationListeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: RefreshIndicator(
+      body:(_isLoading)?LoadingDialog(): RefreshIndicator(
         onRefresh: _refreshData,
         child: Container(
           color: Theme.of(context).colorScheme.surface,

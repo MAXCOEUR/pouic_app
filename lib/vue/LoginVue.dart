@@ -1,4 +1,5 @@
 
+import 'package:Pouic/vue/widget/LoadingDialog.dart';
 import 'package:dio/dio.dart';
 import 'package:Pouic/Model/UserModel.dart';
 import 'package:Pouic/outil/LoginSingleton.dart';
@@ -33,6 +34,8 @@ class _LoginVueState extends State<LoginVue> {
 
   final Login loginController=Login();
 
+  bool _isLoading = false;
+
   @override
   void dispose() {
     userName_Email.dispose();
@@ -47,7 +50,7 @@ class _LoginVueState extends State<LoginVue> {
         //backgroundColor: Theme.of(context).colorScheme.background,
         title: Text(widget.title),
       ),
-      body: SingleChildScrollView(
+      body: (_isLoading)?LoadingDialog(): SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -149,13 +152,22 @@ class _LoginVueState extends State<LoginVue> {
     );
   }
   void loginUser() {
+    setState(() {
+      _isLoading=true;
+    });
     loginController.ask(userName_Email.text, mdp.text,reponseLoginUser,reponseLoginUserErreur);
   }
   void reponseLoginUser(LoginModel lm){
     LoginModelProvider.getInstance((){}).setLoginModel(lm);
     HomeTmp.update(context);
+    setState(() {
+      _isLoading=false;
+    });
   }
   void reponseLoginUserErreur(DioException ex){
+    setState(() {
+      _isLoading=false;
+    });
     if(ex.response!=null && ex.response!.data["message"] != null){
       Constant.showAlertDialog(context,"Erreur",ex.response!.data["message"]);
     }

@@ -91,6 +91,9 @@ class _CreateUserVueState extends State<CreateUserVue> {
 
   void createUser() {
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
       widget.user.email = email.text;
       widget.user.uniquePseudo = userNameUnique.text;
       widget.user.pseudo = userName.text;
@@ -107,6 +110,9 @@ class _CreateUserVueState extends State<CreateUserVue> {
 
   void modifyUser() {
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
       widget.user.email = email.text;
       widget.user.uniquePseudo = userNameUnique.text;
       widget.user.pseudo = userName.text;
@@ -161,14 +167,23 @@ class _CreateUserVueState extends State<CreateUserVue> {
       print(u.toJsonString());
       imageFile = null;
       Navigator.pop(context);
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
   void reponseMoifyMdp() {
     Navigator.pop(context);
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   void reponseCreateUserError(DioException ex) {
+    setState(() {
+      _isLoading = false;
+    });
     if (ex.response != null && ex.response!.data["message"] != null) {
       Constant.showAlertDialog(context, "Erreur", ex.response!.data["message"]);
     } else {

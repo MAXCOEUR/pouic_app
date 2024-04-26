@@ -31,6 +31,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record_mp3/record_mp3.dart';
 
+import '../../widget/LoadingDialog.dart';
 import '../TakePhoto.dart';
 
 class MessagerieView extends StatefulWidget {
@@ -51,6 +52,8 @@ class _MessagerieViewState extends State<MessagerieView> {
   final ScrollController _scrollController = ScrollController();
   bool isLoadingMore = false;
   int lastTailleListe = 0;
+
+  bool _isLoading = false;
 
   MessageListe messageListe = MessageListe();
   late MessagesController messagesController;
@@ -75,6 +78,10 @@ class _MessagerieViewState extends State<MessagerieView> {
     super.initState();
     messagesController =
         MessagesController(messageListe, widget.conv, reponseUpdate);
+
+    setState(() {
+      _isLoading=true;
+    });
 
     messagesController.initListe(widget.conv.id, reponseInit, reponseError);
 
@@ -507,7 +514,7 @@ class _MessagerieViewState extends State<MessagerieView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppBar(),
-      body: Container(
+      body:(_isLoading)?LoadingDialog(): Container(
         color: Theme.of(context).colorScheme.surface,
         child: Column(
           children: [
@@ -644,6 +651,9 @@ class _MessagerieViewState extends State<MessagerieView> {
   }
 
   reponseError(Exception ex) {
+    setState(() {
+      _isLoading=false;
+    });
     Constant.showAlertDialog(context, "Erreur",
         "erreur lors de la requette a l'api : " + ex.toString());
   }
@@ -669,6 +679,9 @@ class _MessagerieViewState extends State<MessagerieView> {
       //_scrollController.jumpTo(40.0*index); //marche pas il faut que arrive a trouve la taille des wirget dans la listeView
       messagesController.luAllMessage(widget.conv.id);
     }
+    setState(() {
+      _isLoading=false;
+    });
     reponseUpdate();
   }
   void reseptionTakePhoto(FileCustom file){

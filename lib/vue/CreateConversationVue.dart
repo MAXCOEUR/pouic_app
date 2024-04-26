@@ -9,6 +9,7 @@ import 'package:Pouic/Model/UserListeModel.dart';
 import 'package:Pouic/outil/LoginSingleton.dart';
 import 'package:Pouic/outil/SocketSingleton.dart';
 import 'package:Pouic/vue/home/message/MessagerieView.dart';
+import 'package:Pouic/vue/widget/LoadingDialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +41,8 @@ class _CreateConversationVueState extends State<CreateConversationVue> {
   List<String> listUser = [];
 
   ConversationC conversationC = ConversationC();
+
+  bool _isLoading = false;
 
   Future<void> _pickImage() async {
     FilePickerResult? pickedImage = await FilePicker.platform.pickFiles(type: FileType.custom,
@@ -85,6 +88,9 @@ class _CreateConversationVueState extends State<CreateConversationVue> {
 
   void createConversation() {
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading=true;
+      });
       widget.conversation.name = name.text;
       widget.conversation.extension=imageFile?.fileName.split('.').last.toLowerCase();
       if (widget.created) {
@@ -106,12 +112,18 @@ class _CreateConversationVueState extends State<CreateConversationVue> {
       context,
       MaterialPageRoute(builder: (context) => MessagerieView(conv:conversation)),
     );
+    setState(() {
+      _isLoading=false;
+    });
   }
 
   void reponsePutConversation() {
     print("la conversation a été modifié");
     imageFile=null;
     Navigator.pop(context);
+    setState(() {
+      _isLoading=false;
+    });
   }
 
   void reponseGetUserSortConversation(List<dynamic> list) {
@@ -119,10 +131,14 @@ class _CreateConversationVueState extends State<CreateConversationVue> {
       for (int i = 0; i < list.length; i++) {
         listUser.add(list[i]["uniquePseudo_user"]);
       }
+      _isLoading=false;
     });
   }
 
   void reponseError(Exception ex) {
+    setState(() {
+      _isLoading=false;
+    });
     Constant.showAlertDialog(context, "Erreur",
         "erreur lors de la requette a l'api : " + ex.toString());
   }
@@ -137,6 +153,9 @@ class _CreateConversationVueState extends State<CreateConversationVue> {
   void initState() {
     super.initState();
     if (!widget.created) {
+      setState(() {
+        _isLoading=true;
+      });
       name.text = widget.conversation.name;
       conversationC.getUserShort(
           widget.conversation, reponseGetUserSortConversation, reponseError);
@@ -160,7 +179,7 @@ class _CreateConversationVueState extends State<CreateConversationVue> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Form(
+      body: (_isLoading)?LoadingDialog():Form(
         key: _formKey,
         child: SingleChildScrollView(
           child: Column(

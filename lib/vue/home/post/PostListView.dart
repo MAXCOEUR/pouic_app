@@ -7,6 +7,8 @@ import 'package:Pouic/vue/home/post/PostItemListeView.dart';
 import 'package:Pouic/vue/home/post/CreatePost.dart';
 import 'package:flutter/material.dart';
 
+import '../../widget/LoadingDialog.dart';
+
 class PostListview extends StatefulWidget {
   final LoginModel lm = LoginModelProvider.getInstance(() {}).loginModel!;
 
@@ -24,11 +26,18 @@ class PostListviewState extends State<PostListview> {
   late PostController postsController;
   PostListe postListe = PostListe();
 
+  bool _isLoading = false;
+
+
+
   void up() {
     _scrollController.jumpTo(0);
     refreshData();
   }
   Future<void> refreshData() async {
+    setState(() {
+      _isLoading=true;
+    });
     postsController.initListeGeneralPost(reponseUpdate, reponseError);
   }
 
@@ -75,7 +84,7 @@ class PostListviewState extends State<PostListview> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: RefreshIndicator(
+      body:(_isLoading)?LoadingDialog(): RefreshIndicator(
         onRefresh: refreshData,
         child: Container(
           color: Theme.of(context).colorScheme.surface,
@@ -113,11 +122,16 @@ class PostListviewState extends State<PostListview> {
 
   reponseUpdate() {
     if (mounted) {
-      setState(() {});
+      setState(() {
+        _isLoading=false;
+      });
     }
   }
 
   reponseError(Exception ex) {
+    setState(() {
+      _isLoading=false;
+    });
     Constant.showAlertDialog(context, "Erreur",
         "erreur lors de la requette a l'api : " + ex.toString());
   }
