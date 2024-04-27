@@ -1,4 +1,5 @@
 
+import 'package:Pouic/vue/ResetPassword.dart';
 import 'package:Pouic/vue/widget/LoadingDialog.dart';
 import 'package:dio/dio.dart';
 import 'package:Pouic/Model/UserModel.dart';
@@ -146,6 +147,31 @@ class _LoginVueState extends State<LoginVue> {
                 child: Text('Créer son compte'),
               ),
             ),
+            Container(
+              margin: EdgeInsets.all(SizeMarginPading.h3),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ResetPassword()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey, // Couleur de fond différente
+                ),
+                child: Text(
+                  'Mot de passe Perdu ?',
+                  style: TextStyle(
+                    color: Colors.white, // Couleur de texte blanc
+                    fontSize: 16.0, // Taille de police
+                    fontStyle: FontStyle.italic, // Style de police italique
+                  ),
+                ),
+              ),
+            ),
+
           ],
         ),
       ),

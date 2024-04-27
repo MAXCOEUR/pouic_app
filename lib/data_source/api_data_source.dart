@@ -12,7 +12,7 @@ class ApiDataSource {
   final int port ;
   final String pathSegments ;
 
-  final LoginModel lm = LoginModelProvider.getInstance(() {}).loginModel!;
+  final LoginModel? lm = LoginModelProvider.getInstance(() {}).loginModel;
   Dio dio = Dio();
 
   ApiDataSource() :
@@ -39,7 +39,7 @@ class ApiDataSource {
     final http.Response response = await http.get(
       httpUrl,
       headers: {
-        'Authorization': 'Bearer ${lm.token}',
+        'Authorization': 'Bearer ${lm?.token}',
       },
     );
 
@@ -67,7 +67,7 @@ class ApiDataSource {
     final http.Response response = await http.delete(
       httpUrl,
       headers: {
-        'Authorization': 'Bearer ${lm.token}',
+        'Authorization': 'Bearer ${lm?.token}',
       },
     );
 
@@ -96,7 +96,7 @@ class ApiDataSource {
       httpUrl,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${lm.token}',
+        'Authorization': 'Bearer ${lm?.token}',
       },
       body: jsonEncode(bodyParameters)
     );
@@ -113,7 +113,7 @@ class ApiDataSource {
       {Map<String, dynamic>? queryParameters,}
       ) async {
     final options = Options(
-      headers: {'Authorization': 'Bearer ${lm.token}'},
+      headers: {'Authorization': 'Bearer ${lm?.token}'},
       contentType:
       'multipart/form-data',
     );
