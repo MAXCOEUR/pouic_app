@@ -187,12 +187,12 @@ class _LoginVueState extends State<LoginVue> {
   }
   void loginUserHive() async{
     try{
-      var hiveBox = await Hive.openBox(LoginVue.HIVE_LOGIN);
-      String email = hiveBox.get("email");
-      String mdp = hiveBox.get("mdp");
       setState(() {
         _isLoading=true;
       });
+      var hiveBox = await Hive.openBox(LoginVue.HIVE_LOGIN);
+      String email = hiveBox.get("email");
+      String mdp = hiveBox.get("mdp");
       loginController.ask(email, mdp,reponseLoginUser,reponseLoginUserErreurHive);
     }catch(ex){
       print(ex);
