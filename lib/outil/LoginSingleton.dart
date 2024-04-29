@@ -11,24 +11,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginModelProvider {
   LoginModelProvider._privateConstructor(Function callBack){
-    getLoginModelFromCache().then(
-            (value) {
-              _loginModel=value;
-              callBack();
-            }
-    );
   }
   LoginModel? _loginModel;
 
   LoginModel? get loginModel => _loginModel;
 
   void setLoginModel(LoginModel? loginModel) {
-    if(loginModel==null){
-      _removeTokenInCache();
-    }
-    else{
-      _storeTokenInCache(loginModel.token);
-    }
     _loginModel = loginModel;
   }
 
@@ -37,59 +25,6 @@ class LoginModelProvider {
   static LoginModelProvider getInstance(Function callBack) {
     _instance ??= LoginModelProvider._privateConstructor(callBack);
     return _instance!;
-  }
-
-  static Future<LoginModel?> getLoginModelFromCache() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('authToken');
-    if(token==null){
-      return null;
-    }
-    String AuthorizationToken='Bearer '+token;
-    try{
-      final response = await Api.instance.postData("user/login/token", null, null, {'Authorization': AuthorizationToken});
-      if(response.statusCode==200){
-        Map<String, dynamic> jsonData = response.data;
-        Map<String, dynamic> userMap = jsonData["user"];
-
-        String token = jsonData["token"];
-
-        User u = User(email:userMap['email'], uniquePseudo:userMap['uniquePseudo'], pseudo:userMap['pseudo'],bio:userMap["bio"], extension:userMap["extension"]);
-        LoginModel lm = LoginModel(u, token);
-        LoginModelProvider._storeTokenInCache(token);
-
-        if(!kIsWeb &&!Platform.isWindows){
-          String AuthorizationToken='Bearer '+lm.token;
-          WidgetsFlutterBinding.ensureInitialized();
-          await Firebase.initializeApp();
-          String? tokenNotification = await FireBaseApi().initNotification();
-          print(tokenNotification);
-          final reposeToken = await Api.instance.putData("user/tokenNotification", {'token': tokenNotification}, null, {'Authorization': AuthorizationToken});
-          if(reposeToken.statusCode==201){
-            print("tokenNotification reussie");
-          }else{
-            throw Exception();
-          }
-        }
-        return lm;
-
-        //callBack(lm);
-      }else{
-        throw Exception();
-      }
-    }catch (error){
-      throw error;
-    }
-
-
-  }
-  static void _storeTokenInCache(String token) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('authToken', token);
-  }
-  static void _removeTokenInCache() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove('authToken');
   }
 }
 class LoginModel{

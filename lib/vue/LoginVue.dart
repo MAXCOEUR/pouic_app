@@ -196,6 +196,9 @@ class _LoginVueState extends State<LoginVue> {
       loginController.ask(email, mdp,reponseLoginUser,reponseLoginUserErreurHive);
     }catch(ex){
       print(ex);
+      setState(() {
+        _isLoading=false;
+      });
     }
 
   }
