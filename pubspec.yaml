@@ -60,6 +60,8 @@ dependencies:
   firebase_core: ^2.16.0
   firebase_messaging: ^14.6.8
   camera: ^0.10.5+9
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
 
 
 dev_dependencies:

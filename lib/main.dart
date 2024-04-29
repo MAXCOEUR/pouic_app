@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 late final FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin= FlutterLocalNotificationsPlugin();
 
@@ -13,7 +14,7 @@ void main() async {
 
   if(!kIsWeb && !Platform.isWindows){
     WidgetsFlutterBinding.ensureInitialized();
-
+    await Hive.initFlutter();
     // Initialiser les notifications
     const AndroidInitializationSettings initializationSettingsAndroid =
     AndroidInitializationSettings('mipmap/ic_launcher'); // Remplacez 'app_icon' par le nom de votre icône de l'application
