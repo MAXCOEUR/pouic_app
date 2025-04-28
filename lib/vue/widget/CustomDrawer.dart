@@ -8,6 +8,9 @@ import 'package:Pouic/outil/LoginSingleton.dart';
 import 'package:Pouic/vue/CreateUserVue.dart';
 import 'package:Pouic/vue/home/UserDetailView.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+
+import '../LoginVue.dart';
 
 class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
 
@@ -70,15 +73,24 @@ class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
           ListTile(
             leading: Icon(Icons.logout),
             title: Text("Déconnexion", style: TextStyle(fontSize: SizeFont.p1)),
-            onTap: () {
-              setNullTokenNotification();
-              LoginModelProvider.getInstance(() {}).setLoginModel(null);
-              HomeTmp.update(context);
+            onTap:  () {
+              deconexion(context);
             },
           ),
         ],
       ),
     );
+  }
+
+  deconexion(context) async{
+    setNullTokenNotification();
+    LoginModelProvider.getInstance(() {}).setLoginModel(null);
+
+    var hiveBox = await Hive.openBox(LoginVue.HIVE_LOGIN);
+
+    await hiveBox.clear();
+
+    HomeTmp.update(context);
   }
 
   setNullTokenNotification() async {
