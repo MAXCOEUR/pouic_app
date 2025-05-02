@@ -29,7 +29,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:record_mp3/record_mp3.dart';
+import 'package:record_mp3_plus/record_mp3_plus.dart';
 
 import '../../widget/LoadingDialog.dart';
 import '../TakePhoto.dart';
