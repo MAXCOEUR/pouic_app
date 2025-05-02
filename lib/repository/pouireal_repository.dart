@@ -1,7 +1,7 @@
-import 'package:Pouic/Model/FileCustom.dart';
-import 'package:Pouic/Model/ReactionModel.dart';
-import 'package:Pouic/Model/pouireal_model.dart';
-import 'package:Pouic/data_source/api_data_source.dart';
+import 'package:pouic/Model/FileCustom.dart';
+import 'package:pouic/Model/ReactionModel.dart';
+import 'package:pouic/Model/pouireal_model.dart';
+import 'package:pouic/data_source/api_data_source.dart';
 import 'package:camera/camera.dart';
 import 'package:dio/dio.dart';
 

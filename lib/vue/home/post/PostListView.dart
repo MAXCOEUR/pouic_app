@@ -1,10 +1,10 @@
-import 'package:Pouic/Controller/PostController.dart';
-import 'package:Pouic/Model/PostListeModel.dart';
-import 'package:Pouic/Model/PostModel.dart';
-import 'package:Pouic/outil/Constant.dart';
-import 'package:Pouic/outil/LoginSingleton.dart';
-import 'package:Pouic/vue/home/post/PostItemListeView.dart';
-import 'package:Pouic/vue/home/post/CreatePost.dart';
+import 'package:pouic/Controller/PostController.dart';
+import 'package:pouic/Model/PostListeModel.dart';
+import 'package:pouic/Model/PostModel.dart';
+import 'package:pouic/outil/Constant.dart';
+import 'package:pouic/outil/LoginSingleton.dart';
+import 'package:pouic/vue/home/post/PostItemListeView.dart';
+import 'package:pouic/vue/home/post/CreatePost.dart';
 import 'package:flutter/material.dart';
 
 import '../../widget/LoadingDialog.dart';

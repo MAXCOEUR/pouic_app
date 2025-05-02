@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:Pouic/vue/widget/LoadingDialog.dart';
+import 'package:pouic/vue/widget/LoadingDialog.dart';
 import 'package:dio/dio.dart';
-import 'package:Pouic/Controller/UserController.dart';
-import 'package:Pouic/Controller/UserC.dart';
-import 'package:Pouic/Model/FileCustom.dart';
-import 'package:Pouic/Model/UserListeModel.dart';
+import 'package:pouic/Controller/UserController.dart';
+import 'package:pouic/Controller/UserC.dart';
+import 'package:pouic/Model/FileCustom.dart';
+import 'package:pouic/Model/UserListeModel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

@@ -1,5 +1,5 @@
-import 'package:Pouic/vue/home/pouireal/DisplayItemPouireal.dart';
-import 'package:Pouic/vue/home/pouireal/pouireal_viewmodel.dart';
+import 'package:pouic/vue/home/pouireal/DisplayItemPouireal.dart';
+import 'package:pouic/vue/home/pouireal/pouireal_viewmodel.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

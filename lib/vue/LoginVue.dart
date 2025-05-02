@@ -1,13 +1,12 @@
 
-import 'package:Pouic/vue/ResetPassword.dart';
-import 'package:Pouic/vue/widget/LoadingDialog.dart';
+import 'package:pouic/vue/ResetPassword.dart';
+import 'package:pouic/vue/widget/LoadingDialog.dart';
 import 'package:dio/dio.dart';
-import 'package:Pouic/Model/UserModel.dart';
-import 'package:Pouic/outil/LoginSingleton.dart';
-import 'package:Pouic/vue/CreateUserVue.dart';
+import 'package:pouic/Model/UserModel.dart';
+import 'package:pouic/outil/LoginSingleton.dart';
+import 'package:pouic/vue/CreateUserVue.dart';
 import 'package:flutter/material.dart';
-import 'package:Pouic/vue/home/HomeView.dart';
-import 'package:hive/hive.dart';
+import 'package:pouic/vue/home/HomeView.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,7 +20,6 @@ import '../outil/Constant.dart';
 class LoginVue extends StatefulWidget {
   LoginVue({super.key});
   final String title="Login";
-  static String HIVE_LOGIN="LOGIN";
 
   @override
   State<LoginVue> createState() => _LoginVueState();
@@ -42,7 +40,6 @@ class _LoginVueState extends State<LoginVue> {
   @override
   void initState() {
     super.initState();
-    loginUserHive();
   }
 
   @override
@@ -185,31 +182,11 @@ class _LoginVueState extends State<LoginVue> {
       ),
     );
   }
-  void loginUserHive() async{
-    try{
-      setState(() {
-        _isLoading=true;
-      });
-      var hiveBox = await Hive.openBox(LoginVue.HIVE_LOGIN);
-      String email = hiveBox.get("email");
-      String mdp = hiveBox.get("mdp");
-      loginController.ask(email, mdp,reponseLoginUser,reponseLoginUserErreurHive);
-    }catch(ex){
-      print(ex);
-      setState(() {
-        _isLoading=false;
-      });
-    }
-
-  }
   void loginUser() async {
-    var hiveBox = await Hive.openBox(LoginVue.HIVE_LOGIN);
     setState(() {
       _isLoading=true;
     });
     loginController.ask(userName_Email.text, mdp.text,reponseLoginUser,reponseLoginUserErreur);
-    hiveBox.put("email", userName_Email.text);
-    hiveBox.put("mdp", mdp.text);
   }
   void reponseLoginUser(LoginModel lm){
     LoginModelProvider.getInstance((){}).setLoginModel(lm);

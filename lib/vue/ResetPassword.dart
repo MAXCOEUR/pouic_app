@@ -1,12 +1,12 @@
 
-import 'package:Pouic/vue/ResetPassword_viewModel.dart';
-import 'package:Pouic/vue/widget/LoadingDialog.dart';
+import 'package:pouic/vue/ResetPassword_viewModel.dart';
+import 'package:pouic/vue/widget/LoadingDialog.dart';
 import 'package:dio/dio.dart';
-import 'package:Pouic/Model/UserModel.dart';
-import 'package:Pouic/outil/LoginSingleton.dart';
-import 'package:Pouic/vue/CreateUserVue.dart';
+import 'package:pouic/Model/UserModel.dart';
+import 'package:pouic/outil/LoginSingleton.dart';
+import 'package:pouic/vue/CreateUserVue.dart';
 import 'package:flutter/material.dart';
-import 'package:Pouic/vue/home/HomeView.dart';
+import 'package:pouic/vue/home/HomeView.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

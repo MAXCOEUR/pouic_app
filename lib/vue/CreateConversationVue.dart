@@ -1,15 +1,15 @@
 import 'dart:io';
 
-import 'package:Pouic/Controller/ConversationC.dart';
-import 'package:Pouic/Controller/UserController.dart';
-import 'package:Pouic/Controller/UserC.dart';
-import 'package:Pouic/Model/ConversationModel.dart';
-import 'package:Pouic/Model/FileCustom.dart';
-import 'package:Pouic/Model/UserListeModel.dart';
-import 'package:Pouic/outil/LoginSingleton.dart';
-import 'package:Pouic/outil/SocketSingleton.dart';
-import 'package:Pouic/vue/home/message/MessagerieView.dart';
-import 'package:Pouic/vue/widget/LoadingDialog.dart';
+import 'package:pouic/Controller/ConversationC.dart';
+import 'package:pouic/Controller/UserController.dart';
+import 'package:pouic/Controller/UserC.dart';
+import 'package:pouic/Model/ConversationModel.dart';
+import 'package:pouic/Model/FileCustom.dart';
+import 'package:pouic/Model/UserListeModel.dart';
+import 'package:pouic/outil/LoginSingleton.dart';
+import 'package:pouic/outil/SocketSingleton.dart';
+import 'package:pouic/vue/home/message/MessagerieView.dart';
+import 'package:pouic/vue/widget/LoadingDialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

@@ -2,9 +2,9 @@
 import 'dart:collection';
 import 'dart:io';
 
-import 'package:Pouic/Model/FileCustom.dart';
-import 'package:Pouic/Model/pouireal_model.dart';
-import 'package:Pouic/vue/home/pouireal/pouireal_viewmodel.dart';
+import 'package:pouic/Model/FileCustom.dart';
+import 'package:pouic/Model/pouireal_model.dart';
+import 'package:pouic/vue/home/pouireal/pouireal_viewmodel.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

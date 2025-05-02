@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:Pouic/Model/FileCustom.dart';
-import 'package:Pouic/Model/ReactionModel.dart';
-import 'package:Pouic/Model/pouireal_model.dart';
-import 'package:Pouic/repository/pouireal_repository.dart';
+import 'package:pouic/Model/FileCustom.dart';
+import 'package:pouic/Model/ReactionModel.dart';
+import 'package:pouic/Model/pouireal_model.dart';
+import 'package:pouic/repository/pouireal_repository.dart';
 import 'package:camera/camera.dart';
 
 class PouirealViewModel{

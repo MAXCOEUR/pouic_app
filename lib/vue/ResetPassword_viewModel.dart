@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:Pouic/repository/user_repositoty.dart';
+import 'package:pouic/repository/user_repositoty.dart';
 
 class ResetpasswordViewmodel{
 

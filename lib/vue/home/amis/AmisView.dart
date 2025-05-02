@@ -1,10 +1,10 @@
-import 'package:Pouic/Controller/HomeController.dart';
-import 'package:Pouic/Model/UserModel.dart';
-import 'package:Pouic/outil/Constant.dart';
-import 'package:Pouic/outil/LoginSingleton.dart';
-import 'package:Pouic/vue/home/amis/AmisListeView.dart';
-import 'package:Pouic/vue/home/amis/DemandeAmisListeView.dart';
-import 'package:Pouic/vue/home/amis/DemandeEnvoyeAmisListeView.dart';
+import 'package:pouic/Controller/HomeController.dart';
+import 'package:pouic/Model/UserModel.dart';
+import 'package:pouic/outil/Constant.dart';
+import 'package:pouic/outil/LoginSingleton.dart';
+import 'package:pouic/vue/home/amis/AmisListeView.dart';
+import 'package:pouic/vue/home/amis/DemandeAmisListeView.dart';
+import 'package:pouic/vue/home/amis/DemandeEnvoyeAmisListeView.dart';
 import 'package:flutter/material.dart';
 
 

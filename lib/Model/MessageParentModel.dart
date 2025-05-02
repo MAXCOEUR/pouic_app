@@ -1,6 +1,6 @@
-import 'package:Pouic/Model/FileModel.dart';
-import 'package:Pouic/Model/ReactionModel.dart';
-import 'package:Pouic/Model/UserModel.dart';
+import 'package:pouic/Model/FileModel.dart';
+import 'package:pouic/Model/ReactionModel.dart';
+import 'package:pouic/Model/UserModel.dart';
 
 class MessageParentModel{
   int id;

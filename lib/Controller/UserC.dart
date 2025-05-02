@@ -3,10 +3,10 @@ import 'dart:typed_data';
 
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:Pouic/Model/FileCustom.dart';
-import 'package:Pouic/Model/UserListeModel.dart';
-import 'package:Pouic/outil/Constant.dart';
-import 'package:Pouic/outil/LoginSingleton.dart';
+import 'package:pouic/Model/FileCustom.dart';
+import 'package:pouic/Model/UserListeModel.dart';
+import 'package:pouic/outil/Constant.dart';
+import 'package:pouic/outil/LoginSingleton.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import '../Model/UserModel.dart';

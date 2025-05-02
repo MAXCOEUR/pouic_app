@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:Pouic/Model/UserModel.dart';
+import 'package:pouic/Model/UserModel.dart';
 
 class FileModel{
   String linkFile;

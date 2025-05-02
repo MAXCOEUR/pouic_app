@@ -1,6 +1,6 @@
-import 'package:Pouic/outil/Api.dart';
-import 'package:Pouic/outil/LoginSingleton.dart';
-import 'package:Pouic/outil/SocketSingleton.dart';
+import 'package:pouic/outil/Api.dart';
+import 'package:pouic/outil/LoginSingleton.dart';
+import 'package:pouic/outil/SocketSingleton.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
 class HomeController{

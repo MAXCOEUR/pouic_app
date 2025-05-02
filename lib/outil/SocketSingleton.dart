@@ -1,6 +1,6 @@
-import 'package:Pouic/Model/UserModel.dart';
-import 'package:Pouic/outil/Constant.dart';
-import 'package:Pouic/outil/LoginSingleton.dart';
+import 'package:pouic/Model/UserModel.dart';
+import 'package:pouic/outil/Constant.dart';
+import 'package:pouic/outil/LoginSingleton.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class SocketSingleton {

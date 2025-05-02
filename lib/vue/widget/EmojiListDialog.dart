@@ -1,4 +1,4 @@
-import 'package:Pouic/outil/Constant.dart';
+import 'package:pouic/outil/Constant.dart';
 import 'package:flutter/material.dart';
 
 class EmojiList extends StatefulWidget {

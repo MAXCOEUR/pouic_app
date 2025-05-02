@@ -1,14 +1,13 @@
 import 'dart:typed_data';
 
-import 'package:Pouic/HomeTmp.dart';
-import 'package:Pouic/Model/UserModel.dart';
-import 'package:Pouic/outil/Api.dart';
-import 'package:Pouic/outil/Constant.dart';
-import 'package:Pouic/outil/LoginSingleton.dart';
-import 'package:Pouic/vue/CreateUserVue.dart';
-import 'package:Pouic/vue/home/UserDetailView.dart';
+import 'package:pouic/HomeTmp.dart';
+import 'package:pouic/Model/UserModel.dart';
+import 'package:pouic/outil/Api.dart';
+import 'package:pouic/outil/Constant.dart';
+import 'package:pouic/outil/LoginSingleton.dart';
+import 'package:pouic/vue/CreateUserVue.dart';
+import 'package:pouic/vue/home/UserDetailView.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 
 import '../LoginVue.dart';
 
@@ -85,10 +84,6 @@ class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
   deconexion(context) async{
     setNullTokenNotification();
     LoginModelProvider.getInstance(() {}).setLoginModel(null);
-
-    var hiveBox = await Hive.openBox(LoginVue.HIVE_LOGIN);
-
-    await hiveBox.clear();
 
     HomeTmp.update(context);
   }

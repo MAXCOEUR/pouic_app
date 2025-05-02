@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
-import 'package:Pouic/outil/Constant.dart';
+import 'package:pouic/outil/Constant.dart';
 
 class Api {
   late Dio dio;

@@ -1,6 +1,6 @@
-import 'package:Pouic/outil/LoginSingleton.dart';
-import 'package:Pouic/vue/LoginVue.dart';
-import 'package:Pouic/vue/home/HomeView.dart';
+import 'package:pouic/outil/LoginSingleton.dart';
+import 'package:pouic/vue/LoginVue.dart';
+import 'package:pouic/vue/home/HomeView.dart';
 import 'package:flutter/material.dart';
 
 class HomeTmp extends StatefulWidget {

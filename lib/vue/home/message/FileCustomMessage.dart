@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:Pouic/Model/FileModel.dart';
-import 'package:Pouic/outil/Constant.dart';
-import 'package:Pouic/outil/LaunchFile.dart';
-import 'package:Pouic/vue/home/message/AudioPlayerWidget.dart';
-import 'package:Pouic/vue/widget/PhotoView.dart';
-import 'package:Pouic/vue/widget/VideoView.dart';
+import 'package:pouic/Model/FileModel.dart';
+import 'package:pouic/outil/Constant.dart';
+import 'package:pouic/outil/LaunchFile.dart';
+import 'package:pouic/vue/home/message/AudioPlayerWidget.dart';
+import 'package:pouic/vue/widget/PhotoView.dart';
+import 'package:pouic/vue/widget/VideoView.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';

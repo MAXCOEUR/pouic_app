@@ -1,13 +1,13 @@
-import 'package:Pouic/Controller/ConversationC.dart';
-import 'package:Pouic/Controller/UserController.dart';
-import 'package:Pouic/Model/ConversationModel.dart';
-import 'package:Pouic/Model/UserListeModel.dart';
-import 'package:Pouic/Model/UserModel.dart';
-import 'package:Pouic/outil/Constant.dart';
-import 'package:Pouic/outil/LoginSingleton.dart';
-import 'package:Pouic/vue/home/UserItemListeView.dart';
-import 'package:Pouic/vue/home/UserDetailView.dart';
-import 'package:Pouic/vue/widget/SearchTextField.dart';
+import 'package:pouic/Controller/ConversationC.dart';
+import 'package:pouic/Controller/UserController.dart';
+import 'package:pouic/Model/ConversationModel.dart';
+import 'package:pouic/Model/UserListeModel.dart';
+import 'package:pouic/Model/UserModel.dart';
+import 'package:pouic/outil/Constant.dart';
+import 'package:pouic/outil/LoginSingleton.dart';
+import 'package:pouic/vue/home/UserItemListeView.dart';
+import 'package:pouic/vue/home/UserDetailView.dart';
+import 'package:pouic/vue/widget/SearchTextField.dart';
 import 'package:flutter/material.dart';
 
 class RemoveUserConvView extends StatefulWidget{

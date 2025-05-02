@@ -1,5 +1,5 @@
-import 'package:Pouic/Model/pouireal_model.dart';
-import 'package:Pouic/vue/home/pouireal/pouireal_viewmodel.dart';
+import 'package:pouic/Model/pouireal_model.dart';
+import 'package:pouic/vue/home/pouireal/pouireal_viewmodel.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

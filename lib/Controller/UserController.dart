@@ -1,10 +1,10 @@
 import 'dart:typed_data';
 
 import 'dart:convert';
-import 'package:Pouic/Model/ConversationModel.dart';
-import 'package:Pouic/Model/UserListeModel.dart';
-import 'package:Pouic/outil/Constant.dart';
-import 'package:Pouic/outil/LoginSingleton.dart';
+import 'package:pouic/Model/ConversationModel.dart';
+import 'package:pouic/Model/UserListeModel.dart';
+import 'package:pouic/outil/Constant.dart';
+import 'package:pouic/outil/LoginSingleton.dart';
 
 import '../Model/UserModel.dart';
 import '../outil/Api.dart';

@@ -1,4 +1,4 @@
-import 'package:Pouic/Model/ConversationModel.dart';
+import 'package:pouic/Model/ConversationModel.dart';
 import 'dart:convert';
 
 class ConversationListe{

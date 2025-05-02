@@ -1,8 +1,8 @@
-import 'package:Pouic/Model/FileModel.dart';
-import 'package:Pouic/Model/MessageModel.dart';
+import 'package:pouic/Model/FileModel.dart';
+import 'package:pouic/Model/MessageModel.dart';
 import 'dart:convert';
 
-import 'package:Pouic/Model/ReactionModel.dart';
+import 'package:pouic/Model/ReactionModel.dart';
 
 class MessageListe{
   List<MessageModel> messages = [];

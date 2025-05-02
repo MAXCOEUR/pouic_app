@@ -1,6 +1,6 @@
-import 'package:Pouic/Model/ConversationModel.dart';
-import 'package:Pouic/outil/Constant.dart';
-import 'package:Pouic/outil/LoginSingleton.dart';
+import 'package:pouic/Model/ConversationModel.dart';
+import 'package:pouic/outil/Constant.dart';
+import 'package:pouic/outil/LoginSingleton.dart';
 import 'package:flutter/material.dart';
 
 import '../../Model/UserModel.dart';

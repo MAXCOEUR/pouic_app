@@ -1,4 +1,4 @@
-import 'package:Pouic/Model/UserModel.dart';
+import 'package:pouic/Model/UserModel.dart';
 import 'dart:convert';
 
 class UserListe{

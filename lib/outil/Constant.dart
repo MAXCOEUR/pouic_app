@@ -1,10 +1,10 @@
 import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:Pouic/Model/ConversationModel.dart';
-import 'package:Pouic/Model/UserModel.dart';
-import 'package:Pouic/vue/home/UserDetailView.dart';
-import 'package:Pouic/vue/widget/PhotoView.dart';
+import 'package:pouic/Model/ConversationModel.dart';
+import 'package:pouic/Model/UserModel.dart';
+import 'package:pouic/vue/home/UserDetailView.dart';
+import 'package:pouic/vue/widget/PhotoView.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';

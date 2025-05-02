@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:Pouic/Model/UserModel.dart';
-import 'package:Pouic/fireBase/fireBase_api.dart';
-import 'package:Pouic/outil/LoginSingleton.dart';
+import 'package:pouic/Model/UserModel.dart';
+import 'package:pouic/fireBase/fireBase_api.dart';
+import 'package:pouic/outil/LoginSingleton.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
