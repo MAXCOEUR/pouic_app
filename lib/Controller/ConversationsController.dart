@@ -13,7 +13,7 @@ import 'package:pouic/outil/LoginSingleton.dart';
 import 'package:pouic/outil/SocketSingleton.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-//import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
 class ConversationController{
@@ -21,7 +21,7 @@ class ConversationController{
   LoginModel loginModel = LoginModelProvider.getInstance((){}).loginModel!;
   final Socket _socket = SocketSingleton.instance.socket;
   Function callBack;
-  //FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
+  FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
   int? idConvertationOpen;
 
   ConversationController(this.conversations,this.callBack){
@@ -30,7 +30,7 @@ class ConversationController{
     _socket.on("deleteConversation", _handleDeleteConv);
     if (!kIsWeb) {
       if(Platform.isAndroid || Platform.isIOS||Platform.isLinux || Platform.isMacOS){
-        //flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+        flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
         initNotif();
       }
     }
@@ -45,11 +45,11 @@ class ConversationController{
     WidgetsFlutterBinding.ensureInitialized();
 
     // Initialiser les notifications
-    //const AndroidInitializationSettings initializationSettingsAndroid =
-    //AndroidInitializationSettings('mipmap/ic_launcher'); // Remplacez 'app_icon' par le nom de votre icône de l'application
-    //final InitializationSettings initializationSettings =
-    //InitializationSettings(android: initializationSettingsAndroid);
-    //await flutterLocalNotificationsPlugin!.initialize(initializationSettings);
+    const AndroidInitializationSettings initializationSettingsAndroid =
+    AndroidInitializationSettings('mipmap/ic_launcher'); // Remplacez 'app_icon' par le nom de votre icône de l'application
+    final InitializationSettings initializationSettings =
+    InitializationSettings(android: initializationSettingsAndroid);
+    await flutterLocalNotificationsPlugin!.initialize(initializationSettings);
   }
   void dispose() {
     _socket.off("recevoirMessage", _handleReceivedMessage);
@@ -91,12 +91,12 @@ class ConversationController{
         convtmp=conv;
         conv.unRead++;
         if(message.user!=loginModel.user && idConvertationOpen!=idConv){
-          //if(flutterLocalNotificationsPlugin!=null){
-          //  final isAppInBackground = WidgetsBinding.instance.lifecycleState == AppLifecycleState.paused;
-          //  if(!isAppInBackground){
-          //    showCustomNotification(message,conv);
-          //  }
-          //}
+          if(flutterLocalNotificationsPlugin!=null){
+           final isAppInBackground = WidgetsBinding.instance.lifecycleState == AppLifecycleState.paused;
+           if(!isAppInBackground){
+             showCustomNotification(message,conv);
+           }
+          }
         }
         callBack();
       }
@@ -133,24 +133,24 @@ class ConversationController{
   }
 
 
-  // Future<void> showCustomNotification(MessageModel message,Conversation conv) async {
-  //   const AndroidNotificationDetails androidPlatformChannelSpecifics =
-  //   AndroidNotificationDetails(
-  //     'b1717167dd1920d2ef95d8ae8de426a0adc0d8dca3551437862a2c3310b9e53a',
-  //     'Custom Notifications',
-  //     importance: Importance.max,
-  //     priority: Priority.high,
-  //     showWhen: false,
-  //   );
-  //   const NotificationDetails platformChannelSpecifics =
-  //   NotificationDetails(android: androidPlatformChannelSpecifics);
-  //
-  //   await flutterLocalNotificationsPlugin!.show(
-  //     message.id, // Id de la notification
-  //     conv.name, // Titre de la notification
-  //     message.user.pseudo+": "+ message.message, // Corps de la notification
-  //     platformChannelSpecifics,
-  //   );
-  // }
+  Future<void> showCustomNotification(MessageModel message,Conversation conv) async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+    AndroidNotificationDetails(
+      'b1717167dd1920d2ef95d8ae8de426a0adc0d8dca3551437862a2c3310b9e53a',
+      'Custom Notifications',
+      importance: Importance.max,
+      priority: Priority.high,
+      showWhen: false,
+    );
+    const NotificationDetails platformChannelSpecifics =
+    NotificationDetails(android: androidPlatformChannelSpecifics);
+
+    await flutterLocalNotificationsPlugin!.show(
+      message.id, // Id de la notification
+      conv.name, // Titre de la notification
+      message.user.pseudo+": "+ message.message, // Corps de la notification
+      platformChannelSpecifics,
+    );
+  }
 
 }

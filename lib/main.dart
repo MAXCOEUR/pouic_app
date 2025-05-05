@@ -1,23 +1,24 @@
 import 'dart:io';
 
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:pouic/HomeTmp.dart';
 import 'package:pouic/fireBase/fireBase_api.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-// late final FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin= FlutterLocalNotificationsPlugin();
+late final FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin= FlutterLocalNotificationsPlugin();
 
 void main() async {
 
   if(!kIsWeb && !Platform.isWindows){
     WidgetsFlutterBinding.ensureInitialized();
     // Initialiser les notifications
-    // const AndroidInitializationSettings initializationSettingsAndroid =
-    // AndroidInitializationSettings('mipmap/ic_launcher'); // Remplacez 'app_icon' par le nom de votre icône de l'application
-    // const InitializationSettings initializationSettings =
-    // InitializationSettings(android: initializationSettingsAndroid);
-    // await flutterLocalNotificationsPlugin?.initialize(initializationSettings);
+    const AndroidInitializationSettings initializationSettingsAndroid =
+    AndroidInitializationSettings('mipmap/ic_launcher'); // Remplacez 'app_icon' par le nom de votre icône de l'application
+    const InitializationSettings initializationSettings =
+    InitializationSettings(android: initializationSettingsAndroid);
+    await flutterLocalNotificationsPlugin?.initialize(initializationSettings);
   }
 
 
@@ -60,7 +61,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Pouic',
       theme: ThemeData.light().copyWith(colorScheme: lightColorScheme),
       darkTheme: ThemeData.dark().copyWith(colorScheme: darkColorScheme),
       home: HomeTmp(),
