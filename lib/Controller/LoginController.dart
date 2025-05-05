@@ -47,9 +47,10 @@ class Login {
       callBackError(error);
     }
   }
-  Future<void> ask(String userOrEmail, String mdp,Function callBack,Function callBackError) async {
+  Future<void> askToken(String Token,Function callBack,Function callBackError) async {
     try{
-      final response = await Api.instance.postData("user/login", {'emailOrPseudo': userOrEmail, 'passWord': mdp}, null, null);
+      String AuthorizationToken='Bearer '+Token;
+      final response = await Api.instance.postData("user/login/token", {}, null, {'Authorization': AuthorizationToken});
       if(response.statusCode==200){
         print("connection reussie");
         Map<String, dynamic> jsonData = response.data;

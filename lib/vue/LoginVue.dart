@@ -1,4 +1,5 @@
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:pouic/vue/ResetPassword.dart';
 import 'package:pouic/vue/widget/LoadingDialog.dart';
 import 'package:dio/dio.dart';
@@ -26,6 +27,8 @@ class LoginVue extends StatefulWidget {
 }
 
 class _LoginVueState extends State<LoginVue> {
+
+  final storage = FlutterSecureStorage();
   final userName_Email = TextEditingController();
   final mdp = TextEditingController();
 
@@ -189,6 +192,7 @@ class _LoginVueState extends State<LoginVue> {
     loginController.ask(userName_Email.text, mdp.text,reponseLoginUser,reponseLoginUserErreur);
   }
   void reponseLoginUser(LoginModel lm){
+    storage.write(key: HomeTmp.TOKEN_KEY, value: lm.token);
     LoginModelProvider.getInstance((){}).setLoginModel(lm);
     HomeTmp.update(context);
     setState(() {
@@ -196,6 +200,7 @@ class _LoginVueState extends State<LoginVue> {
     });
   }
   void reponseLoginUserErreur(DioException ex){
+    storage.delete(key: HomeTmp.TOKEN_KEY);
     setState(() {
       _isLoading=false;
     });

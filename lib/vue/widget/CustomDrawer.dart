@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:pouic/HomeTmp.dart';
 import 'package:pouic/Model/UserModel.dart';
 import 'package:pouic/outil/Api.dart';
@@ -14,7 +15,7 @@ import '../LoginVue.dart';
 class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
 
   CustomDrawer();
-
+  final storage = FlutterSecureStorage();
   LoginModel lm = LoginModelProvider.getInstance(() {}).loginModel!;
 
   @override
@@ -82,6 +83,7 @@ class CustomDrawer extends StatelessWidget implements PreferredSizeWidget {
   }
 
   deconexion(context) async{
+    storage.delete(key: HomeTmp.TOKEN_KEY);
     setNullTokenNotification();
     LoginModelProvider.getInstance(() {}).setLoginModel(null);
 
